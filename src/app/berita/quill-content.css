@@ -1,0 +1,152 @@
+/* Styling untuk konten ReactQuill di halaman detail berita */
+
+.quill-content {
+  color: rgb(17, 24, 39);
+}
+
+.dark .quill-content {
+  color: rgb(243, 244, 246);
+}
+
+/* Styling untuk paragraf */
+.quill-content p {
+  margin-bottom: 1rem;
+  line-height: 1.75;
+}
+
+/* Styling untuk heading */
+.quill-content h1 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: rgb(17, 24, 39);
+}
+
+.dark .quill-content h1 {
+  color: rgb(255, 255, 255);
+}
+
+.quill-content h2 {
+  font-size: 1.875rem;
+  font-weight: 600;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: rgb(17, 24, 39);
+}
+
+.dark .quill-content h2 {
+  color: rgb(255, 255, 255);
+}
+
+.quill-content h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: rgb(17, 24, 39);
+}
+
+.dark .quill-content h3 {
+  color: rgb(255, 255, 255);
+}
+
+/* Styling untuk list */
+.quill-content ul,
+.quill-content ol {
+  margin: 1rem 0;
+  padding-left: 2rem;
+}
+
+.quill-content li {
+  margin: 0.5rem 0;
+  line-height: 1.75;
+}
+
+/* Styling untuk link */
+.quill-content a {
+  color: rgb(37, 99, 235);
+  text-decoration: underline;
+}
+
+.dark .quill-content a {
+  color: rgb(96, 165, 250);
+}
+
+.quill-content a:hover {
+  color: rgb(29, 78, 216);
+}
+
+.dark .quill-content a:hover {
+  color: rgb(147, 197, 253);
+}
+
+/* Styling untuk text formatting */
+.quill-content strong {
+  font-weight: 700;
+  color: rgb(17, 24, 39);
+}
+
+.dark .quill-content strong {
+  color: rgb(255, 255, 255);
+}
+
+.quill-content em {
+  font-style: italic;
+}
+
+.quill-content u {
+  text-decoration: underline;
+}
+
+.quill-content s {
+  text-decoration: line-through;
+}
+
+/* Styling untuk alignment */
+.quill-content .ql-align-center {
+  text-align: center;
+}
+
+.quill-content .ql-align-right {
+  text-align: right;
+}
+
+.quill-content .ql-align-justify {
+  text-align: justify;
+}
+
+/* Styling untuk indent */
+.quill-content .ql-indent-1 {
+  padding-left: 3rem;
+}
+
+.quill-content .ql-indent-2 {
+  padding-left: 6rem;
+}
+
+.quill-content .ql-indent-3 {
+  padding-left: 9rem;
+}
+
+/* Styling untuk images */
+.quill-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  margin: 1.5rem 0;
+}
+
+/* Styling untuk blockquote */
+.quill-content blockquote {
+  border-left: 4px solid rgb(59, 130, 246);
+  padding-left: 1rem;
+  margin: 1.5rem 0;
+  font-style: italic;
+  color: rgb(107, 114, 128);
+}
+
+.dark .quill-content blockquote {
+  border-left-color: rgb(96, 165, 250);
+  color: rgb(156, 163, 175);
+}
