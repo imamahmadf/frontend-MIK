@@ -6,9 +6,14 @@ import Skills from "@/components/sections/Skills";
 import Projects from "@/components/sections/Projects";
 import GaleriCarousel from "@/components/sections/GaleriCarousel";
 import LatestNews from "@/components/sections/LatestNews";
+import LatestTestimoni from "@/components/sections/LatestTestimoni";
 import Contact from "@/components/sections/Contact";
 
-export default function Home() {
+interface HomeProps {
+  searchParams?: { [key: string]: string | string[] | undefined };
+}
+
+export default function Home({ searchParams }: HomeProps) {
   return (
     <>
       <Hero />
@@ -18,7 +23,8 @@ export default function Home() {
       <Skills />
       <Projects />
       <GaleriCarousel />
-      <LatestNews />
+      <LatestNews searchParams={searchParams} />
+      <LatestTestimoni searchParams={searchParams} />
       <Contact />
     </>
   );

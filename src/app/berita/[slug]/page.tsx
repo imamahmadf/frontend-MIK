@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { getBeritaBySlug } from "@/lib/api/berita";
+import { getLanguageFromSearchParams } from "@/lib/language";
 import "react-quill/dist/quill.snow.css";
 import "../quill-content.css";
 
@@ -10,16 +11,28 @@ interface DetailBeritaPageProps {
   params: {
     slug: string;
   };
+  searchParams?: { [key: string]: string | string[] | undefined };
 }
 
 export async function generateMetadata({
   params,
+  searchParams,
 }: DetailBeritaPageProps): Promise<Metadata> {
   try {
-    const berita = await getBeritaBySlug(params.slug);
+    const lang = searchParams
+      ? getLanguageFromSearchParams(searchParams)
+      : "id";
+    const berita = await getBeritaBySlug(params.slug, lang);
+    const beritaIsi = typeof berita.isi === "string" ? berita.isi : "";
+    const beritaJudul =
+      typeof berita.judul === "string" ? berita.judul : "Berita";
     return {
-      title: berita.judul,
-      description: berita.isi.substring(0, 160),
+      title: beritaJudul,
+      description:
+        berita.meta_description ||
+        (beritaIsi
+          ? beritaIsi.replace(/<[^>]*>/g, "").substring(0, 160)
+          : "Halaman detail berita."),
     };
   } catch {
     return {
@@ -31,12 +44,14 @@ export async function generateMetadata({
 
 export default async function DetailBeritaPage({
   params,
+  searchParams,
 }: DetailBeritaPageProps) {
   let berita = null;
   let error = null;
+  const lang = searchParams ? getLanguageFromSearchParams(searchParams) : "id";
 
   try {
-    berita = await getBeritaBySlug(params.slug);
+    berita = await getBeritaBySlug(params.slug, lang);
   } catch (err: any) {
     error = err.message || "Gagal memuat data berita";
     if (err.message === "Berita tidak ditemukan") {
@@ -48,17 +63,25 @@ export default async function DetailBeritaPage({
     notFound();
   }
 
+  // Pastikan berita.isi selalu string
+  const beritaIsi = typeof berita.isi === "string" ? berita.isi : "";
+  const beritaJudul = typeof berita.judul === "string" ? berita.judul : "";
+
   const tanggal = new Date(berita.createdAt).toLocaleDateString("id-ID", {
     year: "numeric",
     month: "long",
     day: "numeric",
   });
 
+  // Preserve lang parameter in links
+  const backLinkHref =
+    lang && lang !== "id" ? `/berita?lang=${lang}` : "/berita";
+
   return (
     <section className="container mx-auto px-4 py-12">
       {/* Back Button */}
       <Link
-        href="/berita"
+        href={backLinkHref}
         className="inline-flex items-center text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 mb-6"
       >
         <svg
@@ -82,7 +105,7 @@ export default async function DetailBeritaPage({
 
       {/* Judul */}
       <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6">
-        {berita.judul}
+        {beritaJudul}
       </h1>
 
       {/* Foto */}
@@ -101,7 +124,7 @@ export default async function DetailBeritaPage({
                   >
                     <Image
                       src={`${baseURL}${foto.foto}`}
-                      alt={`${berita.judul} - Foto ${index + 1}`}
+                      alt={`${beritaJudul} - Foto ${index + 1}`}
                       fill
                       className="object-cover"
                       priority={index === 0}
@@ -118,7 +141,7 @@ export default async function DetailBeritaPage({
                   src={`${
                     process.env.NEXT_PUBLIC_API_URL || "http://localhost:7000"
                   }${berita.foto}`}
-                  alt={berita.judul}
+                  alt={beritaJudul}
                   fill
                   className="object-cover"
                   priority
@@ -130,15 +153,23 @@ export default async function DetailBeritaPage({
       ) : null}
 
       {/* Isi Berita */}
-      <article
-        className="prose dark:prose-invert max-w-none mb-8 quill-content"
-        dangerouslySetInnerHTML={{ __html: berita.isi }}
-      />
+      {beritaIsi ? (
+        <article
+          className="prose dark:prose-invert max-w-none mb-8 quill-content"
+          dangerouslySetInnerHTML={{
+            __html: beritaIsi,
+          }}
+        />
+      ) : (
+        <div className="mb-8 text-gray-500 dark:text-gray-400">
+          <p>Konten berita tidak tersedia dalam bahasa ini.</p>
+        </div>
+      )}
 
       {/* Divider */}
       <div className="border-t border-gray-200 dark:border-gray-700 pt-6 mt-8">
         <Link
-          href="/berita"
+          href={backLinkHref}
           className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:underline"
         >
           ← Kembali ke Daftar Berita

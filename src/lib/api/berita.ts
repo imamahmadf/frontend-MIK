@@ -6,6 +6,7 @@ import {
   CreateBeritaData,
   UpdateBeritaData,
 } from "@/types/berita";
+import { getCurrentLanguage, LanguageCode } from "@/lib/language";
 
 /**
  * Get all berita dengan pagination dan search
@@ -13,15 +14,46 @@ import {
 export async function getAllBerita(
   page: number = 1,
   limit: number = 10,
-  search: string = ""
+  search: string = "",
+  lang?: LanguageCode
 ): Promise<BeritaListResponse> {
   try {
+    const language = lang || getCurrentLanguage();
     const response = await apiClient.get<BeritaListResponse>("/api/berita", {
-      params: { page, limit, search },
+      params: { page, limit, search, lang: language },
     });
     return response.data;
   } catch (error: any) {
     console.error("Error fetching berita:", error);
+
+    // Jika error karena bahasa tidak ditemukan, coba dengan bahasa default
+    if (
+      error.response?.status === 400 &&
+      error.response?.data?.message === "Bahasa tidak ditemukan"
+    ) {
+      console.warn(
+        `Bahasa ${
+          lang || getCurrentLanguage()
+        } tidak ditemukan, fallback ke bahasa default (id)`
+      );
+      // Retry dengan bahasa default
+      try {
+        const response = await apiClient.get<BeritaListResponse>(
+          "/api/berita",
+          {
+            params: { page, limit, search, lang: "id" },
+          }
+        );
+        return response.data;
+      } catch (retryError: any) {
+        console.error(
+          "Error fetching berita dengan bahasa default:",
+          retryError
+        );
+        throw new Error("Gagal memuat data berita");
+      }
+    }
+
     if (error.response) {
       throw new Error(
         error.response.data?.message || "Gagal memuat data berita"
@@ -34,12 +66,50 @@ export async function getAllBerita(
 /**
  * Get berita by ID
  */
-export async function getBeritaById(id: number): Promise<Berita> {
+export async function getBeritaById(
+  id: number,
+  lang?: LanguageCode
+): Promise<Berita> {
   try {
-    const response = await apiClient.get<BeritaResponse>(`/api/berita/${id}`);
+    const language = lang || getCurrentLanguage();
+    const response = await apiClient.get<BeritaResponse>(`/api/berita/${id}`, {
+      params: { lang: language },
+    });
     return response.data.data;
   } catch (error: any) {
     console.error(`Error fetching berita ${id}:`, error);
+
+    // Jika error karena bahasa tidak ditemukan, coba dengan bahasa default
+    if (
+      error.response?.status === 400 &&
+      error.response?.data?.message === "Bahasa tidak ditemukan"
+    ) {
+      console.warn(
+        `Bahasa ${
+          lang || getCurrentLanguage()
+        } tidak ditemukan, fallback ke bahasa default (id)`
+      );
+      // Retry dengan bahasa default
+      try {
+        const response = await apiClient.get<BeritaResponse>(
+          `/api/berita/${id}`,
+          {
+            params: { lang: "id" },
+          }
+        );
+        return response.data.data;
+      } catch (retryError: any) {
+        console.error(
+          "Error fetching berita dengan bahasa default:",
+          retryError
+        );
+        if (retryError.response?.status === 404) {
+          throw new Error("Berita tidak ditemukan");
+        }
+        throw new Error("Gagal memuat data berita");
+      }
+    }
+
     if (error.response?.status === 404) {
       throw new Error("Berita tidak ditemukan");
     }
@@ -50,14 +120,53 @@ export async function getBeritaById(id: number): Promise<Berita> {
 /**
  * Get berita by slug
  */
-export async function getBeritaBySlug(slug: string): Promise<Berita> {
+export async function getBeritaBySlug(
+  slug: string,
+  lang?: LanguageCode
+): Promise<Berita> {
   try {
+    const language = lang || getCurrentLanguage();
     const response = await apiClient.get<BeritaResponse>(
-      `/api/berita/slug/${slug}`
+      `/api/berita/slug/${slug}`,
+      {
+        params: { lang: language },
+      }
     );
     return response.data.data;
   } catch (error: any) {
     console.error(`Error fetching berita by slug ${slug}:`, error);
+
+    // Jika error karena bahasa tidak ditemukan, coba dengan bahasa default
+    if (
+      error.response?.status === 400 &&
+      error.response?.data?.message === "Bahasa tidak ditemukan"
+    ) {
+      console.warn(
+        `Bahasa ${
+          lang || getCurrentLanguage()
+        } tidak ditemukan, fallback ke bahasa default (id)`
+      );
+      // Retry dengan bahasa default
+      try {
+        const response = await apiClient.get<BeritaResponse>(
+          `/api/berita/slug/${slug}`,
+          {
+            params: { lang: "id" },
+          }
+        );
+        return response.data.data;
+      } catch (retryError: any) {
+        console.error(
+          "Error fetching berita dengan bahasa default:",
+          retryError
+        );
+        if (retryError.response?.status === 404) {
+          throw new Error("Berita tidak ditemukan");
+        }
+        throw new Error("Gagal memuat data berita");
+      }
+    }
+
     if (error.response?.status === 404) {
       throw new Error("Berita tidak ditemukan");
     }
@@ -67,19 +176,40 @@ export async function getBeritaBySlug(slug: string): Promise<Berita> {
 
 /**
  * Create new berita (requires authentication)
+ * Mendukung format multi-language dengan translations array
  */
 export async function createBerita(data: CreateBeritaData): Promise<Berita> {
   try {
     const formData = new FormData();
-    formData.append("judul", data.judul);
-    formData.append("isi", data.isi);
+
+    // Handle slug
     if (data.slug) {
       formData.append("slug", data.slug);
     }
-    // Foto utama (backward compatibility)
+
+    // Handle translations (format baru multi-language)
+    if (data.translations && data.translations.length > 0) {
+      formData.append("translations", JSON.stringify(data.translations));
+    } else if (data.judul && data.isi) {
+      // Backward compatibility: format lama akan dikonversi ke translations
+      const defaultLang = getCurrentLanguage();
+      formData.append(
+        "translations",
+        JSON.stringify([
+          {
+            language_code: defaultLang,
+            judul: data.judul,
+            isi: data.isi,
+          },
+        ])
+      );
+    }
+
+    // Foto utama
     if (data.foto) {
       formData.append("foto", data.foto);
     }
+
     // Multiple foto
     if (data.fotos && data.fotos.length > 0) {
       data.fotos.forEach((file) => {
@@ -108,6 +238,7 @@ export async function createBerita(data: CreateBeritaData): Promise<Berita> {
 
 /**
  * Update berita (requires authentication)
+ * Mendukung format multi-language dengan translations array
  */
 export async function updateBerita(
   id: number,
@@ -115,19 +246,36 @@ export async function updateBerita(
 ): Promise<Berita> {
   try {
     const formData = new FormData();
-    if (data.judul) {
-      formData.append("judul", data.judul);
-    }
-    if (data.isi) {
-      formData.append("isi", data.isi);
-    }
-    if (data.slug) {
+
+    // Handle slug
+    if (data.slug !== undefined) {
       formData.append("slug", data.slug);
     }
-    // Foto utama (backward compatibility)
+
+    // Handle is_published
+    if (data.is_published !== undefined) {
+      formData.append("is_published", data.is_published.toString());
+    }
+
+    // Handle translations (format baru multi-language)
+    if (data.translations && data.translations.length > 0) {
+      formData.append("translations", JSON.stringify(data.translations));
+    } else if (data.judul || data.isi) {
+      // Backward compatibility: format lama akan dikonversi ke translations
+      const defaultLang = getCurrentLanguage();
+      const translation: any = {
+        language_code: defaultLang,
+      };
+      if (data.judul) translation.judul = data.judul;
+      if (data.isi) translation.isi = data.isi;
+      formData.append("translations", JSON.stringify([translation]));
+    }
+
+    // Foto utama
     if (data.foto) {
       formData.append("foto", data.foto);
     }
+
     // Multiple foto
     if (data.fotos && data.fotos.length > 0) {
       data.fotos.forEach((file) => {

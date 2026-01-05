@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useAppSelector } from "@/store/hooks";
 import { getAllRekamJejak, deleteRekamJejak } from "@/lib/api/rekamJejak";
 import { RekamJejak } from "@/types/rekamJejak";
+import { getCurrentLanguage } from "@/lib/language";
 
 export default function AdminRekamJejakPage() {
   const router = useRouter();
@@ -36,7 +37,8 @@ export default function AdminRekamJejakPage() {
     try {
       setLoading(true);
       setError(null);
-      const response = await getAllRekamJejak(page, 10, search);
+      const lang = getCurrentLanguage();
+      const response = await getAllRekamJejak(page, 10, search, lang);
       // Sort by urutan if available, otherwise by id
       const sorted = response.data.sort((a, b) => {
         if (a.urutan !== undefined && b.urutan !== undefined) {
@@ -158,7 +160,7 @@ export default function AdminRekamJejakPage() {
                       {item.judul}
                     </h3>
                     <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
-                      {item.detail}
+                      {item.isi || item.detail || ""}
                     </p>
                     <p className="text-xs text-gray-500 dark:text-gray-500">
                       Dibuat:{" "}

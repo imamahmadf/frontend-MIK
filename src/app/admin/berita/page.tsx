@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useAppSelector } from "@/store/hooks";
 import { getAllBerita, deleteBerita } from "@/lib/api/berita";
 import { Berita } from "@/types/berita";
+import { getCurrentLanguage } from "@/lib/language";
 
 export default function AdminBeritaPage() {
   const router = useRouter();
@@ -36,7 +37,8 @@ export default function AdminBeritaPage() {
     try {
       setLoading(true);
       setError(null);
-      const response = await getAllBerita(page, 10, search);
+      const lang = getCurrentLanguage();
+      const response = await getAllBerita(page, 10, search, lang);
       setBeritaList(response.data);
       setTotalPages(response.pagination.totalPages);
     } catch (err: any) {

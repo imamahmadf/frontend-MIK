@@ -2,6 +2,8 @@
 
 import { useEffect, useState, useRef } from "react";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
+import logo from "@/assets/logoMIK.png";
 
 export default function PageTransition({
   children,
@@ -71,6 +73,18 @@ function LoadingOverlay({ isLoading }: { isLoading: boolean }) {
 
       {/* Loading Content */}
       <div className="relative z-10 flex flex-col items-center justify-center space-y-8">
+        {/* Logo dengan animasi */}
+        <div className="relative mb-4 animate-fade-in-scale">
+          <Image
+            src={logo}
+            alt="Logo"
+            width={120}
+            height={120}
+            className="object-contain drop-shadow-lg"
+            priority
+          />
+        </div>
+
         {/* Spinner dengan efek modern */}
         <div className="relative">
           {/* Outer ring */}

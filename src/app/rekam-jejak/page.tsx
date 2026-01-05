@@ -1,23 +1,41 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { getAllRekamJejak } from "@/lib/api/rekamJejak";
 import { RekamJejak } from "@/types/rekamJejak";
+import { getCurrentLanguage, LanguageCode } from "@/lib/language";
 
-export default function RekamJejakPage() {
+function RekamJejakContent() {
   const [rekamJejak, setRekamJejak] = useState<RekamJejak[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const searchParams = useSearchParams();
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    fetchRekamJejak();
+    setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (mounted) {
+      fetchRekamJejak();
+    }
+  }, [mounted, searchParams]);
 
   const fetchRekamJejak = async () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await getAllRekamJejak(1, 100);
+
+      // Get language from searchParams or default
+      const langFromUrl = searchParams?.get("lang");
+      const lang: LanguageCode =
+        langFromUrl && ["id", "en", "ru"].includes(langFromUrl)
+          ? (langFromUrl as LanguageCode)
+          : getCurrentLanguage();
+
+      const response = await getAllRekamJejak(1, 100, "", lang);
       // Sort by urutan if available, otherwise by id
       const sorted = response.data.sort((a, b) => {
         if (a.urutan !== undefined && b.urutan !== undefined) {
@@ -86,7 +104,7 @@ export default function RekamJejakPage() {
                       {item.judul}
                     </h2>
                     <p className="text-sm md:text-base text-gray-600 dark:text-gray-300 leading-relaxed">
-                      {item.isi}
+                      {item.isi || item.detail || ""}
                     </p>
                   </article>
                 </div>
@@ -107,5 +125,21 @@ export default function RekamJejakPage() {
         </div>
       </div>
     </section>
+  );
+}
+
+export default function RekamJejakPage() {
+  return (
+    <Suspense
+      fallback={
+        <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20 max-w-5xl">
+          <div className="text-center py-8">
+            <p className="text-gray-600 dark:text-gray-400">Memuat data...</p>
+          </div>
+        </section>
+      }
+    >
+      <RekamJejakContent />
+    </Suspense>
   );
 }

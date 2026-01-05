@@ -7,12 +7,31 @@ export interface FotoBerita {
   updatedAt: string;
 }
 
-export interface Berita {
-  id: number;
+/**
+ * Translation data untuk multi-language
+ */
+export interface BeritaTranslation {
+  language_code: string;
   judul: string;
   isi: string;
+  slug?: string;
+  meta_title?: string;
+  meta_description?: string;
+}
+
+/**
+ * Berita dengan struktur multi-language
+ */
+export interface Berita {
+  id: number;
   slug: string;
-  foto: string | null; // Foto utama (backward compatibility)
+  foto: string | null; // Foto utama
+  is_published?: boolean;
+  judul: string; // Dari translation berdasarkan bahasa saat ini
+  isi: string; // Dari translation berdasarkan bahasa saat ini
+  meta_title?: string; // Dari translation
+  meta_description?: string; // Dari translation
+  language?: string; // Code bahasa dari response
   fotos?: FotoBerita[]; // Array multiple foto
   createdAt: string;
   updatedAt: string;
@@ -35,18 +54,31 @@ export interface BeritaListResponse {
   };
 }
 
+/**
+ * Data untuk create berita dengan multi-language support
+ */
 export interface CreateBeritaData {
-  judul: string;
-  isi: string;
   slug?: string;
-  foto?: File | null; // Foto utama (backward compatibility)
+  foto?: File | null; // Foto utama
   fotos?: File[]; // Multiple foto
-}
-
-export interface UpdateBeritaData {
+  // Format baru: translations array
+  translations?: BeritaTranslation[];
+  // Format lama (backward compatibility): akan dikonversi ke translations
   judul?: string;
   isi?: string;
+}
+
+/**
+ * Data untuk update berita dengan multi-language support
+ */
+export interface UpdateBeritaData {
   slug?: string;
-  foto?: File | null; // Foto utama (backward compatibility)
+  foto?: File | null; // Foto utama
   fotos?: File[]; // Multiple foto
+  is_published?: boolean;
+  // Format baru: translations array
+  translations?: BeritaTranslation[];
+  // Format lama (backward compatibility): akan dikonversi ke translations
+  judul?: string;
+  isi?: string;
 }

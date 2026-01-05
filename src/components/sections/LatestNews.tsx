@@ -2,12 +2,19 @@ import Link from "next/link";
 import Image from "next/image";
 import { getAllBerita } from "@/lib/api/berita";
 import { Berita } from "@/types/berita";
+import { getLanguageFromSearchParams } from "@/lib/language";
 
-export default async function LatestNews() {
+interface LatestNewsProps {
+  searchParams?: { [key: string]: string | string[] | undefined };
+}
+
+export default async function LatestNews({ searchParams }: LatestNewsProps) {
   let beritaList: Berita[] = [];
+  // Gunakan bahasa dari searchParams atau default ke "id"
+  const lang = searchParams ? getLanguageFromSearchParams(searchParams) : "id";
 
   try {
-    const response = await getAllBerita(1, 3, "");
+    const response = await getAllBerita(1, 3, "", lang);
     beritaList = response.data;
   } catch (err) {
     console.error("Error fetching latest news:", err);
@@ -84,10 +91,16 @@ export default async function LatestNews() {
                 ? `${baseURL}${item.foto}`
                 : null;
 
+            // Preserve lang parameter in link
+            const linkHref =
+              lang && lang !== "id"
+                ? `/berita/${item.slug}?lang=${lang}`
+                : `/berita/${item.slug}`;
+
             return (
               <Link
                 key={item.id}
-                href={`/berita/${item.slug}`}
+                href={linkHref}
                 className="group block h-full"
               >
                 <article className="h-full flex flex-col bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 dark:border-gray-700/50 overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
@@ -210,7 +223,7 @@ export default async function LatestNews() {
         {/* Link ke halaman berita lengkap */}
         <div className="mt-12 text-center">
           <Link
-            href="/berita"
+            href={lang && lang !== "id" ? `/berita?lang=${lang}` : "/berita"}
             className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-blue-600 to-red-600 hover:from-blue-700 hover:to-red-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
           >
             <span>Lihat Semua Berita</span>

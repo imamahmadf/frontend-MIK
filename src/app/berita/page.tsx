@@ -3,18 +3,24 @@ import Link from "next/link";
 import Image from "next/image";
 import { getAllBerita } from "@/lib/api/berita";
 import { Berita } from "@/types/berita";
+import { getLanguageFromSearchParams } from "@/lib/language";
+
+interface BeritaPageProps {
+  searchParams?: { [key: string]: string | string[] | undefined };
+}
 
 export const metadata: Metadata = {
   title: "Berita",
   description: "Kumpulan berita atau pembaruan terbaru.",
 };
 
-export default async function BeritaPage() {
+export default async function BeritaPage({ searchParams }: BeritaPageProps) {
   let beritaList: Berita[] = [];
   let error: string | null = null;
+  const lang = searchParams ? getLanguageFromSearchParams(searchParams) : "id";
 
   try {
-    const response = await getAllBerita(1, 20, "");
+    const response = await getAllBerita(1, 20, "", lang);
     beritaList = response.data;
   } catch (err) {
     error = "Gagal memuat data berita";
@@ -143,10 +149,16 @@ export default async function BeritaPage() {
                   ? `${baseURL}${item.foto}`
                   : null;
 
+              // Preserve lang parameter in link
+              const linkHref =
+                lang && lang !== "id"
+                  ? `/berita/${item.slug}?lang=${lang}`
+                  : `/berita/${item.slug}`;
+
               return (
                 <Link
                   key={item.id}
-                  href={`/berita/${item.slug}`}
+                  href={linkHref}
                   className="group block h-full"
                   style={{
                     animationDelay: `${index * 100}ms`,
@@ -156,8 +168,25 @@ export default async function BeritaPage() {
                     {/* Gradient Overlay pada Hover */}
                     <div className="absolute inset-0 bg-gradient-to-br from-blue-500/0 via-transparent to-red-500/0 group-hover:from-blue-500/5 group-hover:to-red-500/5 transition-all duration-500 pointer-events-none"></div>
 
-                    {/* Decorative Corner Element */}
-                    <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-blue-500/10 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    {/* Decorative Corner Element dengan News Icon */}
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-red-500/20 via-red-500/10 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
+                      <svg
+                        className="w-8 h-8 text-red-600 dark:text-red-400 opacity-50"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
+                        />
+                      </svg>
+                    </div>
+
+                    {/* Accent Line di Top */}
+                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-red-500 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
                     {fotoUrl ? (
                       <div className="relative w-full h-56 md:h-64 overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800">

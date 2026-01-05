@@ -6,6 +6,7 @@ import {
   CreateRekamJejakData,
   UpdateRekamJejakData,
 } from "@/types/rekamJejak";
+import { getCurrentLanguage, LanguageCode } from "@/lib/language";
 
 /**
  * Get all rekam jejak dengan pagination dan search
@@ -13,18 +14,49 @@ import {
 export async function getAllRekamJejak(
   page: number = 1,
   limit: number = 100,
-  search: string = ""
+  search: string = "",
+  lang?: LanguageCode
 ): Promise<RekamJejakListResponse> {
   try {
+    const language = lang || getCurrentLanguage();
     const response = await apiClient.get<RekamJejakListResponse>(
       "/api/rekam-jejak",
       {
-        params: { page, limit, search },
+        params: { page, limit, search, lang: language },
       }
     );
     return response.data;
   } catch (error: any) {
     console.error("Error fetching rekam jejak:", error);
+
+    // Jika error karena bahasa tidak ditemukan, coba dengan bahasa default
+    if (
+      error.response?.status === 400 &&
+      error.response?.data?.message === "Bahasa tidak ditemukan"
+    ) {
+      console.warn(
+        `Bahasa ${
+          lang || getCurrentLanguage()
+        } tidak ditemukan, fallback ke bahasa default (id)`
+      );
+      // Retry dengan bahasa default
+      try {
+        const response = await apiClient.get<RekamJejakListResponse>(
+          "/api/rekam-jejak",
+          {
+            params: { page, limit, search, lang: "id" },
+          }
+        );
+        return response.data;
+      } catch (retryError: any) {
+        console.error(
+          "Error fetching rekam jejak dengan bahasa default:",
+          retryError
+        );
+        throw new Error("Gagal memuat data rekam jejak");
+      }
+    }
+
     if (error.response) {
       throw new Error(
         error.response.data?.message || "Gagal memuat data rekam jejak"
@@ -37,14 +69,63 @@ export async function getAllRekamJejak(
 /**
  * Get rekam jejak by ID
  */
-export async function getRekamJejakById(id: number): Promise<RekamJejak> {
+export async function getRekamJejakById(
+  id: number,
+  lang?: LanguageCode
+): Promise<RekamJejak> {
   try {
+    const language = lang || getCurrentLanguage();
     const response = await apiClient.get<RekamJejakResponse>(
-      `/api/rekam-jejak/${id}`
+      `/api/rekam-jejak/${id}`,
+      {
+        params: { lang: language },
+      }
     );
-    return response.data.data;
+    const data = response.data.data;
+    // Map isi ke detail untuk backward compatibility
+    if (data.isi && !data.detail) {
+      data.detail = data.isi;
+    }
+    return data;
   } catch (error: any) {
     console.error(`Error fetching rekam jejak ${id}:`, error);
+
+    // Jika error karena bahasa tidak ditemukan, coba dengan bahasa default
+    if (
+      error.response?.status === 400 &&
+      error.response?.data?.message === "Bahasa tidak ditemukan"
+    ) {
+      console.warn(
+        `Bahasa ${
+          lang || getCurrentLanguage()
+        } tidak ditemukan, fallback ke bahasa default (id)`
+      );
+      // Retry dengan bahasa default
+      try {
+        const response = await apiClient.get<RekamJejakResponse>(
+          `/api/rekam-jejak/${id}`,
+          {
+            params: { lang: "id" },
+          }
+        );
+        const data = response.data.data;
+        // Map isi ke detail untuk backward compatibility
+        if (data.isi && !data.detail) {
+          data.detail = data.isi;
+        }
+        return data;
+      } catch (retryError: any) {
+        console.error(
+          "Error fetching rekam jejak dengan bahasa default:",
+          retryError
+        );
+        if (retryError.response?.status === 404) {
+          throw new Error("Rekam jejak tidak ditemukan");
+        }
+        throw new Error("Gagal memuat data rekam jejak");
+      }
+    }
+
     if (error.response?.status === 404) {
       throw new Error("Rekam jejak tidak ditemukan");
     }
@@ -54,37 +135,72 @@ export async function getRekamJejakById(id: number): Promise<RekamJejak> {
 
 /**
  * Create new rekam jejak (requires authentication)
+ * Mendukung format multi-language dengan translations array
  */
 export async function createRekamJejak(
   data: CreateRekamJejakData
 ): Promise<RekamJejak> {
   try {
-    // Map detail ke isi karena backend mengharapkan isi
-    const payload: any = {
-      judul: data.judul,
-      isi: data.detail, // Backend mengharapkan field isi
-    };
-    if (data.urutan !== undefined && data.urutan !== null) {
-      payload.urutan = data.urutan;
+    const formData = new FormData();
+
+    // Handle slug (jika ada, meskipun rekam jejak biasanya tidak menggunakan slug)
+    if (data.slug) {
+      formData.append("slug", data.slug);
     }
 
-    console.log(
-      "📤 Sending data to backend:",
-      JSON.stringify(payload, null, 2)
-    );
+    // Handle urutan
+    if (data.urutan !== undefined && data.urutan !== null) {
+      formData.append("urutan", data.urutan.toString());
+    }
+
+    // Handle translations (format baru multi-language)
+    if (data.translations && data.translations.length > 0) {
+      formData.append("translations", JSON.stringify(data.translations));
+      console.log("Mengirim translations ke API:", {
+        jumlah: data.translations.length,
+        bahasa: data.translations.map((t) => t.language_code),
+      });
+    } else if (data.judul && (data.isi || data.detail)) {
+      // Backward compatibility: format lama akan dikonversi ke translations
+      const defaultLang = getCurrentLanguage();
+      formData.append(
+        "translations",
+        JSON.stringify([
+          {
+            language_code: defaultLang,
+            judul: data.judul,
+            isi: data.isi || data.detail || "",
+          },
+        ])
+      );
+    }
+
+    // Foto (jika ada, meskipun rekam jejak biasanya tidak menggunakan foto)
+    if (data.foto) {
+      formData.append("foto", data.foto);
+    }
+
     const response = await apiClient.post<RekamJejakResponse>(
       "/api/rekam-jejak",
-      payload
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
     );
-    console.log("✅ Response from backend:", response.data);
-    return response.data.data;
+    const result = response.data.data;
+    // Map isi ke detail untuk backward compatibility
+    if (result.isi && !result.detail) {
+      result.detail = result.isi;
+    }
+    return result;
   } catch (error: any) {
-    console.error("❌ Error creating rekam jejak:", error);
-    console.error("Error response:", error.response?.data);
+    console.error("Error creating rekam jejak:", error);
     if (error.response) {
-      const errorMessage =
-        error.response.data?.message || "Gagal membuat rekam jejak";
-      throw new Error(errorMessage);
+      throw new Error(
+        error.response.data?.message || "Gagal membuat rekam jejak"
+      );
     }
     throw new Error("Gagal membuat rekam jejak");
   }
@@ -92,44 +208,64 @@ export async function createRekamJejak(
 
 /**
  * Update rekam jejak (requires authentication)
+ * Mendukung format multi-language dengan translations array
  */
 export async function updateRekamJejak(
   id: number,
   data: UpdateRekamJejakData
 ): Promise<RekamJejak> {
   try {
-    // Map detail ke isi karena backend mengharapkan isi
-    const payload: any = {};
-    if (data.judul !== undefined) {
-      payload.judul = data.judul;
-    }
-    if (data.detail !== undefined) {
-      payload.isi = data.detail; // Backend mengharapkan field isi
-    }
-    if (data.urutan !== undefined && data.urutan !== null) {
-      payload.urutan = data.urutan;
+    const formData = new FormData();
+
+    // Handle slug
+    if (data.slug !== undefined) {
+      formData.append("slug", data.slug);
     }
 
-    console.log(
-      `📤 Sending update data for ID ${id}:`,
-      JSON.stringify(payload, null, 2)
-    );
+    // Handle translations (format baru multi-language)
+    if (data.translations && data.translations.length > 0) {
+      formData.append("translations", JSON.stringify(data.translations));
+    } else if (data.judul || data.isi || data.detail) {
+      // Backward compatibility: format lama akan dikonversi ke translations
+      const defaultLang = getCurrentLanguage();
+      const translation: any = {
+        language_code: defaultLang,
+      };
+      if (data.judul) translation.judul = data.judul;
+      if (data.isi) translation.isi = data.isi;
+      if (data.detail) translation.isi = data.detail;
+      formData.append("translations", JSON.stringify([translation]));
+    }
+
+    // Foto
+    if (data.foto) {
+      formData.append("foto", data.foto);
+    }
+
     const response = await apiClient.put<RekamJejakResponse>(
       `/api/rekam-jejak/${id}`,
-      payload
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
     );
-    console.log("✅ Response from backend:", response.data);
-    return response.data.data;
+    const result = response.data.data;
+    // Map isi ke detail untuk backward compatibility
+    if (result.isi && !result.detail) {
+      result.detail = result.isi;
+    }
+    return result;
   } catch (error: any) {
-    console.error(`❌ Error updating rekam jejak ${id}:`, error);
-    console.error("Error response:", error.response?.data);
+    console.error(`Error updating rekam jejak ${id}:`, error);
     if (error.response?.status === 404) {
       throw new Error("Rekam jejak tidak ditemukan");
     }
     if (error.response) {
-      const errorMessage =
-        error.response.data?.message || "Gagal mengupdate rekam jejak";
-      throw new Error(errorMessage);
+      throw new Error(
+        error.response.data?.message || "Gagal mengupdate rekam jejak"
+      );
     }
     throw new Error("Gagal mengupdate rekam jejak");
   }

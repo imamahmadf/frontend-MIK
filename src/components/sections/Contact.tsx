@@ -1,20 +1,64 @@
 "use client";
 
 import { useState } from "react";
+import { createPesan } from "@/lib/api/pesan";
+import { CreatePesanData } from "@/types/pesan";
 
 export default function Contact() {
-  const [formData, setFormData] = useState({
-    name: "",
+  const [formData, setFormData] = useState<CreatePesanData>({
+    nama: "",
     email: "",
-    message: "",
+    kontak: "",
+    judul: "",
+    pesan: "",
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log("Form submitted:", formData);
-    alert("Terima kasih! Pesan Anda telah dikirim.");
-    setFormData({ name: "", email: "", message: "" });
+    setError(null);
+    setSuccess(false);
+
+    // Validasi
+    if (
+      !formData.nama.trim() ||
+      !formData.email.trim() ||
+      !formData.pesan.trim()
+    ) {
+      setError("Nama, email, dan pesan wajib diisi");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      await createPesan({
+        nama: formData.nama.trim(),
+        email: formData.email.trim(),
+        kontak: formData.kontak?.trim() || undefined,
+        judul: formData.judul?.trim() || undefined,
+        pesan: formData.pesan.trim(),
+      });
+
+      setSuccess(true);
+      setFormData({
+        nama: "",
+        email: "",
+        kontak: "",
+        judul: "",
+        pesan: "",
+      });
+
+      // Reset success message setelah 5 detik
+      setTimeout(() => {
+        setSuccess(false);
+      }, 5000);
+    } catch (err: any) {
+      setError(err.message || "Gagal mengirim pesan. Silakan coba lagi.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleChange = (
@@ -24,6 +68,8 @@ export default function Contact() {
       ...formData,
       [e.target.name]: e.target.value,
     });
+    // Clear error ketika user mulai mengetik
+    if (error) setError(null);
   };
 
   return (
@@ -82,18 +128,33 @@ export default function Contact() {
             </div>
           </div>
           <form onSubmit={handleSubmit} className="space-y-4">
+            {error && (
+              <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                <p className="text-sm text-red-800 dark:text-red-200">
+                  {error}
+                </p>
+              </div>
+            )}
+            {success && (
+              <div className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                <p className="text-sm text-green-800 dark:text-green-200">
+                  Terima kasih! Pesan Anda telah dikirim. Kami akan segera
+                  merespons.
+                </p>
+              </div>
+            )}
             <div>
               <label
-                htmlFor="name"
+                htmlFor="nama"
                 className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
               >
-                Nama
+                Nama *
               </label>
               <input
                 type="text"
-                id="name"
-                name="name"
-                value={formData.name}
+                id="nama"
+                name="nama"
+                value={formData.nama}
                 onChange={handleChange}
                 required
                 className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-white"
@@ -104,7 +165,7 @@ export default function Contact() {
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
               >
-                Email
+                Email *
               </label>
               <input
                 type="email"
@@ -118,15 +179,49 @@ export default function Contact() {
             </div>
             <div>
               <label
-                htmlFor="message"
+                htmlFor="kontak"
                 className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
               >
-                Pesan
+                Kontak (Opsional)
+              </label>
+              <input
+                type="text"
+                id="kontak"
+                name="kontak"
+                value={formData.kontak}
+                onChange={handleChange}
+                placeholder="Nomor telepon atau WhatsApp"
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-white"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="judul"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
+                Judul (Opsional)
+              </label>
+              <input
+                type="text"
+                id="judul"
+                name="judul"
+                value={formData.judul}
+                onChange={handleChange}
+                placeholder="Subjek pesan Anda"
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-white"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="pesan"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
+                Pesan *
               </label>
               <textarea
-                id="message"
-                name="message"
-                value={formData.message}
+                id="pesan"
+                name="pesan"
+                value={formData.pesan}
                 onChange={handleChange}
                 required
                 rows={5}
@@ -135,9 +230,10 @@ export default function Contact() {
             </div>
             <button
               type="submit"
-              className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold"
+              disabled={loading}
+              className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Kirim Pesan
+              {loading ? "Mengirim..." : "Kirim Pesan"}
             </button>
           </form>
         </div>

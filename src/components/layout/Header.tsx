@@ -1,30 +1,46 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, Suspense, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { logout } from "@/store/authSlice";
+import LanguageSwitcher from "./LanguageSwitcher";
+import { useTranslations } from "@/hooks/useTranslations";
 import logo from "@/assets/logoMIK.png";
 
-const navItems = [
-  { name: "Beranda", href: "/" },
-  { name: "Biografi", href: "/biografi" },
-  { name: "Publikasi", href: "/publikasi" },
-  { name: "Berita", href: "/berita" },
-  { name: "Galeri", href: "/galeri" },
-  { name: "Rekam Jejak", href: "/rekam-jejak" },
-];
-
-export default function Header() {
+function HeaderContent() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const t = useTranslations();
   const { user, isAuthenticated, loading } = useAppSelector(
     (state) => state.auth
   );
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Helper function untuk membuat href dengan lang parameter
+  const createHref = (path: string) => {
+    const lang = searchParams?.get("lang");
+    return lang ? `${path}?lang=${lang}` : path;
+  };
+
+  const navItems = [
+    { name: t.nav.home, href: createHref("/") },
+    { name: t.nav.biography, href: createHref("/biografi") },
+    { name: t.nav.publication, href: createHref("/publikasi") },
+    { name: t.nav.news, href: createHref("/berita") },
+    { name: t.nav.gallery, href: createHref("/galeri") },
+    { name: t.nav.timeline, href: createHref("/rekam-jejak") },
+    { name: t.nav.testimoni, href: createHref("/testimoni") },
+  ];
 
   const handleLogout = () => {
     dispatch(logout());
@@ -62,6 +78,11 @@ export default function Header() {
                 </li>
               ))}
             </ul>
+
+            {/* Language Switcher */}
+            <div className="ml-4 pl-4 border-l border-neutral-300 dark:border-neutral-700">
+              <LanguageSwitcher />
+            </div>
 
             {/* Auth Section */}
             {!loading && (
@@ -103,31 +124,66 @@ export default function Header() {
                           </p>
                         </div>
                         <Link
-                          href="/admin/berita"
+                          href={createHref("/admin/berita")}
                           className="block w-full text-left px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors"
                           onClick={() => setIsUserMenuOpen(false)}
                         >
-                          Admin Berita
+                          {t.auth.adminNews}
                         </Link>
                         <Link
-                          href="/admin/galeri"
+                          href={createHref("/admin/galeri")}
                           className="block w-full text-left px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors"
                           onClick={() => setIsUserMenuOpen(false)}
                         >
-                          Admin Galeri
+                          {t.auth.adminGallery}
                         </Link>
                         <Link
-                          href="/admin/rekam-jejak"
+                          href={createHref("/admin/rekam-jejak")}
                           className="block w-full text-left px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors"
                           onClick={() => setIsUserMenuOpen(false)}
                         >
-                          Admin Rekam Jejak
+                          {t.auth.adminTimeline}
+                        </Link>
+                        <Link
+                          href={createHref("/admin/hero")}
+                          className="block w-full text-left px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors"
+                          onClick={() => setIsUserMenuOpen(false)}
+                        >
+                          {t.auth.adminHero}
+                        </Link>
+                        <Link
+                          href={createHref("/admin/testimoni")}
+                          className="block w-full text-left px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors"
+                          onClick={() => setIsUserMenuOpen(false)}
+                        >
+                          {t.auth.adminTestimoni}
+                        </Link>
+                        <Link
+                          href={createHref("/admin/biografi")}
+                          className="block w-full text-left px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors"
+                          onClick={() => setIsUserMenuOpen(false)}
+                        >
+                          {t.auth.adminBiografi}
+                        </Link>
+                        <Link
+                          href={createHref("/admin/publikasi")}
+                          className="block w-full text-left px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors"
+                          onClick={() => setIsUserMenuOpen(false)}
+                        >
+                          {t.auth.adminPublikasi}
+                        </Link>
+                        <Link
+                          href={createHref("/admin/pesan")}
+                          className="block w-full text-left px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors"
+                          onClick={() => setIsUserMenuOpen(false)}
+                        >
+                          {t.auth.adminPesan}
                         </Link>
                         <button
                           onClick={handleLogout}
                           className="w-full text-left px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors"
                         >
-                          Keluar
+                          {t.auth.logout}
                         </button>
                       </div>
                     )}
@@ -137,7 +193,7 @@ export default function Header() {
                     href="/login"
                     className="px-5 py-2.5 text-sm font-semibold text-white bg-primary hover:bg-primary-dark rounded-lg transition-all shadow-md hover:shadow-lg"
                   >
-                    Masuk
+                    {t.auth.login}
                   </Link>
                 )}
               </div>
@@ -185,6 +241,11 @@ export default function Header() {
               ))}
             </ul>
 
+            {/* Mobile Language Switcher */}
+            <div className="pt-4 border-t border-neutral-200 dark:border-neutral-700">
+              <LanguageSwitcher />
+            </div>
+
             {/* Mobile Auth Section */}
             {!loading && (
               <div className="pt-4 border-t border-neutral-200 dark:border-neutral-700">
@@ -199,25 +260,60 @@ export default function Header() {
                       </p>
                     </div>
                     <Link
-                      href="/admin/berita"
+                      href={createHref("/admin/berita")}
                       className="block px-2 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:text-primary dark:hover:text-primary-light transition-colors"
                       onClick={() => setIsMenuOpen(false)}
                     >
-                      Admin Berita
+                      {t.auth.adminNews}
                     </Link>
                     <Link
-                      href="/admin/galeri"
+                      href={createHref("/admin/galeri")}
                       className="block px-2 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:text-primary dark:hover:text-primary-light transition-colors"
                       onClick={() => setIsMenuOpen(false)}
                     >
-                      Admin Galeri
+                      {t.auth.adminGallery}
                     </Link>
                     <Link
-                      href="/admin/rekam-jejak"
+                      href={createHref("/admin/rekam-jejak")}
                       className="block px-2 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:text-primary dark:hover:text-primary-light transition-colors"
                       onClick={() => setIsMenuOpen(false)}
                     >
-                      Admin Rekam Jejak
+                      {t.auth.adminTimeline}
+                    </Link>
+                    <Link
+                      href={createHref("/admin/hero")}
+                      className="block px-2 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:text-primary dark:hover:text-primary-light transition-colors"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      {t.auth.adminHero}
+                    </Link>
+                    <Link
+                      href={createHref("/admin/testimoni")}
+                      className="block px-2 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:text-primary dark:hover:text-primary-light transition-colors"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      {t.auth.adminTestimoni}
+                    </Link>
+                    <Link
+                      href={createHref("/admin/biografi")}
+                      className="block px-2 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:text-primary dark:hover:text-primary-light transition-colors"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      {t.auth.adminBiografi}
+                    </Link>
+                    <Link
+                      href={createHref("/admin/publikasi")}
+                      className="block px-2 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:text-primary dark:hover:text-primary-light transition-colors"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      {t.auth.adminPublikasi}
+                    </Link>
+                    <Link
+                      href={createHref("/admin/pesan")}
+                      className="block px-2 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:text-primary dark:hover:text-primary-light transition-colors"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      {t.auth.adminPesan}
                     </Link>
                     <button
                       onClick={() => {
@@ -226,7 +322,7 @@ export default function Header() {
                       }}
                       className="w-full text-left px-2 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:text-primary dark:hover:text-primary-light transition-colors"
                     >
-                      Keluar
+                      {t.auth.logout}
                     </button>
                   </div>
                 ) : (
@@ -235,7 +331,7 @@ export default function Header() {
                     className="block px-2 py-2.5 text-sm font-semibold text-white bg-primary hover:bg-primary-dark rounded-lg transition-all shadow-md hover:shadow-lg text-center"
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    Masuk
+                    {t.auth.login}
                   </Link>
                 )}
               </div>
@@ -244,5 +340,24 @@ export default function Header() {
         )}
       </nav>
     </header>
+  );
+}
+
+export default function Header() {
+  return (
+    <Suspense
+      fallback={
+        <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-neutral-900/95 backdrop-blur-md shadow-md border-b border-neutral-200 dark:border-neutral-800">
+          <nav className="container mx-auto px-4 py-4">
+            <div className="flex items-center justify-between">
+              <div className="h-10 w-32 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+              <div className="h-8 w-24 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+            </div>
+          </nav>
+        </header>
+      }
+    >
+      <HeaderContent />
+    </Suspense>
   );
 }

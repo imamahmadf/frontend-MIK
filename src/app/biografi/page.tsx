@@ -1,46 +1,76 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { getBiografi } from "@/lib/api/biografi";
+import { getLanguageFromSearchParams } from "@/lib/language";
+import "react-quill/dist/quill.snow.css";
+import "../berita/quill-content.css";
 
-export const metadata: Metadata = {
-  title: "Biografi",
-  description: "Profil singkat dan perjalanan karier.",
-};
+interface BiografiPageProps {
+  searchParams?: { [key: string]: string | string[] | undefined };
+}
 
-export default function BiografiPage() {
+export async function generateMetadata({
+  searchParams,
+}: BiografiPageProps): Promise<Metadata> {
+  try {
+    const lang = searchParams
+      ? getLanguageFromSearchParams(searchParams)
+      : "id";
+    const biografi = await getBiografi(lang);
+    return {
+      title: biografi.judul || "Biografi",
+      description: biografi.isi
+        ? biografi.isi.replace(/<[^>]*>/g, "").substring(0, 160)
+        : "Profil singkat dan perjalanan karier.",
+    };
+  } catch {
+    return {
+      title: "Biografi",
+      description: "Profil singkat dan perjalanan karier.",
+    };
+  }
+}
+
+export default async function BiografiPage({
+  searchParams,
+}: BiografiPageProps) {
+  let biografi = null;
+  const lang = searchParams ? getLanguageFromSearchParams(searchParams) : "id";
+
+  try {
+    biografi = await getBiografi(lang);
+  } catch (err: any) {
+    if (err.message === "Biografi tidak ditemukan") {
+      notFound();
+    }
+    console.error("Error fetching biografi:", err);
+  }
+
+  if (!biografi) {
+    notFound();
+  }
+
   return (
     <section className="container mx-auto px-4 py-16 max-w-4xl">
+      {/* Slogan */}
+      {biografi.slogan && (
+        <div className="mb-6 text-center">
+          <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-400 italic">
+            {biografi.slogan}
+          </p>
+        </div>
+      )}
+
+      {/* Judul */}
       <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-8 text-center">
-        Dari Pulau Buru ke Panggung Global
+        {biografi.judul}
       </h1>
 
-      <div className="prose prose-lg dark:prose-invert max-w-none">
-        <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
-          Langkah Iksan meninggalkan tanah kelahirannya bukanlah langkah untuk
-          pergi selamanya, melainkan untuk belajar dan kembali. Rusia menjadi
-          tempatnya menempa diri, menyelesaikan pendidikan Sarjana dan Magister
-          di bidang energi.
-        </p>
-
-        <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
-          Di sana, ruang-ruang kelas tidak hanya membentuk pengetahuan akademik,
-          tetapi juga kesadaran sosial. Iksan aktif di organisasi kepemudaan dan
-          diaspora Indonesia, membangun jejaring, berdiskusi tentang masa depan
-          bangsa, dan belajar memimpin dalam keberagaman.
-        </p>
-
-        <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
-          Sepulang dari studi, Iksan memilih jalan yang dinamis. Dunia bisnis ia
-          masuki sebagai ruang pembelajaran dan pengabdian—tentang keberanian
-          mengambil risiko, membangun nilai, dan menciptakan peluang. Pengalaman
-          inilah yang kemudian mengantarkannya pada amanah yang lebih besar:
-          menjadi Tenaga Ahli Menteri di Kementerian Energi dan Sumber Daya
-          Mineral (ESDM).
-        </p>
-
-        <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed mb-6 font-semibold">
-          Namun bagi Iksan, jabatan bukanlah tujuan akhir. Ia adalah alat untuk
-          memperluas dampak.
-        </p>
-      </div>
+      {/* Isi Biografi */}
+      <div
+        className="prose prose-lg dark:prose-invert max-w-none quill-content text-lg text-gray-700 dark:text-gray-300 leading-relaxed"
+        dangerouslySetInnerHTML={{ __html: biografi.isi }}
+      />
     </section>
   );
 }
