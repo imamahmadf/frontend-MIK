@@ -7,6 +7,7 @@ import Image from "next/image";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { logout } from "@/store/authSlice";
 import LanguageSwitcher from "./LanguageSwitcher";
+import DarkModeToggle from "./DarkModeToggle";
 import { useTranslations } from "@/hooks/useTranslations";
 import logo from "@/assets/logoMIK.png";
 
@@ -50,7 +51,7 @@ function HeaderContent() {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-neutral-900/95 backdrop-blur-md shadow-md border-b border-neutral-200 dark:border-neutral-800">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-md border-b border-neutral-200 dark:border-gray-800">
       <nav className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center">
@@ -82,6 +83,11 @@ function HeaderContent() {
             {/* Language Switcher */}
             <div className="ml-4 pl-4 border-l border-neutral-300 dark:border-neutral-700">
               <LanguageSwitcher />
+            </div>
+
+            {/* Dark Mode Toggle */}
+            <div className="ml-4 pl-4 border-l border-neutral-300 dark:border-neutral-700">
+              <DarkModeToggle />
             </div>
 
             {/* Auth Section */}
@@ -246,6 +252,13 @@ function HeaderContent() {
               <LanguageSwitcher />
             </div>
 
+            {/* Mobile Dark Mode Toggle */}
+            <div className="pt-4 border-t border-neutral-200 dark:border-neutral-700">
+              <div className="px-2">
+                <DarkModeToggle />
+              </div>
+            </div>
+
             {/* Mobile Auth Section */}
             {!loading && (
               <div className="pt-4 border-t border-neutral-200 dark:border-neutral-700">
@@ -347,7 +360,7 @@ export default function Header() {
   return (
     <Suspense
       fallback={
-        <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-neutral-900/95 backdrop-blur-md shadow-md border-b border-neutral-200 dark:border-neutral-800">
+        <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-md border-b border-neutral-200 dark:border-gray-800">
           <nav className="container mx-auto px-4 py-4">
             <div className="flex items-center justify-between">
               <div className="h-10 w-32 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>

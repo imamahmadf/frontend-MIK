@@ -5,6 +5,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { ReduxProvider } from "@/components/providers/ReduxProvider";
 import { AuthInitializer } from "@/components/providers/AuthInitializer";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import PageTransition from "@/components/layout/PageTransition";
 import NavigationProgress from "@/components/layout/NavigationProgress";
 
@@ -69,24 +70,45 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="id">
+    <html lang="id" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.ico" />
         <link rel="canonical" href="https://yourwebsite.com" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var theme = localStorage.getItem('theme');
+                  if (!theme) {
+                    theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                  }
+                  if (theme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                  } else {
+                    document.documentElement.classList.remove('dark');
+                  }
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
       </head>
       <body className={`${plusJakartaSans.variable} font-sans`}>
-        <ReduxProvider>
-          <AuthInitializer>
-            <NavigationProgress />
-            <PageTransition>
-              <div className="relative z-10">
-                <Header />
-                <main className="min-h-screen relative z-10">{children}</main>
-                <Footer />
-              </div>
-            </PageTransition>
-          </AuthInitializer>
-        </ReduxProvider>
+        <ThemeProvider>
+          <ReduxProvider>
+            <AuthInitializer>
+              <NavigationProgress />
+              <PageTransition>
+                <div className="relative z-10">
+                  <Header />
+                  <main className="min-h-screen relative z-10">{children}</main>
+                  <Footer />
+                </div>
+              </PageTransition>
+            </AuthInitializer>
+          </ReduxProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
