@@ -77,7 +77,7 @@ export default function BlogPage() {
               <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-3">
                 <Link
                   href={`/blog/${post.id}`}
-                  className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                  className="hover:text-primary dark:hover:text-primary-light transition-colors"
                 >
                   {post.title}
                 </Link>
@@ -89,7 +89,7 @@ export default function BlogPage() {
 
               <Link
                 href={`/blog/${post.id}`}
-                className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:underline font-medium"
+                className="inline-flex items-center text-primary dark:text-primary-light hover:underline font-medium"
               >
                 Baca selengkapnya
                 <svg
@@ -114,7 +114,7 @@ export default function BlogPage() {
         <div className="mt-12 text-center">
           <Link
             href="/"
-            className="inline-flex items-center text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+            className="inline-flex items-center text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary-light transition-colors"
           >
             <svg
               className="w-4 h-4 mr-2"

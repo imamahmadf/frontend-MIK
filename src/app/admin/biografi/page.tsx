@@ -74,7 +74,7 @@ export default function AdminBiografiPage() {
           </h1>
           <Link
             href="/admin/biografi/tambah"
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors"
           >
             + Tambah Biografi
           </Link>
@@ -143,7 +143,7 @@ export default function AdminBiografiPage() {
                     <div className="flex gap-2">
                       <Link
                         href={`/admin/biografi/${biografi.id}/edit`}
-                        className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm"
+                        className="px-3 py-1 bg-primary text-white rounded hover:bg-primary-dark transition-colors text-sm"
                       >
                         Edit
                       </Link>

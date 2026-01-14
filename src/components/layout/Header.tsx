@@ -9,7 +9,9 @@ import { logout } from "@/store/authSlice";
 import LanguageSwitcher from "./LanguageSwitcher";
 import DarkModeToggle from "./DarkModeToggle";
 import { useTranslations } from "@/hooks/useTranslations";
-import logo from "@/assets/logoMIK.png";
+import { useTheme } from "@/components/providers/ThemeProvider";
+import logoTerang from "@/assets/logoTerang.png";
+import logoGelap from "@/assets/logoGelap.png";
 
 function HeaderContent() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -19,6 +21,7 @@ function HeaderContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const t = useTranslations();
+  const { theme } = useTheme();
   const { user, isAuthenticated, loading } = useAppSelector(
     (state) => state.auth
   );
@@ -56,7 +59,7 @@ function HeaderContent() {
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center">
             <Image
-              src={logo}
+              src={theme === "dark" ? logoGelap : logoTerang}
               alt="Logo Website"
               width={120}
               height={40}
@@ -184,6 +187,13 @@ function HeaderContent() {
                           onClick={() => setIsUserMenuOpen(false)}
                         >
                           {t.auth.adminPesan}
+                        </Link>
+                        <Link
+                          href={createHref("/admin/pengalaman")}
+                          className="block w-full text-left px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors"
+                          onClick={() => setIsUserMenuOpen(false)}
+                        >
+                          {t.auth.adminPengalaman}
                         </Link>
                         <button
                           onClick={handleLogout}
@@ -327,6 +337,13 @@ function HeaderContent() {
                       onClick={() => setIsMenuOpen(false)}
                     >
                       {t.auth.adminPesan}
+                    </Link>
+                    <Link
+                      href={createHref("/admin/pengalaman")}
+                      className="block px-2 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:text-primary dark:hover:text-primary-light transition-colors"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      {t.auth.adminPengalaman}
                     </Link>
                     <button
                       onClick={() => {

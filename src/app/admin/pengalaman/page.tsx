@@ -4,90 +4,83 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAppSelector } from "@/store/hooks";
-import { getAllHero, deleteHero } from "@/lib/api/hero";
-import { Hero } from "@/types/hero";
+import { getAllPengalaman, deletePengalaman } from "@/lib/api/pengalaman";
+import { Pengalaman } from "@/types/pengalaman";
 import { getCurrentLanguage } from "@/lib/language";
 
-export default function AdminHeroPage() {
+export default function AdminPengalamanPage() {
   const router = useRouter();
   const { isAuthenticated } = useAppSelector((state) => state.auth);
-  const [heroList, setHeroList] = useState<Hero[]>([]);
+  const [pengalamanList, setPengalamanList] = useState<Pengalaman[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Redirect jika tidak authenticated
   useEffect(() => {
-    if (!loading && !isAuthenticated) {
+    if (mounted && !isAuthenticated) {
       router.push("/login");
     }
-  }, [isAuthenticated, loading, router]);
+  }, [isAuthenticated, mounted, router]);
 
-  // Fetch hero
+  // Fetch pengalaman
   useEffect(() => {
-    if (isAuthenticated) {
-      fetchHero();
+    if (mounted && isAuthenticated) {
+      fetchPengalaman();
     }
-  }, [isAuthenticated]);
+  }, [mounted, isAuthenticated]);
 
-  const fetchHero = async () => {
+  const fetchPengalaman = async () => {
     try {
       setLoading(true);
       setError(null);
       const lang = getCurrentLanguage();
-      const data = await getAllHero(lang);
-      setHeroList(data);
+      const data = await getAllPengalaman(lang);
+      setPengalamanList(data);
     } catch (err: any) {
-      setError(err.message || "Gagal memuat data hero");
+      setError(err.message || "Gagal memuat data pengalaman");
     } finally {
       setLoading(false);
     }
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm("Apakah Anda yakin ingin menghapus hero ini?")) {
+    if (!confirm("Apakah Anda yakin ingin menghapus pengalaman ini?")) {
       return;
     }
 
     try {
       setDeletingId(id);
-      await deleteHero(id);
-      // Refresh list
-      await fetchHero();
+      await deletePengalaman(id);
+      await fetchPengalaman();
     } catch (err: any) {
-      alert(err.message || "Gagal menghapus hero");
+      alert(err.message || "Gagal menghapus pengalaman");
     } finally {
       setDeletingId(null);
     }
   };
 
-  const handleToggleActive = async (hero: Hero) => {
-    try {
-      // TODO: Implement toggle active - perlu update API atau buat endpoint baru
-      alert("Fitur toggle aktif akan segera ditambahkan");
-    } catch (err: any) {
-      alert(err.message || "Gagal mengupdate status hero");
-    }
-  };
-
-  if (!isAuthenticated) {
+  if (!mounted || !isAuthenticated) {
     return null;
   }
-
-  const baseURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:7000";
 
   return (
     <div className="container mx-auto px-4 py-16">
       <div className="mb-8">
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-            Admin - Kelola Hero
+            Admin - Kelola Pengalaman
           </h1>
           <Link
-            href="/admin/hero/tambah"
+            href="/admin/pengalaman/tambah"
             className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors"
           >
-            + Tambah Hero
+            + Tambah Pengalaman
           </Link>
         </div>
       </div>
@@ -102,9 +95,11 @@ export default function AdminHeroPage() {
         <div className="text-center py-8">
           <p className="text-gray-600 dark:text-gray-400">Memuat data...</p>
         </div>
-      ) : heroList.length === 0 ? (
+      ) : pengalamanList.length === 0 ? (
         <div className="text-center py-8">
-          <p className="text-gray-600 dark:text-gray-400">Belum ada hero</p>
+          <p className="text-gray-600 dark:text-gray-400">
+            Belum ada pengalaman
+          </p>
         </div>
       ) : (
         <div className="overflow-x-auto">
@@ -112,19 +107,16 @@ export default function AdminHeroPage() {
             <thead>
               <tr className="bg-gray-100 dark:bg-gray-800">
                 <th className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-left">
-                  Foto
+                  Posisi
                 </th>
                 <th className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-left">
-                  Nama
+                  Instansi
                 </th>
                 <th className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-left">
-                  Slogan
+                  Durasi
                 </th>
                 <th className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-left">
-                  Status
-                </th>
-                <th className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-left">
-                  Tanggal Dibuat
+                  Jumlah Kegiatan
                 </th>
                 <th className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-left">
                   Aksi
@@ -132,68 +124,41 @@ export default function AdminHeroPage() {
               </tr>
             </thead>
             <tbody>
-              {heroList.map((hero) => (
+              {pengalamanList.map((pengalaman) => (
                 <tr
-                  key={hero.id}
+                  key={pengalaman.id}
                   className="hover:bg-gray-50 dark:hover:bg-gray-800/50"
                 >
                   <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">
-                    {hero.foto ? (
-                      <img
-                        src={`${baseURL}${hero.foto}`}
-                        alt={hero.nama}
-                        className="w-20 h-20 object-cover rounded"
-                      />
-                    ) : (
-                      <div className="w-20 h-20 bg-gray-200 dark:bg-gray-700 rounded flex items-center justify-center text-gray-400">
-                        No Image
-                      </div>
-                    )}
-                  </td>
-                  <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">
                     <div className="font-semibold text-gray-900 dark:text-white">
-                      {hero.nama}
+                      {pengalaman.posisi}
                     </div>
                   </td>
                   <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-600 dark:text-gray-400">
-                    {hero.slogan ? (
-                      <div className="line-clamp-2">{hero.slogan}</div>
-                    ) : (
-                      <span className="text-gray-400">-</span>
-                    )}
-                  </td>
-                  <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">
-                    <span
-                      className={`px-2 py-1 rounded text-sm ${
-                        hero.is_active
-                          ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
-                          : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300"
-                      }`}
-                    >
-                      {hero.is_active ? "Aktif" : "Tidak Aktif"}
-                    </span>
+                    {pengalaman.instansi || "-"}
                   </td>
                   <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-600 dark:text-gray-400">
-                    {new Date(hero.createdAt).toLocaleDateString("id-ID", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
+                    {pengalaman.durasi || "-"}
+                  </td>
+                  <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-600 dark:text-gray-400">
+                    {pengalaman.kegiatans?.length || 0}
                   </td>
                   <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">
                     <div className="flex gap-2">
                       <Link
-                        href={`/admin/hero/${hero.id}/edit`}
+                        href={`/admin/pengalaman/${pengalaman.id}/edit`}
                         className="px-3 py-1 bg-primary text-white rounded hover:bg-primary-dark transition-colors text-sm"
                       >
                         Edit
                       </Link>
                       <button
-                        onClick={() => handleDelete(hero.id)}
-                        disabled={deletingId === hero.id}
+                        onClick={() => handleDelete(pengalaman.id)}
+                        disabled={deletingId === pengalaman.id}
                         className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors text-sm disabled:opacity-50"
                       >
-                        {deletingId === hero.id ? "Menghapus..." : "Hapus"}
+                        {deletingId === pengalaman.id
+                          ? "Menghapus..."
+                          : "Hapus"}
                       </button>
                     </div>
                   </td>

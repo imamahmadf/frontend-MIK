@@ -248,16 +248,10 @@ export default function Hero() {
             </>
           )}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href="#contact"
-              className="px-8 py-3.5 bg-primary text-white rounded-lg hover:bg-primary-dark transition-all font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-            >
+            <a href="#contact" className="btn btn-primary btn-lg btn-lift">
               Hubungi Saya
             </a>
-            <a
-              href="/biografi"
-              className="px-8 py-3.5 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white border-2 border-neutral-300 dark:border-neutral-600 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-all font-semibold shadow-md hover:shadow-lg"
-            >
+            <a href="/biografi" className="btn btn-secondary btn-lg">
               Pelajari Lebih Lanjut
             </a>
           </div>

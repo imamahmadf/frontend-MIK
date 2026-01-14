@@ -265,7 +265,7 @@ export default function TambahPublikasiPage() {
                   onClick={() => setActiveTab(lang.code)}
                   className={`py-4 px-6 border-b-2 font-medium text-sm transition-colors ${
                     activeTab === lang.code
-                      ? "border-blue-500 text-blue-600 dark:text-blue-400"
+                      ? "border-primary text-primary dark:text-primary-light"
                       : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300"
                   }`}
                 >
@@ -336,7 +336,7 @@ export default function TambahPublikasiPage() {
           <button
             type="submit"
             disabled={loading}
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? "Menyimpan..." : "Simpan Publikasi"}
           </button>

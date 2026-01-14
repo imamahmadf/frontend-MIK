@@ -34,7 +34,7 @@ export default function Slideshow() {
   const activeSlide = slides[current];
 
   return (
-    <section className="py-16 px-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <section className="py-16 px-4 bg-gradient-to-r from-primary/10 to-primary-light/10 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <div className="container mx-auto max-w-4xl">
         <h2 className="text-3xl font-bold text-center mb-8 text-gray-900 dark:text-white">
           Sekilas Perjalanan
@@ -57,7 +57,7 @@ export default function Slideshow() {
                 onClick={() => setCurrent(index)}
                 className={`h-2 w-2 rounded-full transition-colors ${
                   index === current
-                    ? "bg-blue-600 dark:bg-blue-400"
+                    ? "bg-primary dark:bg-primary-light"
                     : "bg-gray-300 dark:bg-gray-600"
                 }`}
                 aria-label={`Slide ${index + 1}`}

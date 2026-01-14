@@ -103,7 +103,7 @@ function PublikasiContent() {
     <section className="relative min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50/30 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       {/* Decorative Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-400/10 rounded-full blur-3xl"></div>
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary-light/10 rounded-full blur-3xl"></div>
         <div className="absolute top-60 -left-40 w-80 h-80 bg-purple-400/10 rounded-full blur-3xl"></div>
         <div className="absolute bottom-20 right-20 w-60 h-60 bg-primary/5 rounded-full blur-2xl"></div>
       </div>
@@ -114,7 +114,7 @@ function PublikasiContent() {
           <div className="inline-block mb-4">
             <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10 dark:from-blue-500/20 dark:to-purple-500/20 border border-blue-200/50 dark:border-blue-800/50">
               <svg
-                className="w-5 h-5 text-blue-600 dark:text-blue-400"
+                className="w-5 h-5 text-primary dark:text-primary-light"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -126,7 +126,7 @@ function PublikasiContent() {
                   d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
                 />
               </svg>
-              <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">
+              <span className="text-sm font-semibold text-primary dark:text-primary-light">
                 Karya Tulis & Riset
               </span>
             </span>
@@ -144,10 +144,8 @@ function PublikasiContent() {
           <div className="mb-8 flex flex-wrap gap-3 justify-center">
             <button
               onClick={() => handleTemaChange(null)}
-              className={`px-4 py-2 rounded-full transition-all ${
-                selectedTema === null
-                  ? "bg-blue-600 text-white shadow-lg"
-                  : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"
+              className={`btn btn-sm rounded-full ${
+                selectedTema === null ? "btn-primary" : "btn-secondary"
               }`}
             >
               Semua Tema
@@ -158,7 +156,7 @@ function PublikasiContent() {
                 onClick={() => handleTemaChange(tema.id)}
                 className={`px-4 py-2 rounded-full transition-all ${
                   selectedTema === tema.id
-                    ? "bg-blue-600 text-white shadow-lg"
+                    ? "bg-primary text-white shadow-lg"
                     : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"
                 }`}
               >
@@ -193,11 +191,11 @@ function PublikasiContent() {
               {publikasiList.map((publikasi) => (
                 <article
                   key={publikasi.id}
-                  className="group relative bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border-l-4 border-l-blue-500 dark:border-l-blue-400 border-r border-t border-b border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600"
+                  className="group relative bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border-l-4 border-l-blue-500 dark:border-l-blue-400 border-r border-t border-b border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-primary"
                 >
                   {/* Icon Badge */}
                   <div className="absolute top-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div className="bg-blue-500 dark:bg-blue-600 rounded-lg p-2 shadow-lg">
+                    <div className="bg-primary-light dark:bg-primary rounded-lg p-2 shadow-lg">
                       <svg
                         className="w-5 h-5 text-white"
                         fill="none"
@@ -255,7 +253,7 @@ function PublikasiContent() {
                       </div>
                     )}
 
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2">
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-primary dark:group-hover:text-primary-light transition-colors line-clamp-2">
                       {publikasi.judul}
                     </h3>
 
@@ -298,7 +296,7 @@ function PublikasiContent() {
                         href={publikasi.link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:underline font-medium text-sm group/link"
+                        className="inline-flex items-center gap-2 text-primary dark:text-primary-light hover:underline font-medium text-sm group/link"
                       >
                         Baca Selengkapnya
                         <svg

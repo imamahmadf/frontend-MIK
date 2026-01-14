@@ -44,7 +44,7 @@ export default function UserCard({ user }: UserCardProps) {
       <div className="space-y-2 mb-4">
         <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
           <svg
-            className="w-4 h-4 mr-2 text-blue-600 dark:text-blue-400"
+            className="w-4 h-4 mr-2 text-primary dark:text-primary-light"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -58,7 +58,7 @@ export default function UserCard({ user }: UserCardProps) {
           </svg>
           <a
             href={`mailto:${user.email}`}
-            className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+            className="hover:text-primary dark:hover:text-primary-light transition-colors"
           >
             {user.email}
           </a>
@@ -66,7 +66,7 @@ export default function UserCard({ user }: UserCardProps) {
 
         <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
           <svg
-            className="w-4 h-4 mr-2 text-blue-600 dark:text-blue-400"
+            className="w-4 h-4 mr-2 text-primary dark:text-primary-light"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -91,7 +91,7 @@ export default function UserCard({ user }: UserCardProps) {
 
         <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
           <svg
-            className="w-4 h-4 mr-2 text-blue-600 dark:text-blue-400"
+            className="w-4 h-4 mr-2 text-primary dark:text-primary-light"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -110,7 +110,7 @@ export default function UserCard({ user }: UserCardProps) {
       <div className="flex gap-2">
         <Link
           href={`/users/${user.id}`}
-          className="flex-1 text-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+          className="btn btn-primary btn-sm flex-1 text-center"
         >
           Lihat Detail
         </Link>
@@ -119,7 +119,7 @@ export default function UserCard({ user }: UserCardProps) {
             href={`https://${user.website}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors text-sm font-medium"
+            className="btn btn-secondary btn-sm"
           >
             Website
           </a>

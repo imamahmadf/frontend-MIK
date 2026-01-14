@@ -17,11 +17,10 @@ export default function Home({ searchParams }: HomeProps) {
   return (
     <>
       <Hero />
-      <About />
+      <About /> <Experience />
       <Slideshow />
-      <Experience />
-      <Skills />
-      <Projects />
+      {/* <Skills /> */}
+      {/* <Projects /> */}
       <GaleriCarousel />
       <LatestNews searchParams={searchParams} />
       <LatestTestimoni searchParams={searchParams} />

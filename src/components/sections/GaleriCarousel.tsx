@@ -25,15 +25,15 @@ export default async function GaleriCarousel() {
   return (
     <section
       id="galeri"
-      className="py-20 px-4 bg-gradient-to-br from-gray-50 via-white to-blue-50/30 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900"
+      className="py-20 px-4 bg-gradient-to-br from-gray-50 via-white to-primary-light/10 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900"
     >
       <div className="container mx-auto max-w-7xl">
         {/* Header Section */}
         <div className="mb-12 text-center">
           <div className="inline-block mb-4">
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/10 to-red-500/10 dark:from-blue-500/20 dark:to-red-500/20 border border-blue-200/50 dark:border-blue-800/50">
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-primary/10 to-accent/10 dark:from-primary/20 dark:to-accent/20 border border-primary/30 dark:border-primary/50">
               <svg
-                className="w-5 h-5 text-blue-600 dark:text-blue-400"
+                className="w-5 h-5 text-primary dark:text-primary-light"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -45,12 +45,12 @@ export default async function GaleriCarousel() {
                   d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                 />
               </svg>
-              <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">
+              <span className="text-sm font-semibold text-primary dark:text-primary-light">
                 Dokumentasi
               </span>
             </span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-gray-900 via-blue-800 to-gray-900 dark:from-white dark:via-blue-300 dark:to-white bg-clip-text text-transparent">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-gray-900 via-primary-dark to-gray-900 dark:from-white dark:via-primary-light dark:to-white bg-clip-text text-transparent">
             Galeri Foto
           </h2>
           <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
@@ -63,10 +63,7 @@ export default async function GaleriCarousel() {
 
         {/* Link ke halaman galeri lengkap */}
         <div className="mt-12 text-center">
-          <Link
-            href="/galeri"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-blue-600 to-red-600 hover:from-blue-700 hover:to-red-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-          >
+          <Link href="/galeri" className="btn btn-primary btn-lg btn-lift">
             <span>Lihat Semua Foto</span>
             <svg
               className="w-5 h-5"

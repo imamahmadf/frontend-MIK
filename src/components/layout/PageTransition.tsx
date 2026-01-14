@@ -3,7 +3,9 @@
 import { useEffect, useState, useRef } from "react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-import logo from "@/assets/logoMIK.png";
+import { useTheme } from "@/components/providers/ThemeProvider";
+import logoTerang from "@/assets/logoTerang.png";
+import logoGelap from "@/assets/logoGelap.png";
 
 export default function PageTransition({
   children,
@@ -59,6 +61,8 @@ export default function PageTransition({
 }
 
 function LoadingOverlay({ isLoading }: { isLoading: boolean }) {
+  const { theme } = useTheme();
+
   return (
     <div
       className={`fixed inset-0 z-[9998] bg-white dark:bg-neutral-900 flex items-center justify-center transition-opacity duration-300 ${
@@ -76,7 +80,7 @@ function LoadingOverlay({ isLoading }: { isLoading: boolean }) {
         {/* Logo dengan animasi */}
         <div className="relative mb-4 animate-fade-in-scale">
           <Image
-            src={logo}
+            src={theme === "dark" ? logoGelap : logoTerang}
             alt="Logo"
             width={120}
             height={120}

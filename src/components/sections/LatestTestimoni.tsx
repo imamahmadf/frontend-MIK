@@ -39,9 +39,9 @@ export default async function LatestTestimoni({
         {/* Header Section */}
         <div className="mb-12 text-center">
           <div className="inline-block mb-4">
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10 dark:from-blue-500/20 dark:to-purple-500/20 border border-blue-200/50 dark:border-blue-800/50">
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-primary/10 to-purple-500/10 dark:from-primary/20 dark:to-purple-500/20 border border-primary/30 dark:border-primary/50">
               <svg
-                className="w-5 h-5 text-blue-600 dark:text-blue-400"
+                className="w-5 h-5 text-primary dark:text-primary-light"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -53,7 +53,7 @@ export default async function LatestTestimoni({
                   d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
                 />
               </svg>
-              <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">
+              <span className="text-sm font-semibold text-primary dark:text-primary-light">
                 Kata Mereka
               </span>
             </span>
@@ -100,8 +100,8 @@ export default async function LatestTestimoni({
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
                     </div>
                   ) : (
-                    <div className="relative w-full h-48 md:h-56 overflow-hidden bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-red-500/10 dark:from-blue-500/20 dark:via-purple-500/20 dark:to-red-500/20 flex items-center justify-center">
-                      <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 dark:from-blue-500/30 dark:to-purple-500/30 flex items-center justify-center">
+                    <div className="relative w-full h-48 md:h-56 overflow-hidden bg-gradient-to-br from-primary/10 via-purple-500/10 to-accent/10 dark:from-primary/20 dark:via-purple-500/20 dark:to-accent/20 flex items-center justify-center">
+                      <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary/20 to-purple-500/20 dark:from-primary/30 dark:to-purple-500/30 flex items-center justify-center">
                         <svg
                           className="w-10 h-10 text-gray-400 dark:text-gray-500"
                           fill="none"
@@ -122,7 +122,7 @@ export default async function LatestTestimoni({
                   <div className="p-6 flex-1 flex flex-col">
                     <div className="flex items-start gap-2 mb-3">
                       <div className="flex-1">
-                        <h3 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mb-1 line-clamp-1 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 group-hover:bg-clip-text dark:group-hover:from-blue-400 dark:group-hover:to-purple-400 transition-all duration-300">
+                        <h3 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mb-1 line-clamp-1 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-primary group-hover:to-purple-600 group-hover:bg-clip-text dark:group-hover:from-primary-light dark:group-hover:to-purple-400 transition-all duration-300">
                           {item.nama}
                         </h3>
                         {item.tempat && (
@@ -131,7 +131,7 @@ export default async function LatestTestimoni({
                           </p>
                         )}
                       </div>
-                      <div className="text-blue-500 dark:text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="text-blue-500 dark:text-primary-light opacity-0 group-hover:opacity-100 transition-opacity">
                         <svg
                           className="w-6 h-6"
                           fill="currentColor"
@@ -147,10 +147,10 @@ export default async function LatestTestimoni({
                     </p>
 
                     <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
-                      <div className="flex items-center gap-2 text-sm font-semibold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent group-hover:gap-3 transition-all">
+                      <div className="flex items-center gap-2 text-sm font-semibold bg-gradient-to-r from-primary to-purple-600 dark:from-primary-light dark:to-purple-400 bg-clip-text text-transparent group-hover:gap-3 transition-all">
                         <span>Baca Selengkapnya</span>
                         <svg
-                          className="w-5 h-5 text-blue-600 dark:text-blue-400 group-hover:translate-x-1 transition-transform"
+                          className="w-5 h-5 text-primary dark:text-primary-light group-hover:translate-x-1 transition-transform"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -177,7 +177,7 @@ export default async function LatestTestimoni({
             href={
               lang && lang !== "id" ? `/testimoni?lang=${lang}` : "/testimoni"
             }
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+            className="btn btn-gradient-full btn-md btn-scale inline-flex items-center gap-2"
           >
             <span>Lihat Semua Testimoni</span>
             <svg

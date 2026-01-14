@@ -282,7 +282,7 @@ export default function AdminPublikasiPage() {
               onClick={() => setActiveTab("publikasi")}
               className={`py-4 px-6 border-b-2 font-medium text-sm transition-colors ${
                 activeTab === "publikasi"
-                  ? "border-blue-500 text-blue-600 dark:text-blue-400"
+                  ? "border-primary text-primary dark:text-primary-light"
                   : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300"
               }`}
             >
@@ -292,7 +292,7 @@ export default function AdminPublikasiPage() {
               onClick={() => setActiveTab("tema")}
               className={`py-4 px-6 border-b-2 font-medium text-sm transition-colors ${
                 activeTab === "tema"
-                  ? "border-blue-500 text-blue-600 dark:text-blue-400"
+                  ? "border-primary text-primary dark:text-primary-light"
                   : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300"
               }`}
             >
@@ -311,7 +311,7 @@ export default function AdminPublikasiPage() {
             </h2>
             <Link
               href="/admin/publikasi/tambah"
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors"
             >
               + Tambah Publikasi
             </Link>
@@ -383,7 +383,7 @@ export default function AdminPublikasiPage() {
                           <div className="flex gap-2">
                             <Link
                               href={`/admin/publikasi/${publikasi.id}/edit`}
-                              className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm"
+                              className="px-3 py-1 bg-primary text-white rounded hover:bg-primary-dark transition-colors text-sm"
                             >
                               Edit
                             </Link>
@@ -454,7 +454,7 @@ export default function AdminPublikasiPage() {
                 });
                 setShowTemaForm(true);
               }}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors"
             >
               + Tambah Tema
             </button>
@@ -485,7 +485,7 @@ export default function AdminPublikasiPage() {
                         onClick={() => setTemaActiveTab(lang.code)}
                         className={`py-2 px-4 border-b-2 font-medium text-sm transition-colors ${
                           temaActiveTab === lang.code
-                            ? "border-blue-500 text-blue-600 dark:text-blue-400"
+                            ? "border-primary text-primary dark:text-primary-light"
                             : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300"
                         }`}
                       >
@@ -533,7 +533,7 @@ export default function AdminPublikasiPage() {
                 <button
                   onClick={handleSaveTema}
                   disabled={temaFormLoading}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {temaFormLoading
                     ? "Menyimpan..."
@@ -585,7 +585,7 @@ export default function AdminPublikasiPage() {
                         <div className="flex gap-2">
                           <button
                             onClick={() => handleEditTema(tema)}
-                            className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm"
+                            className="px-3 py-1 bg-primary text-white rounded hover:bg-primary-dark transition-colors text-sm"
                           >
                             Edit
                           </button>

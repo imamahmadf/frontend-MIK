@@ -91,7 +91,7 @@ export default function Contact() {
             <div className="space-y-4">
               <div className="flex items-center">
                 <svg
-                  className="w-5 h-5 mr-3 text-blue-600 dark:text-blue-400"
+                  className="w-5 h-5 mr-3 text-primary dark:text-primary-light"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -109,7 +109,7 @@ export default function Contact() {
               </div>
               <div className="flex items-center">
                 <svg
-                  className="w-5 h-5 mr-3 text-blue-600 dark:text-blue-400"
+                  className="w-5 h-5 mr-3 text-primary dark:text-primary-light"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -157,7 +157,7 @@ export default function Contact() {
                 value={formData.nama}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-white"
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-800 dark:text-white"
               />
             </div>
             <div>
@@ -174,7 +174,7 @@ export default function Contact() {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-white"
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-800 dark:text-white"
               />
             </div>
             <div>
@@ -191,7 +191,7 @@ export default function Contact() {
                 value={formData.kontak}
                 onChange={handleChange}
                 placeholder="Nomor telepon atau WhatsApp"
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-white"
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-800 dark:text-white"
               />
             </div>
             <div>
@@ -208,7 +208,7 @@ export default function Contact() {
                 value={formData.judul}
                 onChange={handleChange}
                 placeholder="Subjek pesan Anda"
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-white"
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-800 dark:text-white"
               />
             </div>
             <div>
@@ -225,13 +225,13 @@ export default function Contact() {
                 onChange={handleChange}
                 required
                 rows={5}
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-white"
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-800 dark:text-white"
               />
             </div>
             <button
               type="submit"
               disabled={loading}
-              className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn btn-primary btn-md w-full"
             >
               {loading ? "Mengirim..." : "Kirim Pesan"}
             </button>

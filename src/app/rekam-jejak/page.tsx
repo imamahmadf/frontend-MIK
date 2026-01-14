@@ -99,7 +99,7 @@ function RekamJejakContent() {
 
                 {/* Content Card */}
                 <div className="flex-1">
-                  <article className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-5 md:p-6 shadow-sm hover:shadow-md hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-200">
+                  <article className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-5 md:p-6 shadow-sm hover:shadow-md hover:border-blue-300 dark:hover:border-primary transition-all duration-200">
                     <h2 className="text-lg md:text-xl font-bold text-gray-900 dark:text-white mb-2.5 leading-tight">
                       {item.judul}
                     </h2>

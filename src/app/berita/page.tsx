@@ -1,37 +1,70 @@
-import type { Metadata } from "next";
+"use client";
+
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { getAllBerita } from "@/lib/api/berita";
 import { Berita } from "@/types/berita";
-import { getLanguageFromSearchParams } from "@/lib/language";
+import { getCurrentLanguage, LanguageCode } from "@/lib/language";
+import { useTranslations } from "@/hooks/useTranslations";
 
-interface BeritaPageProps {
-  searchParams?: { [key: string]: string | string[] | undefined };
-}
+function BeritaContent() {
+  const [beritaList, setBeritaList] = useState<Berita[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const searchParams = useSearchParams();
+  const [mounted, setMounted] = useState(false);
+  const t = useTranslations();
 
-export const metadata: Metadata = {
-  title: "Berita",
-  description: "Kumpulan berita atau pembaruan terbaru.",
-};
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-export default async function BeritaPage({ searchParams }: BeritaPageProps) {
-  let beritaList: Berita[] = [];
-  let error: string | null = null;
-  const lang = searchParams ? getLanguageFromSearchParams(searchParams) : "id";
+  useEffect(() => {
+    if (mounted) {
+      fetchBerita();
+    }
+  }, [mounted, searchParams]);
 
-  try {
-    const response = await getAllBerita(1, 20, "", lang);
-    beritaList = response.data;
-  } catch (err) {
-    error = "Gagal memuat data berita";
-    console.error("Error fetching berita:", err);
-  }
+  const fetchBerita = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const langFromUrl = searchParams?.get("lang");
+      const lang: LanguageCode =
+        langFromUrl && ["id", "en", "ru"].includes(langFromUrl)
+          ? (langFromUrl as LanguageCode)
+          : getCurrentLanguage();
+
+      const response = await getAllBerita(1, 20, "", lang);
+      setBeritaList(response.data);
+    } catch (err) {
+      setError(t.berita.error);
+      console.error("Error fetching berita:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Helper function untuk membuat href dengan lang parameter
+  const createHref = (path: string) => {
+    const lang = searchParams?.get("lang");
+    return lang ? `${path}?lang=${lang}` : path;
+  };
+
+  const langFromUrl = searchParams?.get("lang");
+  const lang: LanguageCode =
+    langFromUrl && ["id", "en", "ru"].includes(langFromUrl)
+      ? (langFromUrl as LanguageCode)
+      : getCurrentLanguage();
 
   return (
-    <section className="relative min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50/30 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <section className="relative min-h-screen bg-gradient-to-br from-gray-50 via-white to-primary-light/10 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       {/* Decorative Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-400/10 rounded-full blur-3xl"></div>
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary-light/10 rounded-full blur-3xl"></div>
         <div className="absolute top-60 -left-40 w-80 h-80 bg-red-400/10 rounded-full blur-3xl"></div>
         <div className="absolute bottom-20 right-20 w-60 h-60 bg-primary/5 rounded-full blur-2xl"></div>
       </div>
@@ -40,9 +73,9 @@ export default async function BeritaPage({ searchParams }: BeritaPageProps) {
         {/* Header Section dengan Gradient */}
         <div className="mb-12 md:mb-16 text-center md:text-left">
           <div className="inline-block mb-4">
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/10 to-red-500/10 dark:from-blue-500/20 dark:to-red-500/20 border border-blue-200/50 dark:border-blue-800/50">
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-primary/10 to-accent/10 dark:from-primary/20 dark:to-accent/20 border border-primary/30 dark:border-primary/50">
               <svg
-                className="w-5 h-5 text-blue-600 dark:text-blue-400"
+                className="w-5 h-5 text-primary dark:text-primary-light"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -54,26 +87,34 @@ export default async function BeritaPage({ searchParams }: BeritaPageProps) {
                   d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
                 />
               </svg>
-              <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">
-                Informasi Terkini
+              <span className="text-sm font-semibold text-primary dark:text-primary-light">
+                {t.berita.badge}
               </span>
             </span>
           </div>
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 bg-gradient-to-r from-gray-900 via-blue-800 to-gray-900 dark:from-white dark:via-blue-300 dark:to-white bg-clip-text text-transparent">
-            Berita
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 bg-gradient-to-r from-gray-900 via-primary-dark to-gray-900 dark:from-white dark:via-primary-light dark:to-white bg-clip-text text-transparent">
+            {t.berita.title}
           </h1>
           <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 leading-relaxed max-w-3xl">
-            Perbarui audiens dengan berita, kegiatan, atau pengumuman terbaru.
+            {t.berita.description}
           </p>
           {beritaList.length > 0 && (
             <div className="mt-6 flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-              <div className="h-1 w-12 bg-gradient-to-r from-blue-500 to-red-500 rounded-full"></div>
-              <span>{beritaList.length} Berita Tersedia</span>
+              <div className="h-1 w-12 bg-gradient-to-r from-primary to-accent rounded-full"></div>
+              <span>
+                {beritaList.length} {t.berita.available}
+              </span>
             </div>
           )}
         </div>
 
-        {error ? (
+        {loading ? (
+          <div className="text-center py-12">
+            <p className="text-gray-600 dark:text-gray-400">
+              {t.berita.loading}
+            </p>
+          </div>
+        ) : error ? (
           <div className="relative p-6 bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20 border-l-4 border-red-500 dark:border-red-400 rounded-xl shadow-lg backdrop-blur-sm">
             <div className="flex items-center gap-3">
               <div className="flex-shrink-0">
@@ -114,17 +155,23 @@ export default async function BeritaPage({ searchParams }: BeritaPageProps) {
               </svg>
             </div>
             <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-              Belum Ada Berita
+              {t.berita.empty}
             </h3>
             <p className="text-lg text-gray-600 dark:text-gray-400">
-              Belum ada berita yang tersedia saat ini.
+              {t.berita.emptyDescription}
             </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {beritaList.map((item, index) => {
+              // Format tanggal berdasarkan bahasa
+              const localeMap: Record<LanguageCode, string> = {
+                id: "id-ID",
+                en: "en-US",
+                ru: "ru-RU",
+              };
               const tanggal = new Date(item.createdAt).toLocaleDateString(
-                "id-ID",
+                localeMap[lang],
                 {
                   year: "numeric",
                   month: "short",
@@ -150,10 +197,7 @@ export default async function BeritaPage({ searchParams }: BeritaPageProps) {
                   : null;
 
               // Preserve lang parameter in link
-              const linkHref =
-                lang && lang !== "id"
-                  ? `/berita/${item.slug}?lang=${lang}`
-                  : `/berita/${item.slug}`;
+              const linkHref = createHref(`/berita/${item.slug}`);
 
               return (
                 <Link
@@ -206,7 +250,7 @@ export default async function BeritaPage({ searchParams }: BeritaPageProps) {
                           <div className="px-3 py-1.5 rounded-full bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm shadow-lg">
                             <div className="flex items-center gap-1.5">
                               <svg
-                                className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400"
+                                className="w-3.5 h-3.5 text-primary dark:text-primary-light"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -245,7 +289,7 @@ export default async function BeritaPage({ searchParams }: BeritaPageProps) {
                           <div className="px-3 py-1.5 rounded-full bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm shadow-lg">
                             <div className="flex items-center gap-1.5">
                               <svg
-                                className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400"
+                                className="w-3.5 h-3.5 text-primary dark:text-primary-light"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -286,9 +330,9 @@ export default async function BeritaPage({ searchParams }: BeritaPageProps) {
 
                       <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
                         <div className="flex items-center gap-2 text-sm font-semibold bg-gradient-to-r from-blue-600 to-red-600 dark:from-blue-400 dark:to-red-400 bg-clip-text text-transparent group-hover:gap-3 transition-all">
-                          <span>Baca Selengkapnya</span>
+                          <span>{t.berita.readMore}</span>
                           <svg
-                            className="w-5 h-5 text-blue-600 dark:text-blue-400 group-hover:translate-x-1 transition-transform"
+                            className="w-5 h-5 text-primary dark:text-primary-light group-hover:translate-x-1 transition-transform"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -303,7 +347,7 @@ export default async function BeritaPage({ searchParams }: BeritaPageProps) {
                         </div>
                         <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500/20 to-red-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
                           <svg
-                            className="w-4 h-4 text-blue-600 dark:text-blue-400"
+                            className="w-4 h-4 text-primary dark:text-primary-light"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -326,5 +370,21 @@ export default async function BeritaPage({ searchParams }: BeritaPageProps) {
         )}
       </div>
     </section>
+  );
+}
+
+export default function BeritaPage() {
+  return (
+    <Suspense
+      fallback={
+        <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
+          <div className="text-center py-12">
+            <p className="text-gray-600 dark:text-gray-400">Loading...</p>
+          </div>
+        </section>
+      }
+    >
+      <BeritaContent />
+    </Suspense>
   );
 }

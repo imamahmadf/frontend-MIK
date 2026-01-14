@@ -78,7 +78,7 @@ export default function AdminTestimoniPage() {
           </h1>
           <Link
             href="/admin/testimoni/tambah"
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors"
           >
             + Tambah Testimoni
           </Link>
@@ -140,7 +140,7 @@ export default function AdminTestimoniPage() {
                   <div className="flex gap-2">
                     <Link
                       href={`/admin/testimoni/${testimoni.id}/edit`}
-                      className="flex-1 px-3 py-1.5 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm text-center"
+                      className="flex-1 px-3 py-1.5 bg-primary text-white rounded hover:bg-primary-dark transition-colors text-sm text-center"
                     >
                       Edit
                     </Link>

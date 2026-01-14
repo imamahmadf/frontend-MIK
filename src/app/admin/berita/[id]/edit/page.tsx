@@ -304,6 +304,7 @@ export default function EditBeritaPage() {
               Isi Berita {activeTab === "id" && "*"}
             </label>
             <ReactQuillEditor
+              key={`editor-${activeTab}`}
               value={translations[activeTab].isi || ""}
               onChange={(value) =>
                 handleTranslationChange(activeTab, "isi", value)

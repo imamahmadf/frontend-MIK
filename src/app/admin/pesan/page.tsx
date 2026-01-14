@@ -136,9 +136,9 @@ export default function AdminPesanPage() {
   const getStatusBadgeColor = (status: PesanStatus) => {
     switch (status) {
       case "new":
-        return "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 border-blue-200 dark:border-blue-800";
+        return "bg-primary/20 text-primary-dark dark:bg-primary/30 dark:text-primary-light border-primary/30 dark:border-primary/50";
       case "read":
-        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300 border-yellow-200 dark:border-yellow-800";
+        return "bg-accent/20 text-accent-dark dark:bg-accent-dark/30 dark:text-accent-light border-accent/30 dark:border-accent-dark/50";
       case "replied":
         return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 border-green-200 dark:border-green-800";
       default:
@@ -232,7 +232,7 @@ export default function AdminPesanPage() {
                     key={pesan.id}
                     className={`bg-white dark:bg-gray-800 rounded-lg border ${
                       selectedPesan?.id === pesan.id
-                        ? "border-blue-500 dark:border-blue-400 shadow-lg"
+                        ? "border-primary dark:border-blue-400 shadow-lg"
                         : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
                     } transition-all cursor-pointer`}
                     onClick={() => handleViewDetail(pesan.id)}
@@ -366,7 +366,7 @@ export default function AdminPesanPage() {
                     </label>
                     <a
                       href={`mailto:${selectedPesan.email}`}
-                      className="text-blue-600 dark:text-blue-400 hover:underline"
+                      className="text-primary dark:text-primary-light hover:underline"
                     >
                       {selectedPesan.email}
                     </a>
@@ -428,7 +428,7 @@ export default function AdminPesanPage() {
                       {selectedPesan.status === "new" && (
                         <button
                           onClick={() => handleMarkAsRead(selectedPesan.id)}
-                          className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors text-sm"
+                          className="btn btn-warning btn-sm"
                         >
                           Tandai sebagai Dibaca
                         </button>
@@ -436,14 +436,14 @@ export default function AdminPesanPage() {
                       {selectedPesan.status !== "replied" && (
                         <button
                           onClick={() => handleMarkAsReplied(selectedPesan.id)}
-                          className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm"
+                          className="btn btn-success btn-sm"
                         >
                           Tandai sebagai Sudah Dibalas
                         </button>
                       )}
                       <button
                         onClick={() => handleDelete(selectedPesan.id)}
-                        className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm"
+                        className="btn btn-danger btn-sm"
                       >
                         Hapus Pesan
                       </button>

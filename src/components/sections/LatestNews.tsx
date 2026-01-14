@@ -2,7 +2,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { getAllBerita } from "@/lib/api/berita";
 import { Berita } from "@/types/berita";
-import { getLanguageFromSearchParams } from "@/lib/language";
+import { getLanguageFromSearchParams, LanguageCode } from "@/lib/language";
+import { getTranslations } from "@/lib/translations";
 
 interface LatestNewsProps {
   searchParams?: { [key: string]: string | string[] | undefined };
@@ -12,6 +13,7 @@ export default async function LatestNews({ searchParams }: LatestNewsProps) {
   let beritaList: Berita[] = [];
   // Gunakan bahasa dari searchParams atau default ke "id"
   const lang = searchParams ? getLanguageFromSearchParams(searchParams) : "id";
+  const t = getTranslations(lang);
 
   try {
     const response = await getAllBerita(1, 3, "", lang);
@@ -28,6 +30,18 @@ export default async function LatestNews({ searchParams }: LatestNewsProps) {
 
   const baseURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:7000";
 
+  // Format tanggal berdasarkan bahasa
+  const localeMap: Record<LanguageCode, string> = {
+    id: "id-ID",
+    en: "en-US",
+    ru: "ru-RU",
+  };
+
+  // Helper function untuk membuat href dengan lang parameter
+  const createHref = (path: string) => {
+    return lang && lang !== "id" ? `${path}?lang=${lang}` : path;
+  };
+
   return (
     <section
       id="berita"
@@ -39,7 +53,7 @@ export default async function LatestNews({ searchParams }: LatestNewsProps) {
           <div className="inline-block mb-4">
             <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/10 to-red-500/10 dark:from-blue-500/20 dark:to-red-500/20 border border-blue-200/50 dark:border-blue-800/50">
               <svg
-                className="w-5 h-5 text-blue-600 dark:text-blue-400"
+                className="w-5 h-5 text-primary dark:text-primary-light"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -51,16 +65,16 @@ export default async function LatestNews({ searchParams }: LatestNewsProps) {
                   d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
                 />
               </svg>
-              <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">
-                Informasi Terkini
+              <span className="text-sm font-semibold text-primary dark:text-primary-light">
+                {t.latestNews.badge}
               </span>
             </span>
           </div>
           <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-gray-900 via-blue-800 to-gray-900 dark:from-white dark:via-blue-300 dark:to-white bg-clip-text text-transparent">
-            Berita Terbaru
+            {t.latestNews.title}
           </h2>
           <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Dapatkan informasi terbaru tentang kegiatan dan pengumuman terkini.
+            {t.latestNews.description}
           </p>
         </div>
 
@@ -68,7 +82,7 @@ export default async function LatestNews({ searchParams }: LatestNewsProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {beritaList.map((item, index) => {
             const tanggal = new Date(item.createdAt).toLocaleDateString(
-              "id-ID",
+              localeMap[lang],
               {
                 year: "numeric",
                 month: "short",
@@ -92,10 +106,7 @@ export default async function LatestNews({ searchParams }: LatestNewsProps) {
                 : null;
 
             // Preserve lang parameter in link
-            const linkHref =
-              lang && lang !== "id"
-                ? `/berita/${item.slug}?lang=${lang}`
-                : `/berita/${item.slug}`;
+            const linkHref = createHref(`/berita/${item.slug}`);
 
             return (
               <Link
@@ -118,7 +129,7 @@ export default async function LatestNews({ searchParams }: LatestNewsProps) {
                         <div className="px-3 py-1.5 rounded-full bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm shadow-lg">
                           <div className="flex items-center gap-1.5">
                             <svg
-                              className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400"
+                              className="w-3.5 h-3.5 text-primary dark:text-primary-light"
                               fill="none"
                               stroke="currentColor"
                               viewBox="0 0 24 24"
@@ -156,7 +167,7 @@ export default async function LatestNews({ searchParams }: LatestNewsProps) {
                         <div className="px-3 py-1.5 rounded-full bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm shadow-lg">
                           <div className="flex items-center gap-1.5">
                             <svg
-                              className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400"
+                              className="w-3.5 h-3.5 text-primary dark:text-primary-light"
                               fill="none"
                               stroke="currentColor"
                               viewBox="0 0 24 24"
@@ -197,9 +208,9 @@ export default async function LatestNews({ searchParams }: LatestNewsProps) {
 
                     <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
                       <div className="flex items-center gap-2 text-sm font-semibold bg-gradient-to-r from-blue-600 to-red-600 dark:from-blue-400 dark:to-red-400 bg-clip-text text-transparent group-hover:gap-3 transition-all">
-                        <span>Baca Selengkapnya</span>
+                        <span>{t.latestNews.readMore}</span>
                         <svg
-                          className="w-5 h-5 text-blue-600 dark:text-blue-400 group-hover:translate-x-1 transition-transform"
+                          className="w-5 h-5 text-primary dark:text-primary-light group-hover:translate-x-1 transition-transform"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -223,10 +234,10 @@ export default async function LatestNews({ searchParams }: LatestNewsProps) {
         {/* Link ke halaman berita lengkap */}
         <div className="mt-12 text-center">
           <Link
-            href={lang && lang !== "id" ? `/berita?lang=${lang}` : "/berita"}
+            href={createHref("/berita")}
             className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-blue-600 to-red-600 hover:from-blue-700 hover:to-red-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
           >
-            <span>Lihat Semua Berita</span>
+            <span>{t.latestNews.viewAll}</span>
             <svg
               className="w-5 h-5"
               fill="none"
