@@ -3,8 +3,10 @@
 import { useState } from "react";
 import { createPesan } from "@/lib/api/pesan";
 import { CreatePesanData } from "@/types/pesan";
+import { useTranslations } from "@/hooks/useTranslations";
 
 export default function Contact() {
+  const t = useTranslations();
   const [formData, setFormData] = useState<CreatePesanData>({
     nama: "",
     email: "",
@@ -27,7 +29,7 @@ export default function Contact() {
       !formData.email.trim() ||
       !formData.pesan.trim()
     ) {
-      setError("Nama, email, dan pesan wajib diisi");
+      setError(t.contact.validationError);
       return;
     }
 
@@ -76,17 +78,15 @@ export default function Contact() {
     <section id="contact" className="py-20 px-4 bg-white dark:bg-gray-900">
       <div className="container mx-auto max-w-4xl">
         <h2 className="text-4xl font-bold text-center mb-12 text-gray-900 dark:text-white">
-          Kontak
+          {t.contact.title}
         </h2>
         <div className="grid md:grid-cols-2 gap-8">
           <div>
             <h3 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-white">
-              Mari Berkolaborasi
+              {t.contact.subtitle}
             </h3>
             <p className="text-gray-700 dark:text-gray-300 mb-6">
-              Saya selalu terbuka untuk diskusi tentang proyek baru, peluang
-              kerja, atau sekadar berkenalan. Jangan ragu untuk menghubungi
-              saya!
+              {t.contact.description}
             </p>
             <div className="space-y-4">
               <div className="flex items-center">
@@ -104,7 +104,7 @@ export default function Contact() {
                   />
                 </svg>
                 <span className="text-gray-700 dark:text-gray-300">
-                  email@example.com
+                  {t.contact.email}
                 </span>
               </div>
               <div className="flex items-center">
@@ -122,7 +122,7 @@ export default function Contact() {
                   />
                 </svg>
                 <span className="text-gray-700 dark:text-gray-300">
-                  +62 812-3456-7890
+                  {t.contact.phone}
                 </span>
               </div>
             </div>
@@ -138,8 +138,7 @@ export default function Contact() {
             {success && (
               <div className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
                 <p className="text-sm text-green-800 dark:text-green-200">
-                  Terima kasih! Pesan Anda telah dikirim. Kami akan segera
-                  merespons.
+                  {t.contact.successMessage}
                 </p>
               </div>
             )}
@@ -148,7 +147,7 @@ export default function Contact() {
                 htmlFor="nama"
                 className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
               >
-                Nama *
+                {t.contact.nameRequired}
               </label>
               <input
                 type="text"
@@ -165,7 +164,7 @@ export default function Contact() {
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
               >
-                Email *
+                {t.contact.emailRequired}
               </label>
               <input
                 type="email"
@@ -182,7 +181,7 @@ export default function Contact() {
                 htmlFor="kontak"
                 className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
               >
-                Kontak (Opsional)
+                {t.contact.contactOptional}
               </label>
               <input
                 type="text"
@@ -190,7 +189,7 @@ export default function Contact() {
                 name="kontak"
                 value={formData.kontak}
                 onChange={handleChange}
-                placeholder="Nomor telepon atau WhatsApp"
+                placeholder={t.contact.contactPlaceholder}
                 className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-800 dark:text-white"
               />
             </div>
@@ -199,7 +198,7 @@ export default function Contact() {
                 htmlFor="judul"
                 className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
               >
-                Judul (Opsional)
+                {t.contact.subjectOptional}
               </label>
               <input
                 type="text"
@@ -207,7 +206,7 @@ export default function Contact() {
                 name="judul"
                 value={formData.judul}
                 onChange={handleChange}
-                placeholder="Subjek pesan Anda"
+                placeholder={t.contact.subjectPlaceholder}
                 className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-800 dark:text-white"
               />
             </div>
@@ -216,7 +215,7 @@ export default function Contact() {
                 htmlFor="pesan"
                 className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
               >
-                Pesan *
+                {t.contact.messageRequired}
               </label>
               <textarea
                 id="pesan"
@@ -233,7 +232,7 @@ export default function Contact() {
               disabled={loading}
               className="btn btn-primary btn-md w-full"
             >
-              {loading ? "Mengirim..." : "Kirim Pesan"}
+              {loading ? t.contact.sending : t.contact.sendButton}
             </button>
           </form>
         </div>

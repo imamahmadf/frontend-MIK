@@ -118,7 +118,7 @@ function TestimoniContent() {
                 href={createHref(`/testimoni/${testimoni.id}`)}
                 className="group"
               >
-                <article className="h-full relative bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-200 dark:border-gray-700 hover:border-purple-300 dark:hover:border-purple-600">
+                <article className="h-full relative bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-200 dark:border-gray-700 hover:border-purple-300 dark:hover:border-purple-600">
                   {/* Quote Icon di Background */}
                   <div className="absolute top-4 right-4 opacity-5 group-hover:opacity-10 transition-opacity duration-300">
                     <svg

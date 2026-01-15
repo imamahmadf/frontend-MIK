@@ -9,6 +9,25 @@ import {
   getLanguageFromSearchParams,
   LanguageCode,
 } from "@/lib/language";
+import { useTranslations } from "@/hooks/useTranslations";
+
+function ExperienceFallback() {
+  const t = useTranslations();
+  return (
+    <section id="experience" className="py-20 px-4 bg-gray-50 dark:bg-gray-800">
+      <div className="container mx-auto max-w-4xl">
+        <h2 className="text-4xl font-bold text-center mb-12 text-gray-900 dark:text-white">
+          {t.experience.title}
+        </h2>
+        <div className="text-center py-8">
+          <p className="text-gray-600 dark:text-gray-400">
+            {t.experience.loading}
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 function ExperienceContent() {
   const [pengalamanList, setPengalamanList] = useState<Pengalaman[]>([]);
@@ -16,6 +35,7 @@ function ExperienceContent() {
   const [error, setError] = useState<string | null>(null);
   const searchParams = useSearchParams();
   const [mounted, setMounted] = useState(false);
+  const t = useTranslations();
 
   useEffect(() => {
     setMounted(true);
@@ -41,7 +61,7 @@ function ExperienceContent() {
       const data = await getAllPengalaman(lang);
       setPengalamanList(data);
     } catch (err: any) {
-      setError(err.message || "Gagal memuat data pengalaman");
+      setError(err.message || t.experience.error);
       console.error("Error fetching pengalaman:", err);
     } finally {
       setLoading(false);
@@ -56,10 +76,12 @@ function ExperienceContent() {
       >
         <div className="container mx-auto max-w-4xl">
           <h2 className="text-4xl font-bold text-center mb-12 text-gray-900 dark:text-white">
-            Pengalaman
+            {t.experience.title}
           </h2>
           <div className="text-center py-8">
-            <p className="text-gray-600 dark:text-gray-400">Memuat data...</p>
+            <p className="text-gray-600 dark:text-gray-400">
+              {t.experience.loading}
+            </p>
           </div>
         </div>
       </section>
@@ -70,12 +92,14 @@ function ExperienceContent() {
     <section id="experience" className="py-20 px-4 bg-gray-50 dark:bg-gray-800">
       <div className="container mx-auto max-w-4xl">
         <h2 className="text-4xl font-bold text-center mb-12 text-gray-900 dark:text-white">
-          Pengalaman
+          {t.experience.title}
         </h2>
 
         {loading ? (
           <div className="text-center py-8">
-            <p className="text-gray-600 dark:text-gray-400">Memuat data...</p>
+            <p className="text-gray-600 dark:text-gray-400">
+              {t.experience.loading}
+            </p>
           </div>
         ) : error ? (
           <div className="text-center py-8">
@@ -86,7 +110,7 @@ function ExperienceContent() {
         ) : pengalamanList.length === 0 ? (
           <div className="text-center py-8">
             <p className="text-gray-600 dark:text-gray-400">
-              Belum ada pengalaman yang tersedia
+              {t.experience.empty}
             </p>
           </div>
         ) : (
@@ -133,23 +157,7 @@ function ExperienceContent() {
 
 export default function Experience() {
   return (
-    <Suspense
-      fallback={
-        <section
-          id="experience"
-          className="py-20 px-4 bg-gray-50 dark:bg-gray-800"
-        >
-          <div className="container mx-auto max-w-4xl">
-            <h2 className="text-4xl font-bold text-center mb-12 text-gray-900 dark:text-white">
-              Pengalaman
-            </h2>
-            <div className="text-center py-8">
-              <p className="text-gray-600 dark:text-gray-400">Memuat data...</p>
-            </div>
-          </div>
-        </section>
-      }
-    >
+    <Suspense fallback={<ExperienceFallback />}>
       <ExperienceContent />
     </Suspense>
   );

@@ -3,18 +3,30 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Galeri } from "@/types/galeri";
+import { LanguageCode } from "@/lib/language";
+import { useTranslations } from "@/hooks/useTranslations";
 
 interface GaleriCarouselClientProps {
   galeriList: Galeri[];
   baseURL: string;
+  lang: LanguageCode;
 }
 
 export default function GaleriCarouselClient({
   galeriList,
   baseURL,
+  lang,
 }: GaleriCarouselClientProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [selectedImage, setSelectedImage] = useState<Galeri | null>(null);
+  const t = useTranslations();
+
+  // Format tanggal berdasarkan bahasa
+  const localeMap: Record<LanguageCode, string> = {
+    id: "id-ID",
+    en: "en-US",
+    ru: "ru-RU",
+  };
 
   useEffect(() => {
     const container = scrollContainerRef.current;
@@ -171,7 +183,7 @@ export default function GaleriCarouselClient({
             <button
               onClick={() => setSelectedImage(null)}
               className="absolute top-4 right-4 z-10 p-2 bg-black/50 hover:bg-black/70 rounded-full text-white transition-colors"
-              aria-label="Tutup modal"
+              aria-label={t.galeri.closeModal}
             >
               <svg
                 className="w-6 h-6"
@@ -211,11 +223,14 @@ export default function GaleriCarouselClient({
                 </p>
               )}
               <p className="text-sm text-gray-400">
-                {new Date(selectedImage.createdAt).toLocaleDateString("id-ID", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
+                {new Date(selectedImage.createdAt).toLocaleDateString(
+                  localeMap[lang],
+                  {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  }
+                )}
               </p>
             </div>
           </div>

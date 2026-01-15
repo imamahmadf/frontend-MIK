@@ -208,7 +208,7 @@ function BeritaContent() {
                     animationDelay: `${index * 100}ms`,
                   }}
                 >
-                  <article className="h-full flex flex-col bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 dark:border-gray-700/50 overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 hover:scale-[1.02] relative">
+                  <article className="h-full flex flex-col bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-lg border border-gray-200/50 dark:border-gray-700/50 overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 hover:scale-[1.02] relative">
                     {/* Gradient Overlay pada Hover */}
                     <div className="absolute inset-0 bg-gradient-to-br from-blue-500/0 via-transparent to-red-500/0 group-hover:from-blue-500/5 group-hover:to-red-500/5 transition-all duration-500 pointer-events-none"></div>
 

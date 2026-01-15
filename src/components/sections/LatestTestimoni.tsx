@@ -3,6 +3,7 @@ import Image from "next/image";
 import { getAllTestimoni } from "@/lib/api/testimoni";
 import { Testimoni } from "@/types/testimoni";
 import { getLanguageFromSearchParams } from "@/lib/language";
+import { getTranslations } from "@/lib/translations";
 
 interface LatestTestimoniProps {
   searchParams?: { [key: string]: string | string[] | undefined };
@@ -14,6 +15,7 @@ export default async function LatestTestimoni({
   let testimoniList: Testimoni[] = [];
   // Gunakan bahasa dari searchParams atau default ke "id"
   const lang = searchParams ? getLanguageFromSearchParams(searchParams) : "id";
+  const t = getTranslations(lang);
 
   try {
     const response = await getAllTestimoni(1, 3, lang);
@@ -54,15 +56,15 @@ export default async function LatestTestimoni({
                 />
               </svg>
               <span className="text-sm font-semibold text-primary dark:text-primary-light">
-                Kata Mereka
+                {t.latestTestimoni.badge}
               </span>
             </span>
           </div>
           <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-gray-900 via-blue-800 to-gray-900 dark:from-white dark:via-blue-300 dark:to-white bg-clip-text text-transparent">
-            Testimoni Terbaru
+            {t.latestTestimoni.title}
           </h2>
           <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Dengarkan apa kata mereka tentang pengalaman mereka.
+            {t.latestTestimoni.description}
           </p>
         </div>
 
@@ -87,7 +89,7 @@ export default async function LatestTestimoni({
                 href={linkHref}
                 className="group block h-full"
               >
-                <article className="h-full flex flex-col bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 dark:border-gray-700/50 overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+                <article className="h-full flex flex-col bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-lg border border-gray-200/50 dark:border-gray-700/50 overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
                   {item.foto ? (
                     <div className="relative w-full h-48 md:h-56 overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800">
                       <Image
@@ -148,7 +150,7 @@ export default async function LatestTestimoni({
 
                     <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
                       <div className="flex items-center gap-2 text-sm font-semibold bg-gradient-to-r from-primary to-purple-600 dark:from-primary-light dark:to-purple-400 bg-clip-text text-transparent group-hover:gap-3 transition-all">
-                        <span>Baca Selengkapnya</span>
+                        <span>{t.latestTestimoni.readMore}</span>
                         <svg
                           className="w-5 h-5 text-primary dark:text-primary-light group-hover:translate-x-1 transition-transform"
                           fill="none"
@@ -177,11 +179,11 @@ export default async function LatestTestimoni({
             href={
               lang && lang !== "id" ? `/testimoni?lang=${lang}` : "/testimoni"
             }
-            className="btn btn-gradient-full btn-md btn-scale inline-flex items-center gap-2"
+            className="btn btn-primary btn-lg btn-lift"
           >
-            <span>Lihat Semua Testimoni</span>
+            <span>{t.latestTestimoni.viewAll}</span>
             <svg
-              className="w-5 h-5"
+              className="w-5 h-5 ml-2"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"

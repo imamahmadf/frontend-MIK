@@ -82,7 +82,7 @@ export default async function DetailTestimoniPage({
       </Link>
 
       {/* Testimoni Card */}
-      <article className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+      <article className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700">
         {/* Foto */}
         {testimoni.foto && (
           <div className="relative w-full h-64 md:h-96 bg-gray-200 dark:bg-gray-700">

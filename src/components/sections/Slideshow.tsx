@@ -39,7 +39,7 @@ export default function Slideshow() {
         <h2 className="text-3xl font-bold text-center mb-8 text-gray-900 dark:text-white">
           Sekilas Perjalanan
         </h2>
-        <div className="relative overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-700 bg-white/70 dark:bg-gray-900/70 backdrop-blur shadow-lg p-8">
+        <div className="relative overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700 bg-white/70 dark:bg-gray-900/70 backdrop-blur shadow-lg p-8">
           <div className="transition-opacity duration-500 ease-in-out">
             <h3 className="text-2xl font-semibold mb-3 text-gray-900 dark:text-white">
               {activeSlide.title}

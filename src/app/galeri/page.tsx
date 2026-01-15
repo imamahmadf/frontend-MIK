@@ -1,27 +1,44 @@
-import type { Metadata } from "next";
+"use client";
+
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { getAllGaleri } from "@/lib/api/galeri";
 import { Galeri } from "@/types/galeri";
 import GaleriGrid from "@/components/galeri/GaleriGrid";
+import { useTranslations } from "@/hooks/useTranslations";
 
-export const metadata: Metadata = {
-  title: "Galeri",
-  description: "Kumpulan dokumentasi foto dan video.",
-};
+function GaleriContent() {
+  const [galeriList, setGaleriList] = useState<Galeri[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const searchParams = useSearchParams();
+  const [mounted, setMounted] = useState(false);
+  const t = useTranslations();
 
-export default async function GaleriPage() {
-  let galeriList: Galeri[] = [];
-  let currentPage = 1;
-  let totalPages = 1;
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-  try {
-    const response = await getAllGaleri(1, 20, "");
-    galeriList = response.data;
-    currentPage = response.pagination.page;
-    totalPages = response.pagination.totalPages;
-  } catch (err) {
-    console.error("Error fetching galeri:", err);
-    // Jika error, tetap render section dengan pesan kosong
-  }
+  useEffect(() => {
+    if (mounted) {
+      fetchGaleri();
+    }
+  }, [mounted, searchParams]);
+
+  const fetchGaleri = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const response = await getAllGaleri(1, 20, "");
+      setGaleriList(response.data);
+    } catch (err) {
+      setError("Gagal memuat data galeri");
+      console.error("Error fetching galeri:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const baseURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:7000";
 
@@ -44,19 +61,59 @@ export default async function GaleriPage() {
               />
             </svg>
             <span className="text-sm font-semibold text-primary dark:text-primary-light">
-              Dokumentasi
+              {t.galeri.badge}
             </span>
           </span>
         </div>
         <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-gray-900 via-blue-800 to-gray-900 dark:from-white dark:via-blue-300 dark:to-white bg-clip-text text-transparent">
-          Galeri Foto
+          {t.galeri.title}
         </h1>
         <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-          Kumpulan dokumentasi foto yang merekam aktivitas dan pencapaian.
+          {t.galeri.description}
         </p>
       </div>
 
-      <GaleriGrid galeriList={galeriList} baseURL={baseURL} />
+      {loading ? (
+        <div className="text-center py-16">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+          <p className="mt-4 text-gray-600 dark:text-gray-400">
+            {t.berita.loading}
+          </p>
+        </div>
+      ) : error ? (
+        <div className="text-center py-16">
+          <p className="text-red-600 dark:text-red-400">{error}</p>
+        </div>
+      ) : (
+        <GaleriGrid
+          galeriList={galeriList}
+          baseURL={baseURL}
+          translations={t.galeri}
+        />
+      )}
     </section>
+  );
+}
+
+export default function GaleriPage() {
+  return (
+    <Suspense
+      fallback={
+        <section className="container mx-auto px-4 py-16">
+          <div className="mb-12 text-center">
+            <div className="inline-block mb-4">
+              <div className="h-8 w-32 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse"></div>
+            </div>
+            <div className="h-12 w-64 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mx-auto mb-4"></div>
+            <div className="h-6 w-96 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mx-auto"></div>
+          </div>
+          <div className="text-center py-16">
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+          </div>
+        </section>
+      }
+    >
+      <GaleriContent />
+    </Suspense>
   );
 }

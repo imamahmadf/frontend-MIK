@@ -3,9 +3,20 @@ import Link from "next/link";
 import { getAllGaleri } from "@/lib/api/galeri";
 import { Galeri } from "@/types/galeri";
 import GaleriCarouselClient from "./GaleriCarouselClient";
+import { getLanguageFromSearchParams, LanguageCode } from "@/lib/language";
+import { getTranslations } from "@/lib/translations";
 
-export default async function GaleriCarousel() {
+interface GaleriCarouselProps {
+  searchParams?: { [key: string]: string | string[] | undefined };
+}
+
+export default async function GaleriCarousel({
+  searchParams,
+}: GaleriCarouselProps) {
   let galeriList: Galeri[] = [];
+  // Gunakan bahasa dari searchParams atau default ke "id"
+  const lang = searchParams ? getLanguageFromSearchParams(searchParams) : "id";
+  const t = getTranslations(lang);
 
   try {
     const response = await getAllGaleri(1, 10, "");
@@ -21,6 +32,11 @@ export default async function GaleriCarousel() {
   }
 
   const baseURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:7000";
+
+  // Helper function untuk membuat href dengan lang parameter
+  const createHref = (path: string) => {
+    return lang && lang !== "id" ? `${path}?lang=${lang}` : path;
+  };
 
   return (
     <section
@@ -46,25 +62,32 @@ export default async function GaleriCarousel() {
                 />
               </svg>
               <span className="text-sm font-semibold text-primary dark:text-primary-light">
-                Dokumentasi
+                {t.galeri.badge}
               </span>
             </span>
           </div>
           <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-gray-900 via-primary-dark to-gray-900 dark:from-white dark:via-primary-light dark:to-white bg-clip-text text-transparent">
-            Galeri Foto
+            {t.galeri.title}
           </h2>
           <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Dokumentasi kegiatan dan pencapaian dalam bentuk foto.
+            {t.galeri.description}
           </p>
         </div>
 
         {/* Carousel Container */}
-        <GaleriCarouselClient galeriList={galeriList} baseURL={baseURL} />
+        <GaleriCarouselClient
+          galeriList={galeriList}
+          baseURL={baseURL}
+          lang={lang}
+        />
 
         {/* Link ke halaman galeri lengkap */}
         <div className="mt-12 text-center">
-          <Link href="/galeri" className="btn btn-primary btn-lg btn-lift">
-            <span>Lihat Semua Foto</span>
+          <Link
+            href={createHref("/galeri")}
+            className="btn btn-primary btn-lg btn-lift"
+          >
+            <span>{t.galeri.viewAll}</span>
             <svg
               className="w-5 h-5"
               fill="none"

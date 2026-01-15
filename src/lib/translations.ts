@@ -26,6 +26,8 @@ export interface Translations {
     adminPublikasi: string;
     adminPesan: string;
     adminPengalaman: string;
+    adminTentang: string;
+    adminFaktaUnik: string;
   };
   footer: {
     rightsReserved: string;
@@ -48,6 +50,68 @@ export interface Translations {
     description: string;
     readMore: string;
     viewAll: string;
+  };
+  latestTestimoni: {
+    badge: string;
+    title: string;
+    description: string;
+    readMore: string;
+    viewAll: string;
+  };
+  galeri: {
+    badge: string;
+    title: string;
+    description: string;
+    viewAll: string;
+    closeModal: string;
+    empty: string;
+    emptyDescription: string;
+    noDescription: string;
+    previousPhoto: string;
+    nextPhoto: string;
+  };
+  contact: {
+    title: string;
+    subtitle: string;
+    description: string;
+    email: string;
+    phone: string;
+    name: string;
+    nameRequired: string;
+    emailRequired: string;
+    contactOptional: string;
+    contactPlaceholder: string;
+    subjectOptional: string;
+    subjectPlaceholder: string;
+    message: string;
+    messageRequired: string;
+    sendButton: string;
+    sending: string;
+    validationError: string;
+    sendError: string;
+    successMessage: string;
+  };
+  about: {
+    title: string;
+    information: string;
+    location: string;
+    email: string;
+    focus: string;
+    loading: string;
+    error: string;
+  };
+  faktaUnik: {
+    title: string;
+    item1: string;
+    item2: string;
+    item3: string;
+    item4: string;
+  };
+  experience: {
+    title: string;
+    loading: string;
+    error: string;
+    empty: string;
   };
 }
 
@@ -74,6 +138,8 @@ const translations: Record<LanguageCode, Translations> = {
       adminPublikasi: "Admin Publikasi",
       adminPesan: "Admin Pesan",
       adminPengalaman: "Admin Pengalaman",
+      adminTentang: "Admin Tentang",
+      adminFaktaUnik: "Admin Fakta Unik",
     },
     footer: {
       rightsReserved: "Hak cipta dilindungi.",
@@ -100,6 +166,71 @@ const translations: Record<LanguageCode, Translations> = {
       readMore: "Baca Selengkapnya",
       viewAll: "Lihat Semua Berita",
     },
+    latestTestimoni: {
+      badge: "Kata Mereka",
+      title: "Testimoni Terbaru",
+      description: "Dengarkan apa kata mereka tentang pengalaman mereka.",
+      readMore: "Baca Selengkapnya",
+      viewAll: "Lihat Semua Testimoni",
+    },
+    galeri: {
+      badge: "Dokumentasi",
+      title: "Galeri Foto",
+      description:
+        "Kumpulan dokumentasi foto yang merekam aktivitas dan pencapaian.",
+      viewAll: "Lihat Semua Foto",
+      closeModal: "Tutup modal",
+      empty: "Belum ada foto di galeri",
+      emptyDescription: "Belum ada foto yang tersedia saat ini.",
+      noDescription: "Tidak ada deskripsi",
+      previousPhoto: "Foto sebelumnya",
+      nextPhoto: "Foto berikutnya",
+    },
+    contact: {
+      title: "Kontak",
+      subtitle: "Mari Berkolaborasi",
+      description:
+        "Saya selalu terbuka untuk diskusi tentang proyek baru, peluang kerja, atau sekadar berkenalan. Jangan ragu untuk menghubungi saya!",
+      email: "email@example.com",
+      phone: "+62 812-3456-7890",
+      name: "Nama",
+      nameRequired: "Nama *",
+      emailRequired: "Email *",
+      contactOptional: "Kontak (Opsional)",
+      contactPlaceholder: "Nomor telepon atau WhatsApp",
+      subjectOptional: "Judul (Opsional)",
+      subjectPlaceholder: "Subjek pesan Anda",
+      message: "Pesan",
+      messageRequired: "Pesan *",
+      sendButton: "Kirim Pesan",
+      sending: "Mengirim...",
+      validationError: "Nama, email, dan pesan wajib diisi",
+      sendError: "Gagal mengirim pesan. Silakan coba lagi.",
+      successMessage:
+        "Terima kasih! Pesan Anda telah dikirim. Kami akan segera merespons.",
+    },
+    about: {
+      title: "Tentang Saya",
+      information: "Informasi",
+      location: "Lokasi",
+      email: "Email",
+      focus: "Fokus",
+      loading: "Memuat data...",
+      error: "Gagal memuat data tentang",
+    },
+    faktaUnik: {
+      title: "Fakta Unik",
+      item1: "Tahun Pengalaman",
+      item2: "Proyek Selesai",
+      item3: "Klien Puas",
+      item4: "Tingkat Kepuasan",
+    },
+    experience: {
+      title: "Pengalaman",
+      loading: "Memuat data...",
+      error: "Gagal memuat data pengalaman",
+      empty: "Belum ada pengalaman yang tersedia",
+    },
   },
   en: {
     nav: {
@@ -123,6 +254,8 @@ const translations: Record<LanguageCode, Translations> = {
       adminPublikasi: "Admin Publication",
       adminPesan: "Admin Messages",
       adminPengalaman: "Admin Experience",
+      adminTentang: "Admin About",
+      adminFaktaUnik: "Admin Unique Facts",
     },
     footer: {
       rightsReserved: "All rights reserved.",
@@ -149,6 +282,71 @@ const translations: Record<LanguageCode, Translations> = {
       readMore: "Read More",
       viewAll: "View All News",
     },
+    latestTestimoni: {
+      badge: "What They Say",
+      title: "Latest Testimonials",
+      description: "Listen to what they say about their experiences.",
+      readMore: "Read More",
+      viewAll: "View All Testimonials",
+    },
+    galeri: {
+      badge: "Documentation",
+      title: "Photo Gallery",
+      description:
+        "Collection of photo documentation that records activities and achievements.",
+      viewAll: "View All Photos",
+      closeModal: "Close modal",
+      empty: "No photos in gallery",
+      emptyDescription: "There are no photos available at the moment.",
+      noDescription: "No description",
+      previousPhoto: "Previous photo",
+      nextPhoto: "Next photo",
+    },
+    contact: {
+      title: "Contact",
+      subtitle: "Let's Collaborate",
+      description:
+        "I'm always open to discussing new projects, job opportunities, or just getting to know each other. Feel free to reach out!",
+      email: "email@example.com",
+      phone: "+62 812-3456-7890",
+      name: "Name",
+      nameRequired: "Name *",
+      emailRequired: "Email *",
+      contactOptional: "Contact (Optional)",
+      contactPlaceholder: "Phone number or WhatsApp",
+      subjectOptional: "Subject (Optional)",
+      subjectPlaceholder: "Your message subject",
+      message: "Message",
+      messageRequired: "Message *",
+      sendButton: "Send Message",
+      sending: "Sending...",
+      validationError: "Name, email, and message are required",
+      sendError: "Failed to send message. Please try again.",
+      successMessage:
+        "Thank you! Your message has been sent. We will respond soon.",
+    },
+    about: {
+      title: "About Me",
+      information: "Information",
+      location: "Location",
+      email: "Email",
+      focus: "Focus",
+      loading: "Loading data...",
+      error: "Failed to load about data",
+    },
+    faktaUnik: {
+      title: "Unique Facts",
+      item1: "Years of Experience",
+      item2: "Completed Projects",
+      item3: "Satisfied Clients",
+      item4: "Satisfaction Rate",
+    },
+    experience: {
+      title: "Experience",
+      loading: "Loading data...",
+      error: "Failed to load experience data",
+      empty: "No experience available",
+    },
   },
   ru: {
     nav: {
@@ -172,6 +370,8 @@ const translations: Record<LanguageCode, Translations> = {
       adminPublikasi: "Админ Публикаций",
       adminPesan: "Админ Сообщений",
       adminPengalaman: "Админ Опыта",
+      adminTentang: "Админ О Нас",
+      adminFaktaUnik: "Админ Уникальных Фактов",
     },
     footer: {
       rightsReserved: "Все права защищены.",
@@ -197,6 +397,71 @@ const translations: Record<LanguageCode, Translations> = {
         "Получайте последнюю информацию о мероприятиях и текущих объявлениях.",
       readMore: "Читать Далее",
       viewAll: "Посмотреть Все Новости",
+    },
+    latestTestimoni: {
+      badge: "Что Они Говорят",
+      title: "Последние Отзывы",
+      description: "Послушайте, что они говорят о своем опыте.",
+      readMore: "Читать Далее",
+      viewAll: "Посмотреть Все Отзывы",
+    },
+    galeri: {
+      badge: "Документация",
+      title: "Фото Галерея",
+      description:
+        "Коллекция фото-документации, запечатлевшая мероприятия и достижения.",
+      viewAll: "Посмотреть Все Фото",
+      closeModal: "Закрыть модальное окно",
+      empty: "Нет фотографий в галерее",
+      emptyDescription: "В данный момент фотографий нет.",
+      noDescription: "Нет описания",
+      previousPhoto: "Предыдущее фото",
+      nextPhoto: "Следующее фото",
+    },
+    contact: {
+      title: "Контакты",
+      subtitle: "Давайте Сотрудничать",
+      description:
+        "Я всегда открыт для обсуждения новых проектов, возможностей трудоустройства или просто знакомства. Не стесняйтесь связаться со мной!",
+      email: "email@example.com",
+      phone: "+62 812-3456-7890",
+      name: "Имя",
+      nameRequired: "Имя *",
+      emailRequired: "Электронная почта *",
+      contactOptional: "Контакт (Необязательно)",
+      contactPlaceholder: "Номер телефона или WhatsApp",
+      subjectOptional: "Тема (Необязательно)",
+      subjectPlaceholder: "Тема вашего сообщения",
+      message: "Сообщение",
+      messageRequired: "Сообщение *",
+      sendButton: "Отправить Сообщение",
+      sending: "Отправка...",
+      validationError: "Имя, электронная почта и сообщение обязательны",
+      sendError:
+        "Не удалось отправить сообщение. Пожалуйста, попробуйте снова.",
+      successMessage: "Спасибо! Ваше сообщение отправлено. Мы скоро ответим.",
+    },
+    about: {
+      title: "Обо Мне",
+      information: "Информация",
+      location: "Местоположение",
+      email: "Электронная почта",
+      focus: "Фокус",
+      loading: "Загрузка данных...",
+      error: "Не удалось загрузить данные",
+    },
+    faktaUnik: {
+      title: "Уникальные Факты",
+      item1: "Лет Опыта",
+      item2: "Завершенных Проектов",
+      item3: "Довольных Клиентов",
+      item4: "Уровень Удовлетворенности",
+    },
+    experience: {
+      title: "Опыт",
+      loading: "Загрузка данных...",
+      error: "Не удалось загрузить данные опыта",
+      empty: "Опыта пока нет",
     },
   },
 };

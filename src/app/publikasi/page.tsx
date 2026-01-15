@@ -191,7 +191,7 @@ function PublikasiContent() {
               {publikasiList.map((publikasi) => (
                 <article
                   key={publikasi.id}
-                  className="group relative bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border-l-4 border-l-blue-500 dark:border-l-blue-400 border-r border-t border-b border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-primary"
+                  className="group relative bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border-l-4 border-l-blue-500 dark:border-l-blue-400 border-r border-t border-b border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-primary"
                 >
                   {/* Icon Badge */}
                   <div className="absolute top-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">

@@ -114,7 +114,7 @@ export default async function LatestNews({ searchParams }: LatestNewsProps) {
                 href={linkHref}
                 className="group block h-full"
               >
-                <article className="h-full flex flex-col bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 dark:border-gray-700/50 overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+                <article className="h-full flex flex-col bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-lg border border-gray-200/50 dark:border-gray-700/50 overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
                   {fotoUrl ? (
                     <div className="relative w-full h-48 md:h-56 overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800">
                       <Image
@@ -235,11 +235,11 @@ export default async function LatestNews({ searchParams }: LatestNewsProps) {
         <div className="mt-12 text-center">
           <Link
             href={createHref("/berita")}
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-blue-600 to-red-600 hover:from-blue-700 hover:to-red-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+            className="btn btn-primary btn-lg btn-lift"
           >
             <span>{t.latestNews.viewAll}</span>
             <svg
-              className="w-5 h-5"
+              className="w-5 h-5 ml-2"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"

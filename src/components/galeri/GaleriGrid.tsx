@@ -1,18 +1,46 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { Galeri } from "@/types/galeri";
+import { getCurrentLanguage, LanguageCode } from "@/lib/language";
 
 interface GaleriGridProps {
   galeriList: Galeri[];
   baseURL: string;
+  translations: {
+    empty: string;
+    emptyDescription: string;
+    closeModal: string;
+    noDescription: string;
+    previousPhoto: string;
+    nextPhoto: string;
+  };
 }
 
-export default function GaleriGrid({ galeriList, baseURL }: GaleriGridProps) {
+export default function GaleriGrid({
+  galeriList,
+  baseURL,
+  translations,
+}: GaleriGridProps) {
   const [selectedImage, setSelectedImage] = useState<Galeri | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const modalRef = useRef<HTMLDivElement>(null);
+  const searchParams = useSearchParams();
+
+  // Get current language for date formatting
+  const langFromUrl = searchParams?.get("lang");
+  const lang: LanguageCode =
+    langFromUrl && ["id", "en", "ru"].includes(langFromUrl)
+      ? (langFromUrl as LanguageCode)
+      : getCurrentLanguage();
+
+  const localeMap: Record<LanguageCode, string> = {
+    id: "id-ID",
+    en: "en-US",
+    ru: "ru-RU",
+  };
 
   const openModal = (item: Galeri, index: number) => {
     setSelectedImage(item);
@@ -78,7 +106,10 @@ export default function GaleriGrid({ galeriList, baseURL }: GaleriGridProps) {
           />
         </svg>
         <p className="text-gray-600 dark:text-gray-400 text-lg">
-          Belum ada foto di galeri
+          {translations.empty}
+        </p>
+        <p className="text-gray-500 dark:text-gray-500 text-sm mt-2">
+          {translations.emptyDescription}
         </p>
       </div>
     );
@@ -90,7 +121,7 @@ export default function GaleriGrid({ galeriList, baseURL }: GaleriGridProps) {
         {galeriList.map((item, index) => (
           <article
             key={item.id}
-            className="group relative rounded-2xl border border-gray-200/50 dark:border-gray-700/50 overflow-hidden bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 cursor-pointer"
+            className="group relative rounded-lg border border-gray-200/50 dark:border-gray-700/50 overflow-hidden bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 cursor-pointer"
             onClick={() => openModal(item, index)}
           >
             <div className="relative w-full h-64 overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800">
@@ -113,7 +144,7 @@ export default function GaleriGrid({ galeriList, baseURL }: GaleriGridProps) {
                 </p>
               )}
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                {new Date(item.createdAt).toLocaleDateString("id-ID", {
+                {new Date(item.createdAt).toLocaleDateString(localeMap[lang], {
                   year: "numeric",
                   month: "long",
                   day: "numeric",
@@ -137,7 +168,7 @@ export default function GaleriGrid({ galeriList, baseURL }: GaleriGridProps) {
           <button
             onClick={closeModal}
             className="absolute top-4 right-4 z-10 p-2 bg-white/10 hover:bg-white/20 rounded-full backdrop-blur-md transition-colors"
-            aria-label="Tutup modal"
+            aria-label={translations.closeModal}
           >
             <svg
               className="w-6 h-6 text-white"
@@ -162,7 +193,7 @@ export default function GaleriGrid({ galeriList, baseURL }: GaleriGridProps) {
                     goToPrevious();
                   }}
                   className="absolute left-4 top-1/2 -translate-y-1/2 z-10 p-3 bg-white/10 hover:bg-white/20 rounded-full backdrop-blur-md transition-colors"
-                  aria-label="Foto sebelumnya"
+                  aria-label={translations.previousPhoto}
                 >
                   <svg
                     className="w-6 h-6 text-white"
@@ -184,7 +215,7 @@ export default function GaleriGrid({ galeriList, baseURL }: GaleriGridProps) {
                     goToNext();
                   }}
                   className="absolute right-4 top-1/2 -translate-y-1/2 z-10 p-3 bg-white/10 hover:bg-white/20 rounded-full backdrop-blur-md transition-colors"
-                  aria-label="Foto berikutnya"
+                  aria-label={translations.nextPhoto}
                 >
                   <svg
                     className="w-6 h-6 text-white"
@@ -237,13 +268,13 @@ export default function GaleriGrid({ galeriList, baseURL }: GaleriGridProps) {
                     </p>
                   ) : (
                     <p className="text-white/60 text-sm md:text-base leading-relaxed italic">
-                      Tidak ada deskripsi
+                      {translations.noDescription}
                     </p>
                   )}
                 </div>
                 <p className="text-xs text-white/70 border-t border-white/20 pt-3">
                   {new Date(selectedImage.createdAt).toLocaleDateString(
-                    "id-ID",
+                    localeMap[lang],
                     {
                       year: "numeric",
                       month: "long",
