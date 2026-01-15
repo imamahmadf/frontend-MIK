@@ -1,0 +1,54 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch: # Memungkinkan manual trigger
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+        env:
+          # Tambahkan environment variables yang diperlukan untuk build
+          # NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+          # NODE_ENV: production
+
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT || 22 }}
+          script: |
+            set -e
+            cd ${{ secrets.VPS_DEPLOY_PATH }}
+            echo "📦 Pulling latest changes..."
+            git fetch origin
+            git reset --hard origin/main || git reset --hard origin/master
+            echo "📥 Installing dependencies..."
+            npm ci --production=false
+            echo "🔨 Building application..."
+            npm run build
+            echo "🔄 Restarting application..."
+            pm2 restart website-profile || pm2 start npm --name "website-profile" -- start
+            pm2 save
+            echo "✅ Deployment completed successfully!"
