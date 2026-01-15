@@ -113,6 +113,14 @@ export interface Translations {
     error: string;
     empty: string;
   };
+  rekamJejak: {
+    title: string;
+    description: string;
+    loading: string;
+    error: string;
+    empty: string;
+    footerMessage: string;
+  };
 }
 
 const translations: Record<LanguageCode, Translations> = {
@@ -231,6 +239,16 @@ const translations: Record<LanguageCode, Translations> = {
       error: "Gagal memuat data pengalaman",
       empty: "Belum ada pengalaman yang tersedia",
     },
+    rekamJejak: {
+      title: "Potongan Perjalanan yang Membentuk Arah",
+      description:
+        "Setiap poin ini adalah bagian dari perjalanan yang membentuk visi dan dedikasi untuk energi dan Indonesia.",
+      loading: "Memuat data...",
+      error: "Gagal memuat data rekam jejak",
+      empty: "Belum ada rekam jejak yang tersedia",
+      footerMessage:
+        "Perjalanan ini belum selesai. Selama masih ada anak muda yang mau belajar, bergerak, dan peduli pada energi, harapan itu akan selalu hidup.",
+    },
   },
   en: {
     nav: {
@@ -347,6 +365,16 @@ const translations: Record<LanguageCode, Translations> = {
       error: "Failed to load experience data",
       empty: "No experience available",
     },
+    rekamJejak: {
+      title: "Journey Milestones That Shape Direction",
+      description:
+        "Each point is part of a journey that shapes vision and dedication to energy and Indonesia.",
+      loading: "Loading data...",
+      error: "Failed to load timeline data",
+      empty: "No timeline available",
+      footerMessage:
+        "This journey is not over yet. As long as there are young people willing to learn, move, and care about energy, that hope will always live on.",
+    },
   },
   ru: {
     nav: {
@@ -462,6 +490,16 @@ const translations: Record<LanguageCode, Translations> = {
       loading: "Загрузка данных...",
       error: "Не удалось загрузить данные опыта",
       empty: "Опыта пока нет",
+    },
+    rekamJejak: {
+      title: "Вехи Путешествия, Формирующие Направление",
+      description:
+        "Каждая точка - это часть путешествия, формирующего видение и преданность энергии и Индонезии.",
+      loading: "Загрузка данных...",
+      error: "Не удалось загрузить данные хронологии",
+      empty: "Хронологии пока нет",
+      footerMessage:
+        "Это путешествие еще не закончено. Пока есть молодые люди, готовые учиться, двигаться и заботиться об энергии, эта надежда всегда будет жить.",
     },
   },
 };

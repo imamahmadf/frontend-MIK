@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { getAllRekamJejak } from "@/lib/api/rekamJejak";
 import { RekamJejak } from "@/types/rekamJejak";
 import { getCurrentLanguage, LanguageCode } from "@/lib/language";
+import { useTranslations } from "@/hooks/useTranslations";
 
 function RekamJejakContent() {
   const [rekamJejak, setRekamJejak] = useState<RekamJejak[]>([]);
@@ -12,6 +13,7 @@ function RekamJejakContent() {
   const [error, setError] = useState<string | null>(null);
   const searchParams = useSearchParams();
   const [mounted, setMounted] = useState(false);
+  const t = useTranslations();
 
   useEffect(() => {
     setMounted(true);
@@ -45,7 +47,7 @@ function RekamJejakContent() {
       });
       setRekamJejak(sorted);
     } catch (err: any) {
-      setError(err.message || "Gagal memuat data rekam jejak");
+      setError(err.message || t.rekamJejak.error);
       console.error("Error fetching rekam jejak:", err);
     } finally {
       setLoading(false);
@@ -56,11 +58,10 @@ function RekamJejakContent() {
       {/* Header Section */}
       <div className="text-center mb-12 md:mb-16">
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4 md:mb-6">
-          Potongan Perjalanan yang Membentuk Arah
+          {t.rekamJejak.title}
         </h1>
         <p className="text-base md:text-lg text-gray-600 dark:text-gray-400 leading-relaxed max-w-2xl mx-auto">
-          Setiap poin ini adalah bagian dari perjalanan yang membentuk visi dan
-          dedikasi untuk energi dan Indonesia.
+          {t.rekamJejak.description}
         </p>
       </div>
 
@@ -72,7 +73,9 @@ function RekamJejakContent() {
         {/* Timeline Items */}
         {loading ? (
           <div className="text-center py-8">
-            <p className="text-gray-600 dark:text-gray-400">Memuat data...</p>
+            <p className="text-gray-600 dark:text-gray-400">
+              {t.rekamJejak.loading}
+            </p>
           </div>
         ) : error ? (
           <div className="text-center py-8">
@@ -81,7 +84,7 @@ function RekamJejakContent() {
         ) : rekamJejak.length === 0 ? (
           <div className="text-center py-8">
             <p className="text-gray-600 dark:text-gray-400">
-              Belum ada rekam jejak yang tersedia
+              {t.rekamJejak.empty}
             </p>
           </div>
         ) : (
@@ -118,9 +121,7 @@ function RekamJejakContent() {
       <div className="mt-12 md:mt-16 text-center">
         <div className="inline-block px-5 py-4 md:px-8 md:py-5 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800/50">
           <p className="text-sm md:text-base text-gray-700 dark:text-gray-300 leading-relaxed italic">
-            Perjalanan ini belum selesai. Selama masih ada anak muda yang mau
-            belajar, bergerak, dan peduli pada energi, harapan itu akan selalu
-            hidup.
+            {t.rekamJejak.footerMessage}
           </p>
         </div>
       </div>
@@ -134,7 +135,7 @@ export default function RekamJejakPage() {
       fallback={
         <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20 max-w-5xl">
           <div className="text-center py-8">
-            <p className="text-gray-600 dark:text-gray-400">Memuat data...</p>
+            <p className="text-gray-600 dark:text-gray-400">Loading...</p>
           </div>
         </section>
       }
