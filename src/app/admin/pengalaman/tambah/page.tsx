@@ -331,7 +331,7 @@ export default function TambahPengalamanPage() {
 
           {kegiatans.length === 0 ? (
             <p className="text-gray-600 dark:text-gray-400 text-sm">
-              Belum ada kegiatan. Klik tombol "Tambah Kegiatan" untuk
+              Belum ada kegiatan. Klik tombol &quot;Tambah Kegiatan&quot; untuk
               menambahkan.
             </p>
           ) : (

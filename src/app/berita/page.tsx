@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -21,13 +21,7 @@ function BeritaContent() {
     setMounted(true);
   }, []);
 
-  useEffect(() => {
-    if (mounted) {
-      fetchBerita();
-    }
-  }, [mounted, searchParams]);
-
-  const fetchBerita = async () => {
+  const fetchBerita = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -46,7 +40,13 @@ function BeritaContent() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [searchParams, t.berita.error]);
+
+  useEffect(() => {
+    if (mounted) {
+      fetchBerita();
+    }
+  }, [mounted, searchParams, fetchBerita]);
 
   // Helper function untuk membuat href dengan lang parameter
   const createHref = (path: string) => {

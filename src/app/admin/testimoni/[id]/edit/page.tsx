@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Image from "next/image";
 import { useAppSelector } from "@/store/hooks";
@@ -44,14 +44,7 @@ export default function EditTestimoniPage() {
     }
   }, [isAuthenticated, loading, router]);
 
-  // Fetch testimoni data untuk semua bahasa
-  useEffect(() => {
-    if (isAuthenticated && id) {
-      fetchTestimoni();
-    }
-  }, [isAuthenticated, id]);
-
-  const fetchTestimoni = async () => {
+  const fetchTestimoni = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -101,7 +94,14 @@ export default function EditTestimoniPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
+
+  // Fetch testimoni data untuk semua bahasa
+  useEffect(() => {
+    if (isAuthenticated && id) {
+      fetchTestimoni();
+    }
+  }, [isAuthenticated, id, fetchTestimoni]);
 
   const handleTranslationChange = (
     lang: LanguageCode,

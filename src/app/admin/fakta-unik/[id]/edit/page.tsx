@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useAppSelector } from "@/store/hooks";
 import { getFaktaUnikById, updateFaktaUnik } from "@/lib/api/faktaUnik";
@@ -41,14 +41,7 @@ export default function EditFaktaUnikPage() {
     }
   }, [isAuthenticated, loading, router]);
 
-  // Fetch fakta unik data untuk semua bahasa
-  useEffect(() => {
-    if (isAuthenticated && id) {
-      fetchFaktaUnik();
-    }
-  }, [isAuthenticated, id]);
-
-  const fetchFaktaUnik = async () => {
+  const fetchFaktaUnik = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -95,7 +88,14 @@ export default function EditFaktaUnikPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
+
+  // Fetch fakta unik data untuk semua bahasa
+  useEffect(() => {
+    if (isAuthenticated && id) {
+      fetchFaktaUnik();
+    }
+  }, [isAuthenticated, id, fetchFaktaUnik]);
 
   const handleTranslationChange = (
     lang: LanguageCode,

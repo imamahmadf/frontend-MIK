@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Image from "next/image";
 import { useAppSelector } from "@/store/hooks";
@@ -53,30 +53,16 @@ export default function EditPublikasiPage() {
     }
   }, [isAuthenticated, loading, router]);
 
-  // Fetch tema list
-  useEffect(() => {
-    if (isAuthenticated) {
-      fetchTemaList();
-    }
-  }, [isAuthenticated]);
-
-  // Fetch publikasi data untuk semua bahasa
-  useEffect(() => {
-    if (isAuthenticated && id) {
-      fetchPublikasi();
-    }
-  }, [isAuthenticated, id]);
-
-  const fetchTemaList = async () => {
+  const fetchTemaList = useCallback(async () => {
     try {
       const temas = await getAllTemaPublikasi("id");
       setTemaList(temas);
     } catch (err) {
       console.error("Error fetching tema:", err);
     }
-  };
+  }, []);
 
-  const fetchPublikasi = async () => {
+  const fetchPublikasi = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -129,7 +115,21 @@ export default function EditPublikasiPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
+
+  // Fetch tema list
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchTemaList();
+    }
+  }, [isAuthenticated, fetchTemaList]);
+
+  // Fetch publikasi data untuk semua bahasa
+  useEffect(() => {
+    if (isAuthenticated && id) {
+      fetchPublikasi();
+    }
+  }, [isAuthenticated, id, fetchPublikasi]);
 
   const handleTranslationChange = (
     lang: LanguageCode,

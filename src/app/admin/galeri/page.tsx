@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -28,14 +28,7 @@ export default function AdminGaleriPage() {
     }
   }, [isAuthenticated, loading, router]);
 
-  // Fetch galeri
-  useEffect(() => {
-    if (isAuthenticated) {
-      fetchGaleri();
-    }
-  }, [page, search, isAuthenticated]);
-
-  const fetchGaleri = async () => {
+  const fetchGaleri = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -47,7 +40,14 @@ export default function AdminGaleriPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, search]);
+
+  // Fetch galeri
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchGaleri();
+    }
+  }, [page, search, isAuthenticated, fetchGaleri]);
 
   const handleDelete = async (id: number) => {
     if (!confirm("Apakah Anda yakin ingin menghapus foto galeri ini?")) {

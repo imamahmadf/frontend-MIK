@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -19,13 +19,7 @@ function TestimoniContent() {
     setMounted(true);
   }, []);
 
-  useEffect(() => {
-    if (mounted) {
-      fetchTestimoni();
-    }
-  }, [mounted, searchParams]);
-
-  const fetchTestimoni = async () => {
+  const fetchTestimoni = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -45,7 +39,13 @@ function TestimoniContent() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (mounted) {
+      fetchTestimoni();
+    }
+  }, [mounted, searchParams, fetchTestimoni]);
 
   // Helper function untuk membuat href dengan lang parameter
   const createHref = (path: string) => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useAppSelector } from "@/store/hooks";
 import { getPengalamanById, updatePengalaman } from "@/lib/api/pengalaman";
@@ -54,14 +54,7 @@ export default function EditPengalamanPage() {
     }
   }, [isAuthenticated, loading, router]);
 
-  // Fetch pengalaman data untuk semua bahasa
-  useEffect(() => {
-    if (isAuthenticated && id) {
-      fetchPengalaman();
-    }
-  }, [isAuthenticated, id]);
-
-  const fetchPengalaman = async () => {
+  const fetchPengalaman = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -151,7 +144,14 @@ export default function EditPengalamanPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
+
+  // Fetch pengalaman data untuk semua bahasa
+  useEffect(() => {
+    if (isAuthenticated && id) {
+      fetchPengalaman();
+    }
+  }, [isAuthenticated, id, fetchPengalaman]);
 
   const handleTranslationChange = (
     lang: LanguageCode,
@@ -440,7 +440,7 @@ export default function EditPengalamanPage() {
 
           {kegiatans.length === 0 ? (
             <p className="text-gray-600 dark:text-gray-400 text-sm">
-              Belum ada kegiatan. Klik tombol "Tambah Kegiatan" untuk
+              Belum ada kegiatan. Klik tombol &quot;Tambah Kegiatan&quot; untuk
               menambahkan.
             </p>
           ) : (

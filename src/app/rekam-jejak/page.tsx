@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { getAllRekamJejak } from "@/lib/api/rekamJejak";
 import { RekamJejak } from "@/types/rekamJejak";
@@ -19,13 +19,7 @@ function RekamJejakContent() {
     setMounted(true);
   }, []);
 
-  useEffect(() => {
-    if (mounted) {
-      fetchRekamJejak();
-    }
-  }, [mounted, searchParams]);
-
-  const fetchRekamJejak = async () => {
+  const fetchRekamJejak = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -52,7 +46,13 @@ function RekamJejakContent() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [searchParams, t.rekamJejak.error]);
+
+  useEffect(() => {
+    if (mounted) {
+      fetchRekamJejak();
+    }
+  }, [mounted, searchParams, fetchRekamJejak]);
   return (
     <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20 max-w-5xl">
       {/* Header Section */}

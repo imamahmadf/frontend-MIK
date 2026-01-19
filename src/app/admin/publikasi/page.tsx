@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -67,21 +67,7 @@ export default function AdminPublikasiPage() {
     }
   }, [isAuthenticated, publikasiLoading, router]);
 
-  // Fetch publikasi
-  useEffect(() => {
-    if (isAuthenticated && activeTab === "publikasi") {
-      fetchPublikasi();
-    }
-  }, [publikasiPage, isAuthenticated, activeTab]);
-
-  // Fetch tema
-  useEffect(() => {
-    if (isAuthenticated && activeTab === "tema") {
-      fetchTema();
-    }
-  }, [isAuthenticated, activeTab]);
-
-  const fetchPublikasi = async () => {
+  const fetchPublikasi = useCallback(async () => {
     try {
       setPublikasiLoading(true);
       setPublikasiError(null);
@@ -99,9 +85,9 @@ export default function AdminPublikasiPage() {
     } finally {
       setPublikasiLoading(false);
     }
-  };
+  }, [publikasiPage]);
 
-  const fetchTema = async () => {
+  const fetchTema = useCallback(async () => {
     try {
       setTemaLoading(true);
       setTemaError(null);
@@ -113,7 +99,21 @@ export default function AdminPublikasiPage() {
     } finally {
       setTemaLoading(false);
     }
-  };
+  }, []);
+
+  // Fetch publikasi
+  useEffect(() => {
+    if (isAuthenticated && activeTab === "publikasi") {
+      fetchPublikasi();
+    }
+  }, [publikasiPage, isAuthenticated, activeTab, fetchPublikasi]);
+
+  // Fetch tema
+  useEffect(() => {
+    if (isAuthenticated && activeTab === "tema") {
+      fetchTema();
+    }
+  }, [isAuthenticated, activeTab, fetchTema]);
 
   const handleDeletePublikasi = async (id: number) => {
     if (!confirm("Apakah Anda yakin ingin menghapus publikasi ini?")) {

@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { useAppSelector } from "@/store/hooks";
 import { getAllHero, deleteHero } from "@/lib/api/hero";
 import { Hero } from "@/types/hero";
@@ -23,14 +24,7 @@ export default function AdminHeroPage() {
     }
   }, [isAuthenticated, loading, router]);
 
-  // Fetch hero
-  useEffect(() => {
-    if (isAuthenticated) {
-      fetchHero();
-    }
-  }, [isAuthenticated]);
-
-  const fetchHero = async () => {
+  const fetchHero = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -42,7 +36,14 @@ export default function AdminHeroPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  // Fetch hero
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchHero();
+    }
+  }, [isAuthenticated, fetchHero]);
 
   const handleDelete = async (id: number) => {
     if (!confirm("Apakah Anda yakin ingin menghapus hero ini?")) {
@@ -139,11 +140,14 @@ export default function AdminHeroPage() {
                 >
                   <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">
                     {hero.foto ? (
-                      <img
-                        src={`${baseURL}${hero.foto}`}
-                        alt={hero.nama}
-                        className="w-20 h-20 object-cover rounded"
-                      />
+                      <div className="relative w-24 h-24">
+                        <Image
+                          src={`${baseURL}${hero.foto}`}
+                          alt={hero.nama}
+                          fill
+                          className="object-cover rounded"
+                          sizes="96px"
+                        />
                     ) : (
                       <div className="w-20 h-20 bg-gray-200 dark:bg-gray-700 rounded flex items-center justify-center text-gray-400">
                         No Image

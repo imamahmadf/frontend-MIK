@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useAppSelector } from "@/store/hooks";
 import { getBiografiById, updateBiografi } from "@/lib/api/biografi";
@@ -41,14 +41,7 @@ export default function EditBiografiPage() {
     }
   }, [isAuthenticated, loading, router]);
 
-  // Fetch biografi data untuk semua bahasa
-  useEffect(() => {
-    if (isAuthenticated && id) {
-      fetchBiografi();
-    }
-  }, [isAuthenticated, id]);
-
-  const fetchBiografi = async () => {
+  const fetchBiografi = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -92,7 +85,14 @@ export default function EditBiografiPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
+
+  // Fetch biografi data untuk semua bahasa
+  useEffect(() => {
+    if (isAuthenticated && id) {
+      fetchBiografi();
+    }
+  }, [isAuthenticated, id, fetchBiografi]);
 
   const handleTranslationChange = (
     lang: LanguageCode,

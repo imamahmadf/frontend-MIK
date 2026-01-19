@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { useAppSelector } from "@/store/hooks";
 import { createPublikasi } from "@/lib/api/publikasi";
 import { getAllTemaPublikasi } from "@/lib/api/temaPublikasi";
@@ -181,11 +182,13 @@ export default function TambahPublikasiPage() {
             className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
           {previewFoto && (
-            <div className="mt-4">
-              <img
+            <div className="mt-4 relative w-48 h-48">
+              <Image
                 src={previewFoto}
                 alt="Preview"
-                className="w-48 h-48 object-cover rounded-lg border border-gray-300 dark:border-gray-600"
+                fill
+                className="object-cover rounded-lg border border-gray-300 dark:border-gray-600"
+                sizes="192px"
               />
             </div>
           )}

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { useAppSelector } from "@/store/hooks";
 import { createHero } from "@/lib/api/hero";
 import { CreateHeroData, HeroTranslation } from "@/types/hero";
@@ -247,11 +248,13 @@ export default function TambahHeroPage() {
             className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
           {previewFoto && (
-            <div className="mt-4">
-              <img
+            <div className="mt-4 relative w-64 h-64">
+              <Image
                 src={previewFoto}
                 alt="Preview"
-                className="w-64 h-64 object-cover rounded-lg border border-gray-300 dark:border-gray-600"
+                fill
+                className="object-cover rounded-lg border border-gray-300 dark:border-gray-600"
+                sizes="256px"
               />
             </div>
           )}

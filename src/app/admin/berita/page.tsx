@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAppSelector } from "@/store/hooks";
@@ -26,14 +26,7 @@ export default function AdminBeritaPage() {
     }
   }, [isAuthenticated, loading, router]);
 
-  // Fetch berita
-  useEffect(() => {
-    if (isAuthenticated) {
-      fetchBerita();
-    }
-  }, [page, search, isAuthenticated]);
-
-  const fetchBerita = async () => {
+  const fetchBerita = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -46,7 +39,14 @@ export default function AdminBeritaPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, search]);
+
+  // Fetch berita
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchBerita();
+    }
+  }, [page, search, isAuthenticated, fetchBerita]);
 
   const handleDelete = async (id: number) => {
     if (!confirm("Apakah Anda yakin ingin menghapus berita ini?")) {

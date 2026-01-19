@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAppSelector } from "@/store/hooks";
 import {
@@ -39,14 +39,7 @@ export default function AdminPesanPage() {
     }
   }, [isAuthenticated, loading, router]);
 
-  // Fetch pesan
-  useEffect(() => {
-    if (isAuthenticated) {
-      fetchPesan();
-    }
-  }, [page, search, statusFilter, isAuthenticated]);
-
-  const fetchPesan = async () => {
+  const fetchPesan = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -63,7 +56,14 @@ export default function AdminPesanPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, search, statusFilter]);
+
+  // Fetch pesan
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchPesan();
+    }
+  }, [page, search, statusFilter, isAuthenticated, fetchPesan]);
 
   const handleDelete = async (id: number) => {
     if (!confirm("Apakah Anda yakin ingin menghapus pesan ini?")) {

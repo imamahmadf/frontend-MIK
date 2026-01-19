@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -26,14 +26,7 @@ export default function AdminTestimoniPage() {
     }
   }, [isAuthenticated, loading, router]);
 
-  // Fetch testimoni
-  useEffect(() => {
-    if (isAuthenticated) {
-      fetchTestimoni();
-    }
-  }, [page, isAuthenticated]);
-
-  const fetchTestimoni = async () => {
+  const fetchTestimoni = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -46,7 +39,14 @@ export default function AdminTestimoniPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [page]);
+
+  // Fetch testimoni
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchTestimoni();
+    }
+  }, [page, isAuthenticated, fetchTestimoni]);
 
   const handleDelete = async (id: number) => {
     if (!confirm("Apakah Anda yakin ingin menghapus testimoni ini?")) {

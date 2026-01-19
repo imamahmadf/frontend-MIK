@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -24,23 +24,7 @@ function PublikasiContent() {
     setMounted(true);
   }, []);
 
-  useEffect(() => {
-    if (mounted) {
-      const temaIdFromUrl = searchParams?.get("tema");
-      if (temaIdFromUrl) {
-        setSelectedTema(parseInt(temaIdFromUrl));
-      }
-      fetchTemaList();
-    }
-  }, [mounted, searchParams]);
-
-  useEffect(() => {
-    if (mounted) {
-      fetchPublikasi();
-    }
-  }, [mounted, selectedTema, page, searchParams]);
-
-  const fetchTemaList = async () => {
+  const fetchTemaList = useCallback(async () => {
     try {
       const langFromUrl = searchParams?.get("lang");
       const lang: LanguageCode =
@@ -52,9 +36,9 @@ function PublikasiContent() {
     } catch (err) {
       console.error("Error fetching tema:", err);
     }
-  };
+  }, [searchParams]);
 
-  const fetchPublikasi = async () => {
+  const fetchPublikasi = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -79,7 +63,23 @@ function PublikasiContent() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedTema, page, searchParams]);
+
+  useEffect(() => {
+    if (mounted) {
+      const temaIdFromUrl = searchParams?.get("tema");
+      if (temaIdFromUrl) {
+        setSelectedTema(parseInt(temaIdFromUrl));
+      }
+      fetchTemaList();
+    }
+  }, [mounted, searchParams, fetchTemaList]);
+
+  useEffect(() => {
+    if (mounted) {
+      fetchPublikasi();
+    }
+  }, [mounted, selectedTema, page, searchParams, fetchPublikasi]);
 
   // Helper function untuk membuat href dengan lang parameter
   const createHref = (path: string, temaId?: number | null) => {

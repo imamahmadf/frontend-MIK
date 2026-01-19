@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Image from "next/image";
 import { useAppSelector } from "@/store/hooks";
@@ -44,14 +44,7 @@ export default function EditTentangPage() {
     }
   }, [isAuthenticated, loading, router]);
 
-  // Fetch tentang data untuk semua bahasa
-  useEffect(() => {
-    if (isAuthenticated && id) {
-      fetchTentang();
-    }
-  }, [isAuthenticated, id]);
-
-  const fetchTentang = async () => {
+  const fetchTentang = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -101,7 +94,14 @@ export default function EditTentangPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
+
+  // Fetch tentang data untuk semua bahasa
+  useEffect(() => {
+    if (isAuthenticated && id) {
+      fetchTentang();
+    }
+  }, [isAuthenticated, id, fetchTentang]);
 
   const handleTranslationChange = (
     lang: LanguageCode,
@@ -232,12 +232,14 @@ export default function EditTentangPage() {
           {fotoPreview && (
             <div className="mt-4">
               <div className="relative w-64 h-64 rounded-lg overflow-hidden">
-                {fotoPreview.startsWith("data:") ||
+                  {fotoPreview.startsWith("data:") ||
                 fotoPreview.startsWith("http") ? (
-                  <img
+                  <Image
                     src={fotoPreview}
                     alt="Preview"
-                    className="w-full h-full object-cover"
+                    fill
+                    className="object-cover"
+                    sizes="256px"
                   />
                 ) : (
                   <Image

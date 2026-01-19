@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
+import Image from "next/image";
 import { useAppSelector } from "@/store/hooks";
 import { getHeroById, updateHero } from "@/lib/api/hero";
 import { UpdateHeroData, HeroTranslation } from "@/types/hero";
@@ -44,14 +45,7 @@ export default function EditHeroPage() {
     }
   }, [isAuthenticated, loading, router]);
 
-  // Fetch hero data untuk semua bahasa
-  useEffect(() => {
-    if (isAuthenticated && id) {
-      fetchHero();
-    }
-  }, [isAuthenticated, id]);
-
-  const fetchHero = async () => {
+  const fetchHero = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -106,7 +100,14 @@ export default function EditHeroPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
+
+  // Fetch hero data untuk semua bahasa
+  useEffect(() => {
+    if (isAuthenticated && id) {
+      fetchHero();
+    }
+  }, [isAuthenticated, id, fetchHero]);
 
   const handleTranslationChange = (
     lang: LanguageCode,
@@ -325,11 +326,13 @@ export default function EditHeroPage() {
             className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
           {(previewFoto || existingFoto) && (
-            <div className="mt-4">
-              <img
+            <div className="mt-4 relative w-64 h-64">
+              <Image
                 src={previewFoto || existingFoto || ""}
                 alt="Preview"
-                className="w-64 h-64 object-cover rounded-lg border border-gray-300 dark:border-gray-600"
+                fill
+                className="object-cover rounded-lg border border-gray-300 dark:border-gray-600"
+                sizes="256px"
               />
             </div>
           )}

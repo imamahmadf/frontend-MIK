@@ -151,10 +151,12 @@ export default function TambahGaleriPage() {
                 Preview:
               </p>
               <div className="relative w-full h-64 rounded-lg overflow-hidden border border-gray-300 dark:border-gray-600">
-                <img
+                <Image
                   src={preview}
                   alt="Preview"
-                  className="w-full h-full object-cover"
+                  fill
+                  className="object-cover"
+                  sizes="100vw"
                 />
               </div>
             </div>

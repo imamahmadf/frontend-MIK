@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
+import Image from "next/image";
 import { useAppSelector } from "@/store/hooks";
 import { getBeritaById, updateBerita } from "@/lib/api/berita";
 import { UpdateBeritaData, BeritaTranslation } from "@/types/berita";
@@ -46,14 +47,7 @@ export default function EditBeritaPage() {
     }
   }, [isAuthenticated, loading, router]);
 
-  // Fetch berita data untuk semua bahasa
-  useEffect(() => {
-    if (isAuthenticated && id) {
-      fetchBerita();
-    }
-  }, [isAuthenticated, id]);
-
-  const fetchBerita = async () => {
+  const fetchBerita = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -120,7 +114,14 @@ export default function EditBeritaPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
+
+  // Fetch berita data untuk semua bahasa
+  useEffect(() => {
+    if (isAuthenticated && id) {
+      fetchBerita();
+    }
+  }, [isAuthenticated, id, fetchBerita]);
 
   const handleTranslationChange = (
     lang: LanguageCode,
@@ -358,11 +359,13 @@ export default function EditBeritaPage() {
               </p>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {existingFotos.map((fotoUrl, index) => (
-                  <div key={index} className="relative">
-                    <img
+                  <div key={index} className="relative w-full h-48">
+                    <Image
                       src={fotoUrl}
                       alt={`Foto ${index + 1}`}
-                      className="w-full h-48 object-cover rounded-lg border border-gray-300 dark:border-gray-600"
+                      fill
+                      className="object-cover rounded-lg border border-gray-300 dark:border-gray-600"
+                      sizes="(max-width: 768px) 50vw, 33vw"
                     />
                   </div>
                 ))}
@@ -384,11 +387,13 @@ export default function EditBeritaPage() {
               </p>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {previewFotos.map((preview, index) => (
-                  <div key={index} className="relative">
-                    <img
+                  <div key={index} className="relative w-full h-48">
+                    <Image
                       src={preview}
                       alt={`Preview ${index + 1}`}
-                      className="w-full h-48 object-cover rounded-lg border border-gray-300 dark:border-gray-600"
+                      fill
+                      className="object-cover rounded-lg border border-gray-300 dark:border-gray-600"
+                      sizes="(max-width: 768px) 50vw, 33vw"
                     />
                     <button
                       type="button"

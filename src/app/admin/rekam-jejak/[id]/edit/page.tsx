@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useAppSelector } from "@/store/hooks";
 import { getRekamJejakById, updateRekamJejak } from "@/lib/api/rekamJejak";
@@ -45,14 +45,7 @@ export default function EditRekamJejakPage() {
     }
   }, [isAuthenticated, loading, router]);
 
-  // Fetch rekam jejak data untuk semua bahasa
-  useEffect(() => {
-    if (isAuthenticated && id) {
-      fetchRekamJejak();
-    }
-  }, [isAuthenticated, id]);
-
-  const fetchRekamJejak = async () => {
+  const fetchRekamJejak = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -105,7 +98,14 @@ export default function EditRekamJejakPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
+
+  // Fetch rekam jejak data untuk semua bahasa
+  useEffect(() => {
+    if (isAuthenticated && id) {
+      fetchRekamJejak();
+    }
+  }, [isAuthenticated, id, fetchRekamJejak]);
 
   const handleTranslationChange = (
     lang: LanguageCode,

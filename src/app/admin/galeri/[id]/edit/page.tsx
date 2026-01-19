@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Image from "next/image";
 import { useAppSelector } from "@/store/hooks";
@@ -32,14 +32,7 @@ export default function EditGaleriPage() {
     }
   }, [isAuthenticated, loading, router]);
 
-  // Fetch galeri data
-  useEffect(() => {
-    if (isAuthenticated && id) {
-      fetchGaleri();
-    }
-  }, [isAuthenticated, id]);
-
-  const fetchGaleri = async () => {
+  const fetchGaleri = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -56,7 +49,14 @@ export default function EditGaleriPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id, baseURL]);
+
+  // Fetch galeri data
+  useEffect(() => {
+    if (isAuthenticated && id) {
+      fetchGaleri();
+    }
+  }, [isAuthenticated, id, fetchGaleri]);
 
   const handleFotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

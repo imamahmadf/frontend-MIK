@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -24,14 +24,7 @@ export default function AdminTentangPage() {
     }
   }, [isAuthenticated, loading, router]);
 
-  // Fetch tentang
-  useEffect(() => {
-    if (isAuthenticated) {
-      fetchTentang();
-    }
-  }, [isAuthenticated]);
-
-  const fetchTentang = async () => {
+  const fetchTentang = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -43,7 +36,14 @@ export default function AdminTentangPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  // Fetch tentang
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchTentang();
+    }
+  }, [isAuthenticated, fetchTentang]);
 
   const handleDelete = async (id: number) => {
     if (!confirm("Apakah Anda yakin ingin menghapus data tentang ini?")) {

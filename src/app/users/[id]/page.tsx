@@ -175,7 +175,7 @@ export default async function UserDetailPage({ params }: PageProps) {
                   {user.company.name}
                 </p>
                 <p className="text-gray-600 dark:text-gray-400 italic mb-2">
-                  "{user.company.catchPhrase}"
+                  &quot;{user.company.catchPhrase}&quot;
                 </p>
                 <p className="text-sm text-gray-500 dark:text-gray-500">
                   {user.company.bs}

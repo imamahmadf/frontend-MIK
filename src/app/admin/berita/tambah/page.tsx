@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { useAppSelector } from "@/store/hooks";
 import { createBerita } from "@/lib/api/berita";
 import { CreateBeritaData, BeritaTranslation } from "@/types/berita";
@@ -42,8 +43,12 @@ export default function TambahBeritaPage() {
   }, [isAuthenticated, router]);
 
   // Auto-generate slug dari judul bahasa aktif
+  const currentTranslation = useMemo(
+    () => translations[activeTab],
+    [translations, activeTab]
+  );
+
   useEffect(() => {
-    const currentTranslation = translations[activeTab];
     if (currentTranslation.judul && !slug) {
       const generatedSlug = currentTranslation.judul
         .toLowerCase()
@@ -62,7 +67,7 @@ export default function TambahBeritaPage() {
         return updated;
       });
     }
-  }, [translations[activeTab].judul, activeTab, slug]);
+  }, [currentTranslation.judul, activeTab, slug, currentTranslation]);
 
   const handleTranslationChange = (
     lang: LanguageCode,
@@ -302,11 +307,13 @@ export default function TambahBeritaPage() {
           {previewFotos.length > 0 && (
             <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-4">
               {previewFotos.map((preview, index) => (
-                <div key={index} className="relative">
-                  <img
+                <div key={index} className="relative w-full h-48">
+                  <Image
                     src={preview}
                     alt={`Preview ${index + 1}`}
-                    className="w-full h-48 object-cover rounded-lg border border-gray-300 dark:border-gray-600"
+                    fill
+                    className="object-cover rounded-lg border border-gray-300 dark:border-gray-600"
+                    sizes="(max-width: 768px) 50vw, 33vw"
                   />
                   <button
                     type="button"

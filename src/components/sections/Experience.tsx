@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { getAllPengalaman } from "@/lib/api/pengalaman";
 import { Pengalaman } from "@/types/pengalaman";
@@ -41,13 +41,7 @@ function ExperienceContent() {
     setMounted(true);
   }, []);
 
-  useEffect(() => {
-    if (mounted) {
-      fetchPengalaman();
-    }
-  }, [mounted, searchParams]);
-
-  const fetchPengalaman = async () => {
+  const fetchPengalaman = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -66,7 +60,13 @@ function ExperienceContent() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [searchParams, t.experience.error]);
+
+  useEffect(() => {
+    if (mounted) {
+      fetchPengalaman();
+    }
+  }, [mounted, searchParams, fetchPengalaman]);
 
   if (!mounted) {
     return (

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAppSelector } from "@/store/hooks";
@@ -26,14 +26,7 @@ export default function AdminRekamJejakPage() {
     }
   }, [isAuthenticated, loading, router]);
 
-  // Fetch rekam jejak
-  useEffect(() => {
-    if (isAuthenticated) {
-      fetchRekamJejak();
-    }
-  }, [page, search, isAuthenticated]);
-
-  const fetchRekamJejak = async () => {
+  const fetchRekamJejak = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -57,7 +50,14 @@ export default function AdminRekamJejakPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, search]);
+
+  // Fetch rekam jejak
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchRekamJejak();
+    }
+  }, [page, search, isAuthenticated, fetchRekamJejak]);
 
   const handleDelete = async (id: number) => {
     if (!confirm("Apakah Anda yakin ingin menghapus rekam jejak ini?")) {
