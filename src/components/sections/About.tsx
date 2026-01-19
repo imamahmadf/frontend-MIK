@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { getTentang } from "@/lib/api/tentang";
@@ -8,7 +8,30 @@ import type { Tentang } from "@/types/tentang";
 import { getCurrentLanguage, LanguageCode } from "@/lib/language";
 import { useTranslations } from "@/hooks/useTranslations";
 
-export default function About() {
+function AboutFallback() {
+  return (
+    <section id="about" className="py-20 px-4 bg-white dark:bg-neutral-900">
+      <div className="container mx-auto max-w-4xl">
+        <h2 className="text-4xl font-bold text-center mb-12 text-neutral-900 dark:text-white">
+          <span className="inline-block h-10 w-48 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+        </h2>
+        <div className="space-y-8">
+          <div className="h-32 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="space-y-4">
+              <div className="h-24 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+              <div className="h-24 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+              <div className="h-24 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+            </div>
+            <div className="h-64 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function AboutContent() {
   const searchParams = useSearchParams();
   const t = useTranslations();
   const [tentangData, setTentangData] = useState<Tentang | null>(null);
@@ -206,5 +229,13 @@ export default function About() {
         )}
       </div>
     </section>
+  );
+}
+
+export default function About() {
+  return (
+    <Suspense fallback={<AboutFallback />}>
+      <AboutContent />
+    </Suspense>
   );
 }

@@ -1,12 +1,45 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import fotoProfile from "@/assets/kakIksan.png";
 import { getHero } from "@/lib/api/hero";
 import type { Hero } from "@/types/hero";
 import { getCurrentLanguage, LanguageCode } from "@/lib/language";
+
+function HeroFallback() {
+  return (
+    <section
+      id="home"
+      className="min-h-screen flex items-center justify-center pt-32 pb-20 px-4 relative overflow-hidden bg-gradient-to-br from-neutral-50 via-white via-primary/5 to-neutral-100 dark:from-neutral-900 dark:via-neutral-800 dark:via-primary/10 dark:to-neutral-900"
+    >
+      <div className="container mx-auto max-w-6xl relative z-10">
+        <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12">
+          <div className="text-center md:text-right order-2 md:order-1">
+            <div className="space-y-4">
+              <div className="h-16 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+              <div className="h-16 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+            </div>
+          </div>
+          <div className="order-1 md:order-2">
+            <div className="relative w-48 h-48 md:w-64 md:h-64 lg:w-80 lg:h-80">
+              <div className="w-full h-full bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+            </div>
+          </div>
+        </div>
+        <div className="mt-12 text-center max-w-4xl mx-auto">
+          <div className="space-y-4">
+            <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+            <div className="h-24 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function HeroContent() {
 
 interface TypingTextProps {
   text: string;
@@ -54,7 +87,6 @@ function TypingText({
   );
 }
 
-export default function Hero() {
   const searchParams = useSearchParams();
   const [heroData, setHeroData] = useState<Hero | null>(null);
   const [loading, setLoading] = useState(true);
@@ -294,5 +326,13 @@ export default function Hero() {
         </div>
       </div>
     </section>
+  );
+}
+
+export default function Hero() {
+  return (
+    <Suspense fallback={<HeroFallback />}>
+      <HeroContent />
+    </Suspense>
   );
 }

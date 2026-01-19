@@ -3,7 +3,21 @@ import UserCard from "./UserCard";
 import { fetchUsers } from "@/lib/api/users";
 
 async function UsersContent() {
-  const users = await fetchUsers();
+  let users;
+  try {
+    users = await fetchUsers();
+  } catch (error) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-red-600 dark:text-red-400 mb-4">
+          Gagal memuat data users. Pastikan API backend berjalan dan endpoint /users tersedia.
+        </p>
+        <p className="text-sm text-gray-500 dark:text-gray-500">
+          Error: {error instanceof Error ? error.message : "Unknown error"}
+        </p>
+      </div>
+    );
+  }
 
   if (users.length === 0) {
     return (

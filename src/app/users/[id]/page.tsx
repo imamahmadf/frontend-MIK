@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { generateSEOMetadata } from "@/lib/seo";
 import { fetchUserById, type User } from "@/lib/api/users";
 
+export const dynamic = "force-dynamic";
+
 interface PageProps {
   params: Promise<{ id: string }>;
 }

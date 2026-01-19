@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { generateSEOMetadata } from "@/lib/seo";
 import UsersList from "@/components/users/UsersList";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = generateSEOMetadata({
   title: "Users",
   description: "Daftar users yang diambil dari API",
