@@ -166,7 +166,6 @@ export default function TambahTentangPage() {
                   fill
                   className="object-cover"
                   sizes="256px"
-                  className="w-full h-full object-cover"
                 />
               </div>
             </div>

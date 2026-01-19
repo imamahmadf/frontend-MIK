@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { useAppSelector } from "@/store/hooks";
 import { createGaleri } from "@/lib/api/galeri";
 import { CreateGaleriData } from "@/types/galeri";
