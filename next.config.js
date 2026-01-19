@@ -16,13 +16,12 @@ const nextConfig = {
         port: "7000",
         pathname: "/uploads/**",
       },
-      // Untuk production, tambahkan hostname backend Anda di sini
-      // Contoh:
-      // {
-      //   protocol: "https",
-      //   hostname: "api.yourdomain.com",
-      //   pathname: "/uploads/**",
-      // },
+      // Production API hostname
+      {
+        protocol: "https",
+        hostname: "api.muhammadiksankiat.id",
+        pathname: "/uploads/**",
+      },
     ],
   },
 };

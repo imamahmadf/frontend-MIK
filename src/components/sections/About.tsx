@@ -6,6 +6,7 @@ import Image from "next/image";
 import { getTentang } from "@/lib/api/tentang";
 import type { Tentang } from "@/types/tentang";
 import { getCurrentLanguage, LanguageCode } from "@/lib/language";
+import { getApiBaseURL } from "@/lib/api-config";
 import { useTranslations } from "@/hooks/useTranslations";
 
 function AboutFallback() {
@@ -67,9 +68,7 @@ function AboutContent() {
 
   // Get foto URL
   const fotoUrl = tentangData?.foto
-    ? `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:7000"}${
-        tentangData.foto
-      }`
+    ? `${getApiBaseURL()}${tentangData.foto}`
     : null;
 
   // Split isi menjadi paragraf jika ada

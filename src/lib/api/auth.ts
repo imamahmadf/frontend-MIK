@@ -8,7 +8,8 @@ export async function login(
   credentials: LoginCredentials
 ): Promise<AuthResponse> {
   try {
-    const baseURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:7000";
+    // Menggunakan apiClient yang sudah dikonfigurasi dengan baseURL
+    const baseURL = apiClient.defaults.baseURL || "http://localhost:7000";
     const url = `${baseURL}/api/auth/login`;
 
     console.log("🔐 Attempting login to:", url);
@@ -39,8 +40,7 @@ export async function login(
       throw new Error(errorMessage);
     } else if (error.request) {
       // Request was made but no response received
-      const baseURL =
-        process.env.NEXT_PUBLIC_API_URL || "http://localhost:7000";
+      const baseURL = apiClient.defaults.baseURL || "http://localhost:7000";
       console.error("❌ Network error - No response from server");
       console.error("📍 Attempted URL:", `${baseURL}/api/auth/login`);
       console.error("🔍 Error details:", error.message);

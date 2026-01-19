@@ -1,7 +1,10 @@
 import axios from "axios";
+import { getApiBaseURL } from "./api-config";
 
 // Membuat axios instance dengan konfigurasi default
-const baseURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:7000";
+// Di production, gunakan https://api.muhammadiksankiat.id/
+// Di development, gunakan http://localhost:7000 atau dari env variable
+const baseURL = getApiBaseURL();
 
 // Log baseURL untuk debugging (hanya di development)
 if (typeof window !== "undefined" && process.env.NODE_ENV === "development") {

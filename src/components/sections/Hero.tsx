@@ -7,6 +7,7 @@ import fotoProfile from "@/assets/kakIksan.png";
 import { getHero } from "@/lib/api/hero";
 import type { Hero } from "@/types/hero";
 import { getCurrentLanguage, LanguageCode } from "@/lib/language";
+import { getApiBaseURL } from "@/lib/api-config";
 
 function HeroFallback() {
   return (
@@ -129,9 +130,7 @@ function TypingText({
 
   // Get foto URL
   const fotoUrl = heroData?.foto
-    ? `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:7000"}${
-        heroData.foto
-      }`
+    ? `${getApiBaseURL()}${heroData.foto}`
     : typeof fotoProfile === "string"
     ? fotoProfile
     : fotoProfile.src;
