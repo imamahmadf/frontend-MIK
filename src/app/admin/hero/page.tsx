@@ -148,6 +148,7 @@ export default function AdminHeroPage() {
                           className="object-cover rounded"
                           sizes="96px"
                         />
+                      </div>
                     ) : (
                       <div className="w-20 h-20 bg-gray-200 dark:bg-gray-700 rounded flex items-center justify-center text-gray-400">
                         No Image
