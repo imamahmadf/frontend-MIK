@@ -10,6 +10,16 @@ import { getCurrentLanguage, LanguageCode } from "@/lib/language";
 
 /**
  * Get all berita dengan pagination dan search
+ *
+ * Pencarian dilakukan di BACKEND, bukan di frontend
+ * Frontend hanya mengirimkan kata kunci (search parameter) ke backend
+ * Backend akan melakukan filtering/searching di database
+ *
+ * @param page - Halaman yang diminta (default: 1)
+ * @param limit - Jumlah data per halaman (default: 10)
+ * @param search - Kata kunci pencarian yang akan dikirim ke backend (default: "")
+ * @param lang - Kode bahasa untuk konten (default: bahasa saat ini)
+ * @returns Promise<BeritaListResponse> - Response dari backend yang sudah difilter
  */
 export async function getAllBerita(
   page: number = 1,
@@ -19,6 +29,8 @@ export async function getAllBerita(
 ): Promise<BeritaListResponse> {
   try {
     const language = lang || getCurrentLanguage();
+    // Kirim request ke backend dengan parameter search
+    // Backend akan melakukan pencarian di database berdasarkan kata kunci
     const response = await apiClient.get<BeritaListResponse>("/api/berita", {
       params: { page, limit, search, lang: language },
     });

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense, useEffect } from "react";
+import { useState, Suspense, useEffect, useRef } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -10,13 +10,23 @@ import LanguageSwitcher from "./LanguageSwitcher";
 import DarkModeToggle from "./DarkModeToggle";
 import { useTranslations } from "@/hooks/useTranslations";
 import { useTheme } from "@/components/providers/ThemeProvider";
+import { getAllBerita } from "@/lib/api/berita";
+import { Berita } from "@/types/berita";
+import { getCurrentLanguage, LanguageCode } from "@/lib/language";
 import logoTerang from "@/assets/logoTerang.png";
 import logoGelap from "@/assets/logoGelap.png";
 
 function HeaderContent() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<Berita[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchError, setSearchError] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const dispatch = useAppDispatch();
   const router = useRouter();
   const pathname = usePathname();
@@ -30,6 +40,86 @@ function HeaderContent() {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Focus input ketika modal dibuka
+  useEffect(() => {
+    if (isSearchOpen && searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, [isSearchOpen]);
+
+  // Debounced search - Pencarian dilakukan di backend
+  // Frontend hanya mengirimkan kata kunci, backend yang melakukan filtering
+  // Debounce 500ms untuk mengurangi jumlah request ke backend
+  useEffect(() => {
+    // Clear timeout sebelumnya jika ada
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+
+    // Hanya kirim request jika user mengetik minimal 2 karakter
+    if (searchQuery.trim().length >= 2) {
+      setIsSearching(true);
+      setSearchError(null);
+
+      // Debounce: tunggu 500ms setelah user berhenti mengetik
+      // Ini mencegah backend menerima request terus-menerus
+      searchTimeoutRef.current = setTimeout(async () => {
+        try {
+          const langFromUrl = searchParams?.get("lang");
+          const lang: LanguageCode =
+            langFromUrl && ["id", "en", "ru"].includes(langFromUrl)
+              ? (langFromUrl as LanguageCode)
+              : getCurrentLanguage();
+
+          // Kirim kata kunci ke backend untuk dilakukan pencarian
+          // Backend akan melakukan filtering/searching di database
+          const response = await getAllBerita(1, 10, searchQuery.trim(), lang);
+          setSearchResults(response.data);
+        } catch (err) {
+          setSearchError(t.search.error);
+          setSearchResults([]);
+          console.error("Error searching berita:", err);
+        } finally {
+          setIsSearching(false);
+        }
+      }, 500); // 500ms debounce untuk mengurangi request ke backend
+    } else {
+      // Reset hasil jika query kurang dari 2 karakter
+      setSearchResults([]);
+      setIsSearching(false);
+      setSearchError(null);
+    }
+
+    // Cleanup: cancel timeout jika component unmount atau query berubah
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  }, [searchQuery, searchParams, t.search.error]);
+
+  // Close modal dengan ESC key
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isSearchOpen) {
+        setIsSearchOpen(false);
+        setSearchQuery("");
+        setSearchResults([]);
+      }
+    };
+
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [isSearchOpen]);
+
+  const handleSearchResultClick = (slug: string) => {
+    setIsSearchOpen(false);
+    setSearchQuery("");
+    setSearchResults([]);
+    const href = createHref(`/berita/${slug}`);
+    router.push(href);
+  };
 
   // Helper function untuk membuat href dengan lang parameter
   const createHref = (path: string) => {
@@ -109,6 +199,25 @@ function HeaderContent() {
                 );
               })}
             </ul>
+
+            {/* Search Button */}
+            <button
+              onClick={() => setIsSearchOpen(true)}
+              className="ml-4 p-2 text-neutral-700 dark:text-neutral-300 hover:text-primary dark:hover:text-primary-light transition-colors"
+              aria-label="Search news"
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </button>
 
             {/* Language Switcher */}
             <div className="ml-4 pl-4 border-l border-neutral-300 dark:border-neutral-700">
@@ -301,29 +410,48 @@ function HeaderContent() {
             )}
           </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            className="md:hidden flex-shrink-0 p-2 -mr-2 text-neutral-700 dark:text-neutral-300 hover:text-primary dark:hover:text-primary-light transition-colors"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label="Toggle menu"
-            aria-expanded={isMenuOpen}
-          >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+          {/* Mobile Search and Menu Buttons */}
+          <div className="md:hidden flex items-center gap-2">
+            <button
+              onClick={() => setIsSearchOpen(true)}
+              className="p-2 text-neutral-700 dark:text-neutral-300 hover:text-primary dark:hover:text-primary-light transition-colors"
+              aria-label="Search news"
             >
-              {isMenuOpen ? (
-                <path d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path d="M4 6h16M4 12h16M4 18h16" />
-              )}
-            </svg>
-          </button>
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </button>
+            <button
+              className="flex-shrink-0 p-2 -mr-2 text-neutral-700 dark:text-neutral-300 hover:text-primary dark:hover:text-primary-light transition-colors"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              aria-label="Toggle menu"
+              aria-expanded={isMenuOpen}
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                {isMenuOpen ? (
+                  <path d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
+            </button>
+          </div>
         </div>
 
         {/* Mobile Menu */}
@@ -528,6 +656,164 @@ function HeaderContent() {
           </div>
         </div>
       </nav>
+
+      {/* Search Modal */}
+      {isSearchOpen && (
+        <div
+          className="fixed inset-0 z-[100] bg-black/50 dark:bg-black/70 backdrop-blur-sm flex items-start justify-center pt-20 md:pt-32 px-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setIsSearchOpen(false);
+              setSearchQuery("");
+              setSearchResults([]);
+            }
+          }}
+        >
+          <div
+            className="w-full max-w-2xl bg-white dark:bg-gray-800 rounded-lg shadow-2xl border border-neutral-200 dark:border-gray-700 max-h-[80vh] flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Search Input */}
+            <div className="p-4 border-b border-neutral-200 dark:border-gray-700">
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <svg
+                    className="w-5 h-5 text-neutral-400"
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+                <input
+                  ref={searchInputRef}
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder={t.search.placeholder}
+                  className="w-full pl-10 pr-10 py-3 border border-neutral-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary-light focus:border-transparent"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => {
+                      setSearchQuery("");
+                      setSearchResults([]);
+                      searchInputRef.current?.focus();
+                    }}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  >
+                    <svg
+                      className="w-5 h-5 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300"
+                      fill="none"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Search Results */}
+            <div className="flex-1 overflow-y-auto p-4">
+              {isSearching ? (
+                <div className="text-center py-8">
+                  <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary dark:border-primary-light"></div>
+                  <p className="mt-4 text-neutral-600 dark:text-neutral-400">
+                    {t.search.loading}
+                  </p>
+                </div>
+              ) : searchError ? (
+                <div className="text-center py-8">
+                  <p className="text-red-600 dark:text-red-400">
+                    {searchError}
+                  </p>
+                </div>
+              ) : searchQuery.trim().length < 2 ? (
+                <div className="text-center py-8">
+                  <p className="text-neutral-600 dark:text-neutral-400">
+                    {t.search.minChars}
+                  </p>
+                </div>
+              ) : searchResults.length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-neutral-600 dark:text-neutral-400">
+                    {t.search.noResults}
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {searchResults.map((berita) => {
+                    const plainText = berita.isi.replace(/<[^>]*>/g, "");
+                    const ringkasan =
+                      plainText.length > 100
+                        ? plainText.substring(0, 100) + "..."
+                        : plainText;
+
+                    const baseURL =
+                      process.env.NEXT_PUBLIC_API_URL ||
+                      "http://localhost:7000";
+                    const fotoUrl =
+                      berita.fotos && berita.fotos.length > 0
+                        ? `${baseURL}${berita.fotos[0].foto}`
+                        : berita.foto
+                        ? `${baseURL}${berita.foto}`
+                        : null;
+
+                    return (
+                      <button
+                        key={berita.id}
+                        onClick={() => handleSearchResultClick(berita.slug)}
+                        className="w-full text-left p-4 rounded-lg border border-neutral-200 dark:border-gray-700 hover:bg-neutral-50 dark:hover:bg-gray-700 transition-colors group"
+                      >
+                        <div className="flex gap-4">
+                          {fotoUrl && (
+                            <div className="relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-neutral-200 dark:bg-gray-600">
+                              <Image
+                                src={fotoUrl}
+                                alt={berita.judul}
+                                fill
+                                className="object-cover"
+                                sizes="80px"
+                              />
+                            </div>
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-semibold text-neutral-900 dark:text-white group-hover:text-primary dark:group-hover:text-primary-light transition-colors line-clamp-2 mb-1">
+                              {berita.judul}
+                            </h3>
+                            <p className="text-sm text-neutral-600 dark:text-neutral-400 line-clamp-2">
+                              {ringkasan}
+                            </p>
+                            <div className="mt-2 text-xs text-neutral-500 dark:text-neutral-500">
+                              {new Date(berita.createdAt).toLocaleDateString(
+                                "id-ID",
+                                {
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "numeric",
+                                }
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 }

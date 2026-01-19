@@ -121,6 +121,13 @@ export interface Translations {
     empty: string;
     footerMessage: string;
   };
+  search: {
+    placeholder: string;
+    noResults: string;
+    loading: string;
+    error: string;
+    minChars: string;
+  };
 }
 
 const translations: Record<LanguageCode, Translations> = {
@@ -249,6 +256,13 @@ const translations: Record<LanguageCode, Translations> = {
       footerMessage:
         "Perjalanan ini belum selesai. Selama masih ada anak muda yang mau belajar, bergerak, dan peduli pada energi, harapan itu akan selalu hidup.",
     },
+    search: {
+      placeholder: "Cari berita...",
+      noResults: "Tidak ada hasil ditemukan",
+      loading: "Mencari...",
+      error: "Gagal melakukan pencarian",
+      minChars: "Ketik minimal 2 karakter untuk mencari",
+    },
   },
   en: {
     nav: {
@@ -375,6 +389,13 @@ const translations: Record<LanguageCode, Translations> = {
       footerMessage:
         "This journey is not over yet. As long as there are young people willing to learn, move, and care about energy, that hope will always live on.",
     },
+    search: {
+      placeholder: "Search news...",
+      noResults: "No results found",
+      loading: "Searching...",
+      error: "Failed to search",
+      minChars: "Type at least 2 characters to search",
+    },
   },
   ru: {
     nav: {
@@ -500,6 +521,13 @@ const translations: Record<LanguageCode, Translations> = {
       empty: "Хронологии пока нет",
       footerMessage:
         "Это путешествие еще не закончено. Пока есть молодые люди, готовые учиться, двигаться и заботиться об энергии, эта надежда всегда будет жить.",
+    },
+    search: {
+      placeholder: "Поиск новостей...",
+      noResults: "Результатов не найдено",
+      loading: "Поиск...",
+      error: "Не удалось выполнить поиск",
+      minChars: "Введите хотя бы 2 символа для поиска",
     },
   },
 };

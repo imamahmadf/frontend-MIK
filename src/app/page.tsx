@@ -10,14 +10,48 @@ import LatestNews from "@/components/sections/LatestNews";
 import LatestTestimoni from "@/components/sections/LatestTestimoni";
 import Contact from "@/components/sections/Contact";
 import AnimatedSection from "@/components/layout/AnimatedSection";
+import { generateSEOMetadata } from "@/lib/seo";
+import { generateBreadcrumbSchema } from "@/lib/breadcrumb";
+import { SITE_URL } from "@/lib/config";
+
+export const metadata = generateSEOMetadata({
+  title: "Muhammad Iksan Kiat - Profile & Portfolio",
+  description:
+    "Muhammad Iksan Kiat - Tenaga Ahli Menteri di Kementerian Energi dan Sumber Daya Mineral. Profil lengkap, biografi, pengalaman, publikasi, dan kontribusi di sektor energi dan pengembangan berkelanjutan Indonesia.",
+  keywords: [
+    "Muhammad Iksan Kiat",
+    "muhammad iksan kiat",
+    "Iksan Kiat",
+    "Tenaga Ahli Menteri ESDM",
+    "Kementerian Energi dan Sumber Daya Mineral",
+    "ESDM",
+    "energi Indonesia",
+    "kebijakan energi",
+    "pengembangan berkelanjutan",
+    "biografi Muhammad Iksan Kiat",
+    "profile Muhammad Iksan Kiat",
+  ],
+  url: undefined, // Akan menggunakan default dari config
+});
 
 interface HomeProps {
   searchParams?: { [key: string]: string | string[] | undefined };
 }
 
 export default function Home({ searchParams }: HomeProps) {
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: "Beranda", url: SITE_URL },
+  ]);
+
   return (
     <>
+      {/* Breadcrumb Schema untuk SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbSchema),
+        }}
+      />
       <AnimatedSection animationType="fade-in" delay={0}>
         <Hero />
       </AnimatedSection>
