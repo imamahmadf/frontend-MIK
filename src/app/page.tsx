@@ -21,7 +21,10 @@ export const metadata = generateSEOMetadata({
   keywords: [
     "Muhammad Iksan Kiat",
     "muhammad iksan kiat",
+    "Muhammad Iksan",
     "Iksan Kiat",
+    "muhammad iksan kiat esdm",
+    "Muhammad Iksan Kiat Tenaga Ahli Menteri",
     "Tenaga Ahli Menteri ESDM",
     "Kementerian Energi dan Sumber Daya Mineral",
     "ESDM",
@@ -30,6 +33,8 @@ export const metadata = generateSEOMetadata({
     "pengembangan berkelanjutan",
     "biografi Muhammad Iksan Kiat",
     "profile Muhammad Iksan Kiat",
+    "muhammadiksankiat",
+    "muhammadiksankiat.id",
   ],
   url: undefined, // Akan menggunakan default dari config
 });

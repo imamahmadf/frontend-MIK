@@ -60,22 +60,48 @@ function BeritaContent() {
       ? (langFromUrl as LanguageCode)
       : getCurrentLanguage();
 
-  return (
-    <section className="relative min-h-screen bg-gradient-to-br from-gray-50 via-white to-primary-light/10 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-      {/* Decorative Background Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary-light/10 rounded-full blur-3xl"></div>
-        <div className="absolute top-60 -left-40 w-80 h-80 bg-red-400/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-20 right-20 w-60 h-60 bg-primary/5 rounded-full blur-2xl"></div>
-      </div>
+  const baseURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:7000";
 
-      <div className="container relative mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20 max-w-7xl">
-        {/* Header Section dengan Gradient */}
-        <div className="mb-12 md:mb-16 text-center md:text-left">
+  // Ambil gambar pertama dari berita untuk background (jika ada)
+  const heroImage = beritaList.length > 0 
+    ? (beritaList[0].fotos && beritaList[0].fotos.length > 0
+        ? `${baseURL}${beritaList[0].fotos[0].foto}`
+        : beritaList[0].foto
+        ? `${baseURL}${beritaList[0].foto}`
+        : null)
+    : null;
+
+  return (
+    <>
+      {/* Hero Section */}
+      <section 
+        className="relative h-[50vh] min-h-[400px] max-h-[600px] flex items-center justify-center overflow-hidden"
+      >
+        {/* Background Image */}
+        <div 
+          className="absolute inset-0 w-full h-full"
+          style={{
+            backgroundImage: heroImage 
+              ? `url(${heroImage})` 
+              : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat'
+          }}
+        />
+        
+        {/* Overlay untuk readability */}
+        <div className="absolute inset-0 bg-black/50 dark:bg-black/60"></div>
+        
+        {/* Gradient overlay untuk depth */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black/70"></div>
+
+        {/* Content */}
+        <div className="relative z-10 container mx-auto px-4 text-center">
           <div className="inline-block mb-4">
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-primary/10 to-accent/10 dark:from-primary/20 dark:to-accent/20 border border-primary/30 dark:border-primary/50">
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 dark:bg-white/20 backdrop-blur-md border border-white/20">
               <svg
-                className="w-5 h-5 text-primary dark:text-primary-light"
+                className="w-5 h-5 text-white"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -87,26 +113,38 @@ function BeritaContent() {
                   d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
                 />
               </svg>
-              <span className="text-sm font-semibold text-primary dark:text-primary-light">
+              <span className="text-sm font-semibold text-white">
                 {t.berita.badge}
               </span>
             </span>
           </div>
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 bg-gradient-to-r from-gray-900 via-primary-dark to-gray-900 dark:from-white dark:via-primary-light dark:to-white bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-white">
             {t.berita.title}
           </h1>
-          <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 leading-relaxed max-w-3xl">
+          <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto">
             {t.berita.description}
           </p>
           {beritaList.length > 0 && (
-            <div className="mt-6 flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-              <div className="h-1 w-12 bg-gradient-to-r from-primary to-accent rounded-full"></div>
+            <div className="mt-6 flex items-center justify-center gap-2 text-sm text-white/80">
+              <div className="h-1 w-12 bg-gradient-to-r from-white to-white/50 rounded-full"></div>
               <span>
                 {beritaList.length} {t.berita.available}
               </span>
             </div>
           )}
         </div>
+      </section>
+
+      {/* Main Content */}
+      <section className="relative min-h-screen bg-gradient-to-br from-gray-50 via-white to-primary-light/10 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+        {/* Decorative Background Elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary-light/10 rounded-full blur-3xl"></div>
+          <div className="absolute top-60 -left-40 w-80 h-80 bg-red-400/10 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-20 right-20 w-60 h-60 bg-primary/5 rounded-full blur-2xl"></div>
+        </div>
+
+        <div className="container relative mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20 max-w-7xl">
 
         {loading ? (
           <div className="text-center py-12">
@@ -368,8 +406,9 @@ function BeritaContent() {
             })}
           </div>
         )}
-      </div>
-    </section>
+        </div>
+      </section>
+    </>
   );
 }
 

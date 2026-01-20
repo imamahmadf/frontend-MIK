@@ -8,6 +8,7 @@ import { getAllPublikasi } from "@/lib/api/publikasi";
 import { getAllTemaPublikasi } from "@/lib/api/temaPublikasi";
 import { Publikasi, TemaPublikasi } from "@/types/publikasi";
 import { getCurrentLanguage, LanguageCode } from "@/lib/language";
+import { useTranslations } from "@/hooks/useTranslations";
 
 function PublikasiContent() {
   const [publikasiList, setPublikasiList] = useState<Publikasi[]>([]);
@@ -19,6 +20,7 @@ function PublikasiContent() {
   const [selectedTema, setSelectedTema] = useState<number | null>(null);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const t = useTranslations();
 
   useEffect(() => {
     setMounted(true);
@@ -99,22 +101,44 @@ function PublikasiContent() {
     window.history.pushState({}, "", newHref);
   };
 
-  return (
-    <section className="relative min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50/30 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-      {/* Decorative Background Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary-light/10 rounded-full blur-3xl"></div>
-        <div className="absolute top-60 -left-40 w-80 h-80 bg-purple-400/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-20 right-20 w-60 h-60 bg-primary/5 rounded-full blur-2xl"></div>
-      </div>
+  const baseURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:7000";
 
-      <div className="container relative mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20 max-w-7xl">
-        {/* Header Section */}
-        <div className="mb-12 md:mb-16 text-center">
+  // Ambil gambar pertama dari publikasi untuk background (jika ada)
+  const heroImage = publikasiList.length > 0 && publikasiList[0].foto 
+    ? `${baseURL}${publikasiList[0].foto}` 
+    : null;
+
+  return (
+    <>
+      {/* Hero Section */}
+      <section 
+        className="relative h-[50vh] min-h-[400px] max-h-[600px] flex items-center justify-center overflow-hidden"
+      >
+        {/* Background Image */}
+        <div 
+          className="absolute inset-0 w-full h-full"
+          style={{
+            backgroundImage: heroImage 
+              ? `url(${heroImage})` 
+              : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat'
+          }}
+        />
+        
+        {/* Overlay untuk readability */}
+        <div className="absolute inset-0 bg-black/50 dark:bg-black/60"></div>
+        
+        {/* Gradient overlay untuk depth */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black/70"></div>
+
+        {/* Content */}
+        <div className="relative z-10 container mx-auto px-4 text-center">
           <div className="inline-block mb-4">
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10 dark:from-blue-500/20 dark:to-purple-500/20 border border-blue-200/50 dark:border-blue-800/50">
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 dark:bg-white/20 backdrop-blur-md border border-white/20">
               <svg
-                className="w-5 h-5 text-primary dark:text-primary-light"
+                className="w-5 h-5 text-white"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -126,18 +150,30 @@ function PublikasiContent() {
                   d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
                 />
               </svg>
-              <span className="text-sm font-semibold text-primary dark:text-primary-light">
+              <span className="text-sm font-semibold text-white">
                 Karya Tulis & Riset
               </span>
             </span>
           </div>
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 bg-gradient-to-r from-gray-900 via-blue-800 to-gray-900 dark:from-white dark:via-blue-300 dark:to-white bg-clip-text text-transparent">
-            Publikasi
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-white">
+            {t.nav.publication}
           </h1>
-          <p className="text-lg md:text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+          <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto">
             Daftar karya tulis, riset, atau artikel yang telah diterbitkan.
           </p>
         </div>
+      </section>
+
+      {/* Main Content */}
+      <section className="relative min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50/30 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+        {/* Decorative Background Elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary-light/10 rounded-full blur-3xl"></div>
+          <div className="absolute top-60 -left-40 w-80 h-80 bg-purple-400/10 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-20 right-20 w-60 h-60 bg-primary/5 rounded-full blur-2xl"></div>
+        </div>
+
+        <div className="container relative mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20 max-w-7xl">
 
         {/* Filter Tema */}
         {temaList.length > 0 && (
@@ -216,10 +252,7 @@ function PublikasiContent() {
                   {publikasi.foto && (
                     <div className="relative w-full h-48 bg-gray-200 dark:bg-gray-700 overflow-hidden">
                       <Image
-                        src={`${
-                          process.env.NEXT_PUBLIC_API_URL ||
-                          "http://localhost:7000"
-                        }${publikasi.foto}`}
+                        src={`${baseURL}${publikasi.foto}`}
                         alt={publikasi.judul}
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-300"
@@ -343,8 +376,9 @@ function PublikasiContent() {
             )}
           </>
         )}
-      </div>
-    </section>
+        </div>
+      </section>
+    </>
   );
 }
 

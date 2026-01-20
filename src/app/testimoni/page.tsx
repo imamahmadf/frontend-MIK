@@ -7,6 +7,7 @@ import Image from "next/image";
 import { getAllTestimoni } from "@/lib/api/testimoni";
 import { Testimoni } from "@/types/testimoni";
 import { getCurrentLanguage, LanguageCode } from "@/lib/language";
+import { useTranslations } from "@/hooks/useTranslations";
 
 function TestimoniContent() {
   const [testimoniList, setTestimoniList] = useState<Testimoni[]>([]);
@@ -14,6 +15,7 @@ function TestimoniContent() {
   const [error, setError] = useState<string | null>(null);
   const searchParams = useSearchParams();
   const [mounted, setMounted] = useState(false);
+  const t = useTranslations();
 
   useEffect(() => {
     setMounted(true);
@@ -53,22 +55,44 @@ function TestimoniContent() {
     return lang ? `${path}?lang=${lang}` : path;
   };
 
-  return (
-    <section className="relative min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50/30 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-      {/* Decorative Background Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary-light/10 rounded-full blur-3xl"></div>
-        <div className="absolute top-60 -left-40 w-80 h-80 bg-purple-400/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-20 right-20 w-60 h-60 bg-primary/5 rounded-full blur-2xl"></div>
-      </div>
+  const baseURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:7000";
 
-      <div className="container relative mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20 max-w-7xl">
-        {/* Header Section */}
-        <div className="mb-12 md:mb-16 text-center">
+  // Ambil gambar pertama dari testimoni untuk background (jika ada)
+  const heroImage = testimoniList.length > 0 && testimoniList[0].foto 
+    ? `${baseURL}${testimoniList[0].foto}` 
+    : null;
+
+  return (
+    <>
+      {/* Hero Section */}
+      <section 
+        className="relative h-[50vh] min-h-[400px] max-h-[600px] flex items-center justify-center overflow-hidden"
+      >
+        {/* Background Image */}
+        <div 
+          className="absolute inset-0 w-full h-full"
+          style={{
+            backgroundImage: heroImage 
+              ? `url(${heroImage})` 
+              : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat'
+          }}
+        />
+        
+        {/* Overlay untuk readability */}
+        <div className="absolute inset-0 bg-black/50 dark:bg-black/60"></div>
+        
+        {/* Gradient overlay untuk depth */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black/70"></div>
+
+        {/* Content */}
+        <div className="relative z-10 container mx-auto px-4 text-center">
           <div className="inline-block mb-4">
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10 dark:from-blue-500/20 dark:to-purple-500/20 border border-blue-200/50 dark:border-blue-800/50">
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 dark:bg-white/20 backdrop-blur-md border border-white/20">
               <svg
-                className="w-5 h-5 text-primary dark:text-primary-light"
+                className="w-5 h-5 text-white"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -80,18 +104,30 @@ function TestimoniContent() {
                   d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
                 />
               </svg>
-              <span className="text-sm font-semibold text-primary dark:text-primary-light">
-                Kata Mereka
+              <span className="text-sm font-semibold text-white">
+                {t.latestTestimoni.badge}
               </span>
             </span>
           </div>
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 bg-gradient-to-r from-gray-900 via-blue-800 to-gray-900 dark:from-white dark:via-blue-300 dark:to-white bg-clip-text text-transparent">
-            Testimoni
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-white">
+            {t.latestTestimoni.title}
           </h1>
-          <p className="text-lg md:text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-            Dengarkan apa kata mereka tentang pengalaman mereka
+          <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto">
+            {t.latestTestimoni.description}
           </p>
         </div>
+      </section>
+
+      {/* Main Content */}
+      <section className="relative min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50/30 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+        {/* Decorative Background Elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary-light/10 rounded-full blur-3xl"></div>
+          <div className="absolute top-60 -left-40 w-80 h-80 bg-purple-400/10 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-20 right-20 w-60 h-60 bg-primary/5 rounded-full blur-2xl"></div>
+        </div>
+
+        <div className="container relative mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20 max-w-7xl">
 
         {/* Testimoni Grid */}
         {loading ? (
@@ -134,10 +170,7 @@ function TestimoniContent() {
                   {testimoni.foto && (
                     <div className="relative w-full h-48 bg-gray-200 dark:bg-gray-700 overflow-hidden">
                       <Image
-                        src={`${
-                          process.env.NEXT_PUBLIC_API_URL ||
-                          "http://localhost:7000"
-                        }${testimoni.foto}`}
+                        src={`${baseURL}${testimoni.foto}`}
                         alt={testimoni.nama}
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-300"
@@ -222,8 +255,9 @@ function TestimoniContent() {
             ))}
           </div>
         )}
-      </div>
-    </section>
+        </div>
+      </section>
+    </>
   );
 }
 

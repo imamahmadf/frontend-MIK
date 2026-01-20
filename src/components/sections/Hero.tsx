@@ -306,7 +306,7 @@ function TypingText({
                   <p className="text-lg md:text-xl text-neutral-700 dark:text-neutral-300 mb-10 leading-relaxed">
                     Dari sebuah pulau di timur Indonesia, Pulau Buru di Provinsi
                     Maluku, perjalanan itu dimulai. Di tempat yang jauh dari
-                    hiruk-pikuk kota besar, Muhamad Iksan Kiat tumbuh dengan
+                    hiruk-pikuk kota besar, <strong className="font-semibold text-neutral-900 dark:text-white">Muhammad Iksan Kiat</strong> tumbuh dengan
                     satu keyakinan sederhana: anak muda harus berani bermimpi
                     dan pulang membawa manfaat.
                   </p>

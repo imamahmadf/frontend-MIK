@@ -22,13 +22,19 @@ export function generateSEOMetadata({
   const defaultKeywords = [
     "Muhammad Iksan Kiat",
     "muhammad iksan kiat",
+    "Muhammad Iksan",
     "Iksan Kiat",
+    "muhammad iksan kiat esdm",
+    "Muhammad Iksan Kiat Tenaga Ahli Menteri",
     "Tenaga Ahli Menteri ESDM",
     "Kementerian Energi dan Sumber Daya Mineral",
     "ESDM",
     "energi Indonesia",
     "kebijakan energi",
     "pengembangan berkelanjutan",
+    "biografi Muhammad Iksan Kiat",
+    "profile Muhammad Iksan Kiat",
+    "muhammadiksankiat",
   ];
 
   return {

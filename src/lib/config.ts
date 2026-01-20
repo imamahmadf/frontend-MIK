@@ -12,9 +12,9 @@
  */
 
 // Pilih salah satu domain berikut:
-export const SITE_URL = "https://www.muhammadiksankiat.com";
+// export const SITE_URL = "https://www.muhammadiksankiat.com";
 // Atau gunakan domain .id:
-// export const SITE_URL = "https://www.muhammadiksankiat.id";
+export const SITE_URL = "https://muhammadiksankiat.id";
 
 export const SITE_NAME = "Muhammad Iksan Kiat";
 export const SITE_DESCRIPTION =

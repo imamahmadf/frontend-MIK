@@ -48,7 +48,9 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   const setTheme = (newTheme: Theme) => {
     setThemeState(newTheme);
-    localStorage.setItem("theme", newTheme);
+    if (mounted) {
+      localStorage.setItem("theme", newTheme);
+    }
     applyTheme(newTheme);
   };
 
@@ -57,13 +59,16 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     setTheme(newTheme);
   };
 
-  // Prevent hydration mismatch
-  if (!mounted) {
-    return <>{children}</>;
-  }
+  // Selalu sediakan context, bahkan saat belum mounted
+  // Ini mencegah error "useTheme must be used within a ThemeProvider"
+  const contextValue: ThemeContextType = {
+    theme,
+    setTheme,
+    toggleTheme,
+  };
 
   return (
-    <ThemeContext.Provider value={{ theme, setTheme, toggleTheme }}>
+    <ThemeContext.Provider value={contextValue}>
       {children}
     </ThemeContext.Provider>
   );
