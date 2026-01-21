@@ -8,7 +8,6 @@ import Projects from "@/components/sections/Projects";
 import GaleriCarousel from "@/components/sections/GaleriCarousel";
 import LatestNews from "@/components/sections/LatestNews";
 import LatestTestimoni from "@/components/sections/LatestTestimoni";
-import Contact from "@/components/sections/Contact";
 import AnimatedSection from "@/components/layout/AnimatedSection";
 import { generateSEOMetadata } from "@/lib/seo";
 import { generateBreadcrumbSchema } from "@/lib/breadcrumb";
@@ -82,9 +81,6 @@ export default function Home({ searchParams }: HomeProps) {
       </AnimatedSection>{" "}
       <AnimatedSection animationType="fade-up" delay={150}>
         <GaleriCarousel searchParams={searchParams} />
-      </AnimatedSection>
-      <AnimatedSection animationType="fade-up" delay={200}>
-        <Contact />
       </AnimatedSection>
     </>
   );

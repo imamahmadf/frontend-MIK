@@ -9,6 +9,8 @@ import { getAllTemaPublikasi } from "@/lib/api/temaPublikasi";
 import { Publikasi, TemaPublikasi } from "@/types/publikasi";
 import { getCurrentLanguage, LanguageCode } from "@/lib/language";
 import { useTranslations } from "@/hooks/useTranslations";
+import HeroImage from "@/components/biografi/HeroImage";
+import { getHero } from "@/lib/api/hero";
 
 function PublikasiContent() {
   const [publikasiList, setPublikasiList] = useState<Publikasi[]>([]);
@@ -20,6 +22,7 @@ function PublikasiContent() {
   const [selectedTema, setSelectedTema] = useState<number | null>(null);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [heroData, setHeroData] = useState<any>(null);
   const t = useTranslations();
 
   useEffect(() => {
@@ -112,7 +115,7 @@ function PublikasiContent() {
     <>
       {/* Hero Section */}
       <section 
-        className="relative h-[50vh] min-h-[400px] max-h-[600px] flex items-center justify-center overflow-hidden"
+        className="relative h-[35vh] min-h-[280px] max-h-[450px] flex items-center justify-center overflow-hidden"
       >
         {/* Background Image */}
         <div 
@@ -134,33 +137,48 @@ function PublikasiContent() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black/70"></div>
 
         {/* Content */}
-        <div className="relative z-10 container mx-auto px-4 text-center">
-          <div className="inline-block mb-4">
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 dark:bg-white/20 backdrop-blur-md border border-white/20">
-              <svg
-                className="w-5 h-5 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-                />
-              </svg>
-              <span className="text-sm font-semibold text-white">
-                Karya Tulis & Riset
-              </span>
-            </span>
+        <div className="relative z-10 container mx-auto h-full">
+          {/* Text Content - Tetap di tengah layar sebagai patokan */}
+          <div className="absolute inset-0 flex items-center justify-center px-4">
+            <div className="text-center w-full max-w-2xl mx-auto">
+              <div className="inline-block mb-4 animate-fade-in-up" style={{ animationDelay: '1.7s', animationFillMode: 'both' }}>
+                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 dark:bg-white/20 backdrop-blur-md border border-white/20">
+                  <svg
+                    className="w-5 h-5 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                    />
+                  </svg>
+                  <span className="text-sm font-semibold text-white">
+                    Karya Tulis & Riset
+                  </span>
+                </span>
+              </div>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-white animate-fade-in-up" style={{ animationDelay: '1.9s', animationFillMode: 'both' }}>
+                {t.nav.publication}
+              </h1>
+              <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto animate-fade-in-up" style={{ animationDelay: '2.1s', animationFillMode: 'both' }}>
+                Daftar karya tulis, riset, atau artikel yang telah diterbitkan.
+              </p>
+            </div>
           </div>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-white">
-            {t.nav.publication}
-          </h1>
-          <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto">
-            Daftar karya tulis, riset, atau artikel yang telah diterbitkan.
-          </p>
+
+          {/* Image - Di samping kanan text, rapat ke bagian paling bawah hero, tinggi memenuhi hero */}
+          <div className="absolute right-4 md:right-8 lg:right-16 xl:right-24 top-16 md:top-20 lg:top-24 bottom-0 hidden md:block">
+            <HeroImage alt={t.nav.publication || "Publikasi"} fullHeight={true} />
+          </div>
+          
+          {/* Image untuk mobile - di tengah bawah */}
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 md:hidden">
+            <HeroImage alt={t.nav.publication || "Publikasi"} />
+          </div>
         </div>
       </section>
 

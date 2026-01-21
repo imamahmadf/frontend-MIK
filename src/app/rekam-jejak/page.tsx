@@ -9,6 +9,7 @@ import { Hero } from "@/types/hero";
 import { getCurrentLanguage, LanguageCode } from "@/lib/language";
 import { getApiBaseURL } from "@/lib/api-config";
 import { useTranslations } from "@/hooks/useTranslations";
+import HeroImage from "@/components/biografi/HeroImage";
 
 function RekamJejakContent() {
   const [rekamJejak, setRekamJejak] = useState<RekamJejak[]>([]);
@@ -87,7 +88,7 @@ function RekamJejakContent() {
     <>
       {/* Hero Section */}
       <section 
-        className="relative h-[50vh] min-h-[400px] max-h-[600px] flex items-center justify-center overflow-hidden"
+        className="relative h-[35vh] min-h-[280px] max-h-[450px] flex items-center justify-center overflow-hidden"
       >
         {/* Background Image */}
         <div 
@@ -110,33 +111,48 @@ function RekamJejakContent() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black/70"></div>
 
         {/* Content */}
-        <div className="relative z-10 container mx-auto px-4 text-center">
-          <div className="inline-block mb-4">
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 dark:bg-white/20 backdrop-blur-md border border-white/20">
-              <svg
-                className="w-5 h-5 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              <span className="text-sm font-semibold text-white">
-                {t.nav.timeline}
-              </span>
-            </span>
+        <div className="relative z-10 container mx-auto h-full">
+          {/* Text Content - Tetap di tengah layar sebagai patokan */}
+          <div className="absolute inset-0 flex items-center justify-center px-4">
+            <div className="text-center w-full max-w-2xl mx-auto">
+              <div className="inline-block mb-4 animate-fade-in-up" style={{ animationDelay: '1.7s', animationFillMode: 'both' }}>
+                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 dark:bg-white/20 backdrop-blur-md border border-white/20">
+                  <svg
+                    className="w-5 h-5 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  <span className="text-sm font-semibold text-white">
+                    {t.nav.timeline}
+                  </span>
+                </span>
+              </div>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-white animate-fade-in-up" style={{ animationDelay: '1.9s', animationFillMode: 'both' }}>
+                {t.rekamJejak.title}
+              </h1>
+              <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto animate-fade-in-up" style={{ animationDelay: '2.1s', animationFillMode: 'both' }}>
+                {t.rekamJejak.description}
+              </p>
+            </div>
           </div>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-white">
-            {t.rekamJejak.title}
-          </h1>
-          <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto">
-            {t.rekamJejak.description}
-          </p>
+
+          {/* Image - Di samping kanan text, rapat ke bagian paling bawah hero, tinggi memenuhi hero */}
+          <div className="absolute right-4 md:right-8 lg:right-16 xl:right-24 top-16 md:top-20 lg:top-24 bottom-0 hidden md:block">
+            <HeroImage alt={t.rekamJejak.title || "Rekam Jejak"} fullHeight={true} />
+          </div>
+          
+          {/* Image untuk mobile - di tengah bawah */}
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 md:hidden">
+            <HeroImage alt={t.rekamJejak.title || "Rekam Jejak"} />
+          </div>
         </div>
       </section>
 

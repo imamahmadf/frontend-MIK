@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, Suspense, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -25,6 +26,7 @@ function HeaderContent() {
   const [isSearching, setIsSearching] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
+  const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const dispatch = useAppDispatch();
@@ -39,13 +41,28 @@ function HeaderContent() {
 
   useEffect(() => {
     setMounted(true);
+    if (typeof window !== "undefined" && document.body) {
+      setPortalContainer(document.body);
+    }
   }, []);
 
-  // Focus input ketika modal dibuka
+  // Focus input ketika modal dibuka dan handle body scroll
   useEffect(() => {
-    if (isSearchOpen && searchInputRef.current) {
-      searchInputRef.current.focus();
+    if (isSearchOpen) {
+      if (searchInputRef.current) {
+        searchInputRef.current.focus();
+      }
+      // Prevent body scroll when modal is open
+      document.body.style.overflow = "hidden";
+    } else {
+      // Restore body scroll when modal is closed
+      document.body.style.overflow = "unset";
     }
+
+    // Cleanup function
+    return () => {
+      document.body.style.overflow = "unset";
+    };
   }, [isSearchOpen]);
 
   // Debounced search - Pencarian dilakukan di backend
@@ -657,163 +674,180 @@ function HeaderContent() {
         </div>
       </nav>
 
-      {/* Search Modal */}
-      {isSearchOpen && (
-        <div
-          className="fixed inset-0 z-[100] bg-black/50 dark:bg-black/70 backdrop-blur-sm flex items-start justify-center pt-20 md:pt-32 px-4"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) {
-              setIsSearchOpen(false);
-              setSearchQuery("");
-              setSearchResults([]);
-            }
-          }}
-        >
-          <div
-            className="w-full max-w-2xl bg-white dark:bg-gray-800 rounded-lg shadow-2xl border border-neutral-200 dark:border-gray-700 max-h-[80vh] flex flex-col"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Search Input */}
-            <div className="p-4 border-b border-neutral-200 dark:border-gray-700">
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <svg
-                    className="w-5 h-5 text-neutral-400"
-                    fill="none"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                </div>
-                <input
-                  ref={searchInputRef}
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder={t.search.placeholder}
-                  className="w-full pl-10 pr-10 py-3 border border-neutral-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary-light focus:border-transparent"
-                />
-                {searchQuery && (
-                  <button
-                    onClick={() => {
-                      setSearchQuery("");
-                      setSearchResults([]);
-                      searchInputRef.current?.focus();
-                    }}
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                  >
-                    <svg
-                      className="w-5 h-5 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300"
-                      fill="none"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                )}
-              </div>
-            </div>
-
-            {/* Search Results */}
-            <div className="flex-1 overflow-y-auto p-4">
-              {isSearching ? (
-                <div className="text-center py-8">
-                  <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary dark:border-primary-light"></div>
-                  <p className="mt-4 text-neutral-600 dark:text-neutral-400">
-                    {t.search.loading}
-                  </p>
-                </div>
-              ) : searchError ? (
-                <div className="text-center py-8">
-                  <p className="text-red-600 dark:text-red-400">
-                    {searchError}
-                  </p>
-                </div>
-              ) : searchQuery.trim().length < 2 ? (
-                <div className="text-center py-8">
-                  <p className="text-neutral-600 dark:text-neutral-400">
-                    {t.search.minChars}
-                  </p>
-                </div>
-              ) : searchResults.length === 0 ? (
-                <div className="text-center py-8">
-                  <p className="text-neutral-600 dark:text-neutral-400">
-                    {t.search.noResults}
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  {searchResults.map((berita) => {
-                    const plainText = berita.isi.replace(/<[^>]*>/g, "");
-                    const ringkasan =
-                      plainText.length > 100
-                        ? plainText.substring(0, 100) + "..."
-                        : plainText;
-
-                    const baseURL =
-                      process.env.NEXT_PUBLIC_API_URL ||
-                      "http://localhost:7000";
-                    const fotoUrl =
-                      berita.fotos && berita.fotos.length > 0
-                        ? `${baseURL}${berita.fotos[0].foto}`
-                        : berita.foto
-                        ? `${baseURL}${berita.foto}`
-                        : null;
-
-                    return (
-                      <button
-                        key={berita.id}
-                        onClick={() => handleSearchResultClick(berita.slug)}
-                        className="w-full text-left p-4 rounded-lg border border-neutral-200 dark:border-gray-700 hover:bg-neutral-50 dark:hover:bg-gray-700 transition-colors group"
+      {/* Search Modal - Render menggunakan portal untuk memastikan backdrop menutupi seluruh layar */}
+      {isSearchOpen && mounted && portalContainer
+        ? createPortal(
+            <>
+              {/* Backdrop - Menutupi seluruh layar */}
+              <div
+                className="fixed top-0 left-0 right-0 bottom-0 w-screen h-screen z-[100] bg-black/50 dark:bg-black/70 backdrop-blur-md"
+                style={{
+                  position: "fixed",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  width: "100vw",
+                  height: "100vh",
+                }}
+                onClick={() => {
+                  setIsSearchOpen(false);
+                  setSearchQuery("");
+                  setSearchResults([]);
+                }}
+              />
+              {/* Modal Content */}
+              <div
+                className="fixed inset-0 z-[101] flex items-start justify-center pt-20 md:pt-32 px-4 pointer-events-none"
+              >
+                <div
+                  className="w-full max-w-2xl bg-white dark:bg-gray-800 rounded-lg shadow-2xl border border-neutral-200 dark:border-gray-700 max-h-[80vh] flex flex-col pointer-events-auto"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                {/* Search Input */}
+                <div className="p-4 border-b border-neutral-200 dark:border-gray-700">
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <svg
+                        className="w-5 h-5 text-neutral-400"
+                        fill="none"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
                       >
-                        <div className="flex gap-4">
-                          {fotoUrl && (
-                            <div className="relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-neutral-200 dark:bg-gray-600">
-                              <Image
-                                src={fotoUrl}
-                                alt={berita.judul}
-                                fill
-                                className="object-cover"
-                                sizes="80px"
-                              />
-                            </div>
-                          )}
-                          <div className="flex-1 min-w-0">
-                            <h3 className="font-semibold text-neutral-900 dark:text-white group-hover:text-primary dark:group-hover:text-primary-light transition-colors line-clamp-2 mb-1">
-                              {berita.judul}
-                            </h3>
-                            <p className="text-sm text-neutral-600 dark:text-neutral-400 line-clamp-2">
-                              {ringkasan}
-                            </p>
-                            <div className="mt-2 text-xs text-neutral-500 dark:text-neutral-500">
-                              {new Date(berita.createdAt).toLocaleDateString(
-                                "id-ID",
-                                {
-                                  year: "numeric",
-                                  month: "short",
-                                  day: "numeric",
-                                }
-                              )}
-                            </div>
-                          </div>
-                        </div>
+                        <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                      </svg>
+                    </div>
+                    <input
+                      ref={searchInputRef}
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder={t.search.placeholder}
+                      className="w-full pl-10 pr-10 py-3 border border-neutral-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary-light focus:border-transparent"
+                    />
+                    {searchQuery && (
+                      <button
+                        onClick={() => {
+                          setSearchQuery("");
+                          setSearchResults([]);
+                          searchInputRef.current?.focus();
+                        }}
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                      >
+                        <svg
+                          className="w-5 h-5 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300"
+                          fill="none"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path d="M6 18L18 6M6 6l12 12" />
+                        </svg>
                       </button>
-                    );
-                  })}
+                    )}
+                  </div>
                 </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+
+                {/* Search Results */}
+                <div className="flex-1 overflow-y-auto p-4">
+                  {isSearching ? (
+                    <div className="text-center py-8">
+                      <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary dark:border-primary-light"></div>
+                      <p className="mt-4 text-neutral-600 dark:text-neutral-400">
+                        {t.search.loading}
+                      </p>
+                    </div>
+                  ) : searchError ? (
+                    <div className="text-center py-8">
+                      <p className="text-red-600 dark:text-red-400">
+                        {searchError}
+                      </p>
+                    </div>
+                  ) : searchQuery.trim().length < 2 ? (
+                    <div className="text-center py-8">
+                      <p className="text-neutral-600 dark:text-neutral-400">
+                        {t.search.minChars}
+                      </p>
+                    </div>
+                  ) : searchResults.length === 0 ? (
+                    <div className="text-center py-8">
+                      <p className="text-neutral-600 dark:text-neutral-400">
+                        {t.search.noResults}
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      {searchResults.map((berita) => {
+                        const plainText = berita.isi.replace(/<[^>]*>/g, "");
+                        const ringkasan =
+                          plainText.length > 100
+                            ? plainText.substring(0, 100) + "..."
+                            : plainText;
+
+                        const baseURL =
+                          process.env.NEXT_PUBLIC_API_URL ||
+                          "http://localhost:7000";
+                        const fotoUrl =
+                          berita.fotos && berita.fotos.length > 0
+                            ? `${baseURL}${berita.fotos[0].foto}`
+                            : berita.foto
+                            ? `${baseURL}${berita.foto}`
+                            : null;
+
+                        return (
+                          <button
+                            key={berita.id}
+                            onClick={() => handleSearchResultClick(berita.slug)}
+                            className="w-full text-left p-4 rounded-lg border border-neutral-200 dark:border-gray-700 hover:bg-neutral-50 dark:hover:bg-gray-700 transition-colors group"
+                          >
+                            <div className="flex gap-4">
+                              {fotoUrl && (
+                                <div className="relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-neutral-200 dark:bg-gray-600">
+                                  <Image
+                                    src={fotoUrl}
+                                    alt={berita.judul}
+                                    fill
+                                    className="object-cover"
+                                    sizes="80px"
+                                  />
+                                </div>
+                              )}
+                              <div className="flex-1 min-w-0">
+                                <h3 className="font-semibold text-neutral-900 dark:text-white group-hover:text-primary dark:group-hover:text-primary-light transition-colors line-clamp-2 mb-1">
+                                  {berita.judul}
+                                </h3>
+                                <p className="text-sm text-neutral-600 dark:text-neutral-400 line-clamp-2">
+                                  {ringkasan}
+                                </p>
+                                <div className="mt-2 text-xs text-neutral-500 dark:text-neutral-500">
+                                  {new Date(berita.createdAt).toLocaleDateString(
+                                    "id-ID",
+                                    {
+                                      year: "numeric",
+                                      month: "short",
+                                      day: "numeric",
+                                    }
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+                </div>
+              </div>
+            </>,
+            portalContainer
+          )
+        : null}
     </header>
   );
 }

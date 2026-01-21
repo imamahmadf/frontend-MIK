@@ -5,14 +5,19 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { getAllBerita } from "@/lib/api/berita";
+import { getHero } from "@/lib/api/hero";
 import { Berita } from "@/types/berita";
+import { Hero } from "@/types/hero";
 import { getCurrentLanguage, LanguageCode } from "@/lib/language";
+import { getApiBaseURL } from "@/lib/api-config";
 import { useTranslations } from "@/hooks/useTranslations";
+import HeroImage from "@/components/biografi/HeroImage";
 
 function BeritaContent() {
   const [beritaList, setBeritaList] = useState<Berita[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [heroData, setHeroData] = useState<Hero | null>(null);
   const searchParams = useSearchParams();
   const [mounted, setMounted] = useState(false);
   const t = useTranslations();
@@ -48,6 +53,27 @@ function BeritaContent() {
     }
   }, [mounted, searchParams, fetchBerita]);
 
+  // Ambil hero data untuk background image
+  useEffect(() => {
+    const fetchHero = async () => {
+      try {
+        const langFromUrl = searchParams?.get("lang");
+        const lang: LanguageCode =
+          langFromUrl && ["id", "en", "ru"].includes(langFromUrl)
+            ? (langFromUrl as LanguageCode)
+            : getCurrentLanguage();
+        const hero = await getHero(lang);
+        setHeroData(hero);
+      } catch (err) {
+        // Jika hero tidak ditemukan, gunakan fallback gradient
+        console.log("Hero tidak ditemukan, menggunakan gradient fallback");
+      }
+    };
+    if (mounted) {
+      fetchHero();
+    }
+  }, [mounted, searchParams]);
+
   // Helper function untuk membuat href dengan lang parameter
   const createHref = (path: string) => {
     const lang = searchParams?.get("lang");
@@ -60,22 +86,15 @@ function BeritaContent() {
       ? (langFromUrl as LanguageCode)
       : getCurrentLanguage();
 
-  const baseURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:7000";
-
-  // Ambil gambar pertama dari berita untuk background (jika ada)
-  const heroImage = beritaList.length > 0 
-    ? (beritaList[0].fotos && beritaList[0].fotos.length > 0
-        ? `${baseURL}${beritaList[0].fotos[0].foto}`
-        : beritaList[0].foto
-        ? `${baseURL}${beritaList[0].foto}`
-        : null)
-    : null;
+  // Calculate hero image URL - menggunakan hero data dari API
+  const baseURL = mounted ? getApiBaseURL() : '';
+  const heroImage = mounted && heroData?.foto ? `${baseURL}${heroData.foto}` : null;
 
   return (
     <>
       {/* Hero Section */}
       <section 
-        className="relative h-[50vh] min-h-[400px] max-h-[600px] flex items-center justify-center overflow-hidden"
+        className="relative h-[35vh] min-h-[280px] max-h-[450px] flex items-center justify-center overflow-hidden"
       >
         {/* Background Image */}
         <div 
@@ -88,6 +107,7 @@ function BeritaContent() {
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat'
           }}
+          suppressHydrationWarning
         />
         
         {/* Overlay untuk readability */}
@@ -97,41 +117,56 @@ function BeritaContent() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black/70"></div>
 
         {/* Content */}
-        <div className="relative z-10 container mx-auto px-4 text-center">
-          <div className="inline-block mb-4">
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 dark:bg-white/20 backdrop-blur-md border border-white/20">
-              <svg
-                className="w-5 h-5 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
-                />
-              </svg>
-              <span className="text-sm font-semibold text-white">
-                {t.berita.badge}
-              </span>
-            </span>
-          </div>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-white">
-            {t.berita.title}
-          </h1>
-          <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto">
-            {t.berita.description}
-          </p>
-          {beritaList.length > 0 && (
-            <div className="mt-6 flex items-center justify-center gap-2 text-sm text-white/80">
-              <div className="h-1 w-12 bg-gradient-to-r from-white to-white/50 rounded-full"></div>
-              <span>
-                {beritaList.length} {t.berita.available}
-              </span>
+        <div className="relative z-10 container mx-auto h-full">
+          {/* Text Content - Tetap di tengah layar sebagai patokan */}
+          <div className="absolute inset-0 flex items-center justify-center px-4">
+            <div className="text-center w-full max-w-2xl mx-auto">
+              <div className="inline-block mb-4 animate-fade-in-up" style={{ animationDelay: '1.7s', animationFillMode: 'both' }}>
+                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 dark:bg-white/20 backdrop-blur-md border border-white/20">
+                  <svg
+                    className="w-5 h-5 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
+                    />
+                  </svg>
+                  <span className="text-sm font-semibold text-white">
+                    {t.berita.badge}
+                  </span>
+                </span>
+              </div>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-white animate-fade-in-up" style={{ animationDelay: '1.9s', animationFillMode: 'both' }}>
+                {t.berita.title}
+              </h1>
+              <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto animate-fade-in-up" style={{ animationDelay: '2.1s', animationFillMode: 'both' }}>
+                {t.berita.description}
+              </p>
+              {beritaList.length > 0 && (
+                <div className="mt-6 flex items-center justify-center gap-2 text-sm text-white/80 animate-fade-in-up" style={{ animationDelay: '2.3s', animationFillMode: 'both' }}>
+                  <div className="h-1 w-12 bg-gradient-to-r from-white to-white/50 rounded-full"></div>
+                  <span>
+                    {beritaList.length} {t.berita.available}
+                  </span>
+                </div>
+              )}
             </div>
-          )}
+          </div>
+
+          {/* Image - Di samping kanan text, rapat ke bagian paling bawah hero, tinggi memenuhi hero */}
+          <div className="absolute right-4 md:right-8 lg:right-16 xl:right-24 top-16 md:top-20 lg:top-24 bottom-0 hidden md:block">
+            <HeroImage alt={t.berita.title || "Berita"} fullHeight={true} />
+          </div>
+          
+          {/* Image untuk mobile - di tengah bawah */}
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 md:hidden">
+            <HeroImage alt={t.berita.title || "Berita"} />
+          </div>
         </div>
       </section>
 
@@ -224,8 +259,6 @@ function BeritaContent() {
                   ? plainText.substring(0, 120) + "..."
                   : plainText;
 
-              const baseURL =
-                process.env.NEXT_PUBLIC_API_URL || "http://localhost:7000";
               // Prioritaskan foto pertama dari array fotos, fallback ke foto utama
               const fotoUrl =
                 item.fotos && item.fotos.length > 0

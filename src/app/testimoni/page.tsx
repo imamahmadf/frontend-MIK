@@ -5,14 +5,19 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { getAllTestimoni } from "@/lib/api/testimoni";
+import { getHero } from "@/lib/api/hero";
 import { Testimoni } from "@/types/testimoni";
+import { Hero } from "@/types/hero";
 import { getCurrentLanguage, LanguageCode } from "@/lib/language";
+import { getApiBaseURL } from "@/lib/api-config";
 import { useTranslations } from "@/hooks/useTranslations";
+import HeroImage from "@/components/biografi/HeroImage";
 
 function TestimoniContent() {
   const [testimoniList, setTestimoniList] = useState<Testimoni[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [heroData, setHeroData] = useState<Hero | null>(null);
   const searchParams = useSearchParams();
   const [mounted, setMounted] = useState(false);
   const t = useTranslations();
@@ -49,24 +54,42 @@ function TestimoniContent() {
     }
   }, [mounted, searchParams, fetchTestimoni]);
 
+  // Ambil hero data untuk background image
+  useEffect(() => {
+    const fetchHero = async () => {
+      try {
+        const langFromUrl = searchParams?.get("lang");
+        const lang: LanguageCode =
+          langFromUrl && ["id", "en", "ru"].includes(langFromUrl)
+            ? (langFromUrl as LanguageCode)
+            : getCurrentLanguage();
+        const hero = await getHero(lang);
+        setHeroData(hero);
+      } catch (err) {
+        // Jika hero tidak ditemukan, gunakan fallback gradient
+        console.log("Hero tidak ditemukan, menggunakan gradient fallback");
+      }
+    };
+    if (mounted) {
+      fetchHero();
+    }
+  }, [mounted, searchParams]);
+
   // Helper function untuk membuat href dengan lang parameter
   const createHref = (path: string) => {
     const lang = searchParams?.get("lang");
     return lang ? `${path}?lang=${lang}` : path;
   };
 
-  const baseURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:7000";
-
-  // Ambil gambar pertama dari testimoni untuk background (jika ada)
-  const heroImage = testimoniList.length > 0 && testimoniList[0].foto 
-    ? `${baseURL}${testimoniList[0].foto}` 
-    : null;
+  // Calculate hero image URL - menggunakan hero data dari API
+  const baseURL = mounted ? getApiBaseURL() : '';
+  const heroImage = mounted && heroData?.foto ? `${baseURL}${heroData.foto}` : null;
 
   return (
     <>
       {/* Hero Section */}
       <section 
-        className="relative h-[50vh] min-h-[400px] max-h-[600px] flex items-center justify-center overflow-hidden"
+        className="relative h-[35vh] min-h-[280px] max-h-[450px] flex items-center justify-center overflow-hidden"
       >
         {/* Background Image */}
         <div 
@@ -79,6 +102,7 @@ function TestimoniContent() {
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat'
           }}
+          suppressHydrationWarning
         />
         
         {/* Overlay untuk readability */}
@@ -88,33 +112,48 @@ function TestimoniContent() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black/70"></div>
 
         {/* Content */}
-        <div className="relative z-10 container mx-auto px-4 text-center">
-          <div className="inline-block mb-4">
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 dark:bg-white/20 backdrop-blur-md border border-white/20">
-              <svg
-                className="w-5 h-5 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-                />
-              </svg>
-              <span className="text-sm font-semibold text-white">
-                {t.latestTestimoni.badge}
-              </span>
-            </span>
+        <div className="relative z-10 container mx-auto h-full">
+          {/* Text Content - Tetap di tengah layar sebagai patokan */}
+          <div className="absolute inset-0 flex items-center justify-center px-4">
+            <div className="text-center w-full max-w-2xl mx-auto">
+              <div className="inline-block mb-4 animate-fade-in-up" style={{ animationDelay: '1.7s', animationFillMode: 'both' }}>
+                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 dark:bg-white/20 backdrop-blur-md border border-white/20">
+                  <svg
+                    className="w-5 h-5 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                    />
+                  </svg>
+                  <span className="text-sm font-semibold text-white">
+                    {t.latestTestimoni.badge}
+                  </span>
+                </span>
+              </div>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-white animate-fade-in-up" style={{ animationDelay: '1.9s', animationFillMode: 'both' }}>
+                {t.latestTestimoni.title}
+              </h1>
+              <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto animate-fade-in-up" style={{ animationDelay: '2.1s', animationFillMode: 'both' }}>
+                {t.latestTestimoni.description}
+              </p>
+            </div>
           </div>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-white">
-            {t.latestTestimoni.title}
-          </h1>
-          <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto">
-            {t.latestTestimoni.description}
-          </p>
+
+          {/* Image - Di samping kanan text, rapat ke bagian paling bawah hero, tinggi memenuhi hero */}
+          <div className="absolute right-4 md:right-8 lg:right-16 xl:right-24 top-16 md:top-20 lg:top-24 bottom-0 hidden md:block">
+            <HeroImage alt={t.latestTestimoni.title || "Testimoni"} fullHeight={true} />
+          </div>
+          
+          {/* Image untuk mobile - di tengah bawah */}
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 md:hidden">
+            <HeroImage alt={t.latestTestimoni.title || "Testimoni"} />
+          </div>
         </div>
       </section>
 
@@ -174,6 +213,7 @@ function TestimoniContent() {
                         alt={testimoni.nama}
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       />
                       {/* Gradient overlay dengan accent purple */}
                       <div className="absolute inset-0 bg-gradient-to-t from-purple-500/20 via-transparent to-transparent group-hover:from-purple-500/30 transition-all duration-300"></div>

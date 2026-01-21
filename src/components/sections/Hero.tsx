@@ -92,6 +92,12 @@ function TypingText({
   const [heroData, setHeroData] = useState<Hero | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  // Set mounted state untuk client-side only rendering
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Fetch hero data ketika bahasa berubah
   useEffect(() => {
@@ -138,78 +144,29 @@ function TypingText({
   return (
     <section
       id="home"
-      className="min-h-screen flex items-center justify-center pt-32 pb-20 px-4 relative overflow-hidden bg-gradient-to-br from-neutral-50 via-white via-primary/5 to-neutral-100 dark:from-neutral-900 dark:via-neutral-800 dark:via-primary/10 dark:to-neutral-900"
+      className="min-h-screen flex items-center justify-center pt-32 pb-20 px-4 relative overflow-hidden"
     >
-      {/* Animated Mesh Gradient Background */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/8 via-transparent via-accent/5 to-primary-light/8 dark:from-primary/15 dark:via-transparent dark:via-accent/8 dark:to-primary-light/15" />
-        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-accent/3 to-primary/5 dark:from-transparent dark:via-accent/6 dark:to-primary/10" />
-        <div className="absolute inset-0 bg-gradient-to-bl from-primary-light/5 via-transparent to-accent/4 dark:from-primary-light/8 dark:via-transparent dark:to-accent/6" />
-      </div>
-
-      {/* Enhanced Animated Gradient Blobs */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 -left-1/4 w-[500px] h-[500px] bg-gradient-to-br from-primary/20 via-primary-light/15 to-transparent dark:from-primary/25 dark:via-primary-light/20 rounded-full blur-3xl animate-blob opacity-60" />
-        <div
-          className="absolute bottom-1/4 -right-1/4 w-[500px] h-[500px] bg-gradient-to-tl from-accent/20 via-accent-light/15 to-transparent dark:from-accent/25 dark:via-accent-light/20 rounded-full blur-3xl animate-blob opacity-60"
-          style={{ animationDelay: "2s", animationDuration: "8s" }}
-        />
-        <div
-          className="absolute top-1/2 right-1/4 w-[400px] h-[400px] bg-gradient-to-br from-primary-light/15 via-accent/10 to-transparent dark:from-primary-light/20 dark:via-accent/15 rounded-full blur-3xl animate-blob opacity-50"
-          style={{ animationDelay: "4s", animationDuration: "10s" }}
-        />
-        <div
-          className="absolute bottom-1/3 left-1/3 w-[350px] h-[350px] bg-gradient-to-tr from-accent-light/12 via-primary/8 to-transparent dark:from-accent-light/18 dark:via-primary/12 rounded-full blur-3xl animate-blob opacity-40"
-          style={{ animationDelay: "6s", animationDuration: "12s" }}
-        />
-      </div>
-
-      {/* Geometric Pattern - Hexagons */}
-      <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-            backgroundSize: "60px 60px",
-          }}
-        />
-      </div>
-
-      {/* Subtle Grid Pattern */}
-      <div className="absolute inset-0 opacity-[0.02] dark:opacity-[0.04] pointer-events-none">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `
-              linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px),
-              linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px)
-            `,
-            backgroundSize: "50px 50px",
-          }}
-        />
-      </div>
-
-      {/* Animated Circles Pattern */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-32 h-32 border border-primary/10 dark:border-primary/20 rounded-full animate-float" />
-        <div
-          className="absolute bottom-32 right-20 w-24 h-24 border border-accent/10 dark:border-accent/20 rounded-full animate-float"
-          style={{ animationDelay: "1s" }}
-        />
-        <div
-          className="absolute top-1/2 left-20 w-16 h-16 border border-primary-light/10 dark:border-primary-light/20 rounded-full animate-float"
-          style={{ animationDelay: "2s" }}
-        />
-        <div
-          className="absolute bottom-20 right-1/4 w-20 h-20 border border-accent-light/10 dark:border-accent-light/20 rounded-full animate-float"
-          style={{ animationDelay: "3s" }}
-        />
-      </div>
-
-      {/* Radial Gradient Overlay untuk Depth */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.01)_100%)] dark:bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.02)_100%)]" />
-      </div>
+      {/* Video Background - hanya render di client-side untuk menghindari hydration error */}
+      {mounted && (
+        <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{ zIndex: 0 }}
+          >
+            <source src="/assets/beranda/hero1.mp4" type="video/mp4" />
+          </video>
+          {/* Dark overlay untuk memastikan text tetap terlihat */}
+          <div className="absolute inset-0 bg-black/40 dark:bg-black/60" style={{ zIndex: 1 }} />
+        </div>
+      )}
+      {/* Fallback background saat video belum dimuat */}
+      {!mounted && (
+        <div className="absolute inset-0 bg-gradient-to-br from-neutral-50 via-white via-primary/5 to-neutral-100 dark:from-neutral-900 dark:via-neutral-800 dark:via-primary/10 dark:to-neutral-900" />
+      )}
 
       <div className="container mx-auto max-w-6xl relative z-10">
         <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12">
@@ -292,7 +249,7 @@ function TypingText({
                 <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-neutral-900 dark:text-white mb-6">
                   {heroData.slogan}
                 </h2>
-              )}
+              )} 
               {heroData?.isi && (
                 <p className="text-lg md:text-xl text-neutral-700 dark:text-neutral-300 mb-10 leading-relaxed">
                   {heroData.isi}
