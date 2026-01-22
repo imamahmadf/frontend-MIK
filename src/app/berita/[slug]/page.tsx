@@ -4,6 +4,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { getBeritaBySlug } from "@/lib/api/berita";
 import { getLanguageFromSearchParams } from "@/lib/language";
+import { generateSEOMetadata } from "@/lib/seo";
+import { SITE_URL } from "@/lib/config";
 import "react-quill/dist/quill.snow.css";
 import "../quill-content.css";
 
@@ -26,19 +28,46 @@ export async function generateMetadata({
     const beritaIsi = typeof berita.isi === "string" ? berita.isi : "";
     const beritaJudul =
       typeof berita.judul === "string" ? berita.judul : "Berita";
-    return {
+    const cleanDescription =
+      berita.meta_description ||
+      (beritaIsi
+        ? beritaIsi.replace(/<[^>]*>/g, "").substring(0, 160)
+        : "Halaman detail berita.");
+    
+    // Get image URL if available
+    const baseURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:7000";
+    const imageUrl = berita.fotos && berita.fotos.length > 0
+      ? `${baseURL}${berita.fotos[0].foto}`
+      : berita.foto
+      ? `${baseURL}${berita.foto}`
+      : undefined;
+
+    return generateSEOMetadata({
       title: beritaJudul,
-      description:
-        berita.meta_description ||
-        (beritaIsi
-          ? beritaIsi.replace(/<[^>]*>/g, "").substring(0, 160)
-          : "Halaman detail berita."),
-    };
+      description: cleanDescription,
+      keywords: [
+        "berita",
+        "artikel",
+        beritaJudul,
+        "Muhammad Iksan Kiat",
+        "ESDM",
+        "energi Indonesia",
+      ],
+      image: imageUrl,
+      url: `${SITE_URL}/berita/${params.slug}`,
+      type: "article",
+      publishedTime: berita.createdAt,
+      modifiedTime: berita.updatedAt,
+      author: "Muhammad Iksan Kiat",
+      section: "Berita",
+    });
   } catch {
-    return {
+    return generateSEOMetadata({
       title: "Berita Tidak Ditemukan",
       description: "Halaman detail berita.",
-    };
+      url: `${SITE_URL}/berita/${params.slug}`,
+      type: "article",
+    });
   }
 }
 
@@ -77,7 +106,58 @@ export default async function DetailBeritaPage({
   const backLinkHref =
     lang && lang !== "id" ? `/berita?lang=${lang}` : "/berita";
 
+  const baseURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:7000";
+  const cleanDescription =
+    berita.meta_description ||
+    (beritaIsi
+      ? beritaIsi.replace(/<[^>]*>/g, "").substring(0, 160)
+      : "Halaman detail berita.");
+
+  // Generate Article structured data
+  const articleImage = berita.fotos && berita.fotos.length > 0
+    ? `${baseURL}${berita.fotos[0].foto}`
+    : berita.foto
+    ? `${baseURL}${berita.foto}`
+    : undefined;
+
+  const articleSchema: any = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: beritaJudul,
+    description: cleanDescription,
+    datePublished: berita.createdAt,
+    dateModified: berita.updatedAt,
+    author: {
+      "@type": "Person",
+      name: "Muhammad Iksan Kiat",
+      url: SITE_URL,
+    },
+    publisher: {
+      "@type": "Person",
+      name: "Muhammad Iksan Kiat",
+      url: SITE_URL,
+    },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `${SITE_URL}/berita/${params.slug}`,
+    },
+    articleSection: "Berita",
+    inLanguage: lang === "id" ? "id-ID" : lang === "en" ? "en-US" : "ru-RU",
+  };
+
+  if (articleImage) {
+    articleSchema.image = articleImage;
+  }
+
   return (
+    <>
+      {/* Article Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(articleSchema),
+        }}
+      />
     <section className="container mx-auto px-4 py-12">
       {/* Back Button */}
       <Link
@@ -176,5 +256,6 @@ export default async function DetailBeritaPage({
         </Link>
       </div>
     </section>
+    </>
   );
 }

@@ -6,6 +6,8 @@ import { getLanguageFromSearchParams, LanguageCode } from "@/lib/language";
 import { getApiBaseURL } from "@/lib/api-config";
 import { getTranslations } from "@/lib/translations";
 import HeroImage from "@/components/biografi/HeroImage";
+import { generateSEOMetadata } from "@/lib/seo";
+import { SITE_URL } from "@/lib/config";
 import "react-quill/dist/quill.snow.css";
 import "../berita/quill-content.css";
 
@@ -21,17 +23,32 @@ export async function generateMetadata({
       ? getLanguageFromSearchParams(searchParams)
       : "id";
     const biografi = await getBiografi(lang);
-    return {
+    const cleanDescription = biografi.isi
+      ? biografi.isi.replace(/<[^>]*>/g, "").substring(0, 160)
+      : "Profil lengkap dan perjalanan karier Muhammad Iksan Kiat sebagai Tenaga Ahli Menteri di Kementerian Energi dan Sumber Daya Mineral.";
+    
+    return generateSEOMetadata({
       title: biografi.judul || "Biografi",
-      description: biografi.isi
-        ? biografi.isi.replace(/<[^>]*>/g, "").substring(0, 160)
-        : "Profil singkat dan perjalanan karier.",
-    };
+      description: cleanDescription,
+      keywords: [
+        "biografi Muhammad Iksan Kiat",
+        "profil lengkap",
+        "perjalanan karier",
+        "riwayat hidup",
+        "biografi Tenaga Ahli Menteri ESDM",
+      ],
+      url: `${SITE_URL}/biografi`,
+      type: "profile",
+      section: "Biografi",
+    });
   } catch {
-    return {
+    return generateSEOMetadata({
       title: "Biografi",
-      description: "Profil singkat dan perjalanan karier.",
-    };
+      description: "Profil lengkap dan perjalanan karier Muhammad Iksan Kiat sebagai Tenaga Ahli Menteri di Kementerian Energi dan Sumber Daya Mineral.",
+      url: `${SITE_URL}/biografi`,
+      type: "profile",
+      section: "Biografi",
+    });
   }
 }
 

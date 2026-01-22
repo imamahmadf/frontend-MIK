@@ -85,10 +85,25 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    google: "your-google-verification-code",
+    google: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION || "your-google-verification-code",
+    yandex: process.env.NEXT_PUBLIC_YANDEX_VERIFICATION,
+    yahoo: process.env.NEXT_PUBLIC_YAHOO_VERIFICATION,
   },
   alternates: {
     canonical: SITE_URL,
+    languages: {
+      "id-ID": SITE_URL,
+      "en-US": `${SITE_URL}?lang=en`,
+      "ru-RU": `${SITE_URL}?lang=ru`,
+    },
+  },
+  category: "Profile & Portfolio",
+  classification: "Personal Website",
+  other: {
+    "geo.region": "ID-JK",
+    "geo.placename": "Jakarta",
+    "geo.position": "-6.2088;106.8456",
+    "ICBM": "-6.2088, 106.8456",
   },
 };
 
@@ -137,6 +152,26 @@ export default function RootLayout({
             }),
           }}
         />
+        {/* Organization Schema */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "Kementerian Energi dan Sumber Daya Mineral",
+              alternateName: "ESDM",
+              url: "https://www.esdm.go.id",
+              logo: `${SITE_URL}/logo.svg`,
+              contactPoint: {
+                "@type": "ContactPoint",
+                contactType: "Government Office",
+                areaServed: "ID",
+                availableLanguage: ["Indonesian", "English"],
+              },
+            }),
+          }}
+        />
         {/* Website Schema untuk Sitelinks */}
         <script
           type="application/ld+json"
@@ -152,6 +187,7 @@ export default function RootLayout({
                 "@type": "Person",
                 name: "Muhammad Iksan Kiat",
               },
+              inLanguage: ["id-ID", "en-US", "ru-RU"],
               potentialAction: {
                 "@type": "SearchAction",
                 target: {
