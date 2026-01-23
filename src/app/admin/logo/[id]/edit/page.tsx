@@ -220,10 +220,13 @@ export default function EditLogoPage() {
                 Preview:
               </p>
               <div className="w-48 h-32 bg-gray-50 dark:bg-gray-800 rounded-lg p-4 flex items-center justify-center">
-                <img
+                <Image
                   src={preview}
                   alt="Preview"
+                  width={192}
+                  height={128}
                   className="max-w-full max-h-full object-contain"
+                  unoptimized
                 />
               </div>
             </div>

@@ -98,7 +98,7 @@ export default function AdminLogoPage() {
       ) : logoList.length === 0 ? (
         <div className="text-center py-8">
           <p className="text-gray-600 dark:text-gray-400">
-            Belum ada logo. Klik tombol "Tambah Logo" untuk menambahkan logo baru.
+            Belum ada logo. Klik tombol &quot;Tambah Logo&quot; untuk menambahkan logo baru.
           </p>
         </div>
       ) : (
