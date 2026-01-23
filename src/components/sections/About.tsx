@@ -134,29 +134,6 @@ function AboutContent() {
                 </p>
               </div>
               <div className="bg-neutral-100 dark:bg-neutral-800 rounded-xl p-8 shadow-md border border-neutral-200 dark:border-neutral-700">
-                <h3 className="text-2xl font-semibold mb-4 text-neutral-900 dark:text-white">
-                  {t.about.information}
-                </h3>
-                <ul className="space-y-3 text-neutral-700 dark:text-neutral-300">
-                  <li>
-                    <strong className="text-primary dark:text-primary-light">
-                      {t.about.location}:
-                    </strong>{" "}
-                    Jakarta, Indonesia
-                  </li>
-                  <li>
-                    <strong className="text-primary dark:text-primary-light">
-                      {t.about.email}:
-                    </strong>{" "}
-                    email@example.com
-                  </li>
-                  <li>
-                    <strong className="text-primary dark:text-primary-light">
-                      {t.about.focus}:
-                    </strong>{" "}
-                    Kebijakan energi, kerja sama internasional
-                  </li>
-                </ul>
               </div>
             </div>
           </div>
@@ -179,7 +156,7 @@ function AboutContent() {
                   </p>
                 )}
               </div>
-              <div className="bg-neutral-100 dark:bg-neutral-800 rounded-xl p-8 shadow-md border border-neutral-200 dark:border-neutral-700">
+              <div className="">
                 {fotoUrl && (
                   <div className="mb-6">
                     <div className="relative w-full h-64 rounded-lg overflow-hidden">
@@ -193,29 +170,6 @@ function AboutContent() {
                     </div>
                   </div>
                 )}
-                <h3 className="text-2xl font-semibold mb-4 text-neutral-900 dark:text-white">
-                  {t.about.information}
-                </h3>
-                <ul className="space-y-3 text-neutral-700 dark:text-neutral-300">
-                  <li>
-                    <strong className="text-primary dark:text-primary-light">
-                      {t.about.location}:
-                    </strong>{" "}
-                    Jakarta, Indonesia
-                  </li>
-                  <li>
-                    <strong className="text-primary dark:text-primary-light">
-                      {t.about.email}:
-                    </strong>{" "}
-                    email@example.com
-                  </li>
-                  <li>
-                    <strong className="text-primary dark:text-primary-light">
-                      {t.about.focus}:
-                    </strong>{" "}
-                    Kebijakan energi, kerja sama internasional
-                  </li>
-                </ul>
               </div>
             </div>
           </>

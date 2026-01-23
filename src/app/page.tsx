@@ -8,6 +8,8 @@ import Projects from "@/components/sections/Projects";
 import GaleriCarousel from "@/components/sections/GaleriCarousel";
 import LatestNews from "@/components/sections/LatestNews";
 import LatestTestimoni from "@/components/sections/LatestTestimoni";
+import LogoSection from "@/components/sections/Logo";
+import VideoSection from "@/components/sections/VideoSection";
 import AnimatedSection from "@/components/layout/AnimatedSection";
 import { generateSEOMetadata } from "@/lib/seo";
 import { generateBreadcrumbSchema } from "@/lib/breadcrumb";
@@ -60,12 +62,15 @@ export default function Home({ searchParams }: HomeProps) {
         <Hero />
       </AnimatedSection>
       <AnimatedSection animationType="fade-up" delay={100}>
-        <About />
+        <VideoSection />
       </AnimatedSection>
       <AnimatedSection animationType="fade-up" delay={150}>
-        <FaktaUnik />
+        <About />
       </AnimatedSection>
       <AnimatedSection animationType="fade-up" delay={200}>
+        <FaktaUnik />
+      </AnimatedSection>
+      <AnimatedSection animationType="fade-up" delay={250}>
         <Experience />
       </AnimatedSection>
       {/* <AnimatedSection animationType="slide-left" delay={100}>
@@ -73,14 +78,17 @@ export default function Home({ searchParams }: HomeProps) {
       </AnimatedSection> */}
       {/* <Skills /> */}
       {/* <Projects /> */}
-      <AnimatedSection animationType="fade-up" delay={200}>
+      <AnimatedSection animationType="fade-up" delay={300}>
         <LatestNews searchParams={searchParams} />
       </AnimatedSection>
-      <AnimatedSection animationType="fade-up" delay={150}>
+      <AnimatedSection animationType="fade-up" delay={350}>
         <LatestTestimoni searchParams={searchParams} />
-      </AnimatedSection>{" "}
-      <AnimatedSection animationType="fade-up" delay={150}>
+      </AnimatedSection>
+      <AnimatedSection animationType="fade-up" delay={400}>
         <GaleriCarousel searchParams={searchParams} />
+      </AnimatedSection>
+      <AnimatedSection animationType="fade-up" delay={450}>
+        <LogoSection searchParams={searchParams} />
       </AnimatedSection>
     </>
   );

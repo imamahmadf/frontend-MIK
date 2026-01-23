@@ -28,6 +28,7 @@ export interface Translations {
     adminPengalaman: string;
     adminTentang: string;
     adminFaktaUnik: string;
+    adminLogo: string;
   };
   footer: {
     rightsReserved: string;
@@ -121,6 +122,10 @@ export interface Translations {
     empty: string;
     footerMessage: string;
   };
+  logo: {
+    title: string;
+    description: string;
+  };
   search: {
     placeholder: string;
     noResults: string;
@@ -155,6 +160,7 @@ const translations: Record<LanguageCode, Translations> = {
       adminPengalaman: "Admin Pengalaman",
       adminTentang: "Admin Tentang",
       adminFaktaUnik: "Admin Fakta Unik",
+      adminLogo: "Admin Logo",
     },
     footer: {
       rightsReserved: "Hak cipta dilindungi.",
@@ -256,6 +262,10 @@ const translations: Record<LanguageCode, Translations> = {
       footerMessage:
         "Perjalanan ini belum selesai. Selama masih ada anak muda yang mau belajar, bergerak, dan peduli pada energi, harapan itu akan selalu hidup.",
     },
+    logo: {
+      title: "Logo & Mitra",
+      description: "Organisasi dan mitra yang telah bekerja sama",
+    },
     search: {
       placeholder: "Cari berita...",
       noResults: "Tidak ada hasil ditemukan",
@@ -288,6 +298,7 @@ const translations: Record<LanguageCode, Translations> = {
       adminPengalaman: "Admin Experience",
       adminTentang: "Admin About",
       adminFaktaUnik: "Admin Unique Facts",
+      adminLogo: "Admin Logo",
     },
     footer: {
       rightsReserved: "All rights reserved.",
@@ -389,6 +400,10 @@ const translations: Record<LanguageCode, Translations> = {
       footerMessage:
         "This journey is not over yet. As long as there are young people willing to learn, move, and care about energy, that hope will always live on.",
     },
+    logo: {
+      title: "Logos & Partners",
+      description: "Organizations and partners we have collaborated with",
+    },
     search: {
       placeholder: "Search news...",
       noResults: "No results found",
@@ -421,6 +436,7 @@ const translations: Record<LanguageCode, Translations> = {
       adminPengalaman: "Админ Опыта",
       adminTentang: "Админ О Нас",
       adminFaktaUnik: "Админ Уникальных Фактов",
+      adminLogo: "Админ Логотип",
     },
     footer: {
       rightsReserved: "Все права защищены.",
@@ -521,6 +537,10 @@ const translations: Record<LanguageCode, Translations> = {
       empty: "Хронологии пока нет",
       footerMessage:
         "Это путешествие еще не закончено. Пока есть молодые люди, готовые учиться, двигаться и заботиться об энергии, эта надежда всегда будет жить.",
+    },
+    logo: {
+      title: "Логотипы и Партнеры",
+      description: "Организации и партнеры, с которыми мы сотрудничали",
     },
     search: {
       placeholder: "Поиск новостей...",

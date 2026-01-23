@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createPesan } from "@/lib/api/pesan";
 import { CreatePesanData } from "@/types/pesan";
 import { useTranslations } from "@/hooks/useTranslations";
+import { getAktifSosialMedia } from "@/lib/api/sosialMedia";
+import { SosialMedia } from "@/types/sosialMedia";
 
 export default function Contact() {
   const t = useTranslations();
@@ -17,6 +19,28 @@ export default function Contact() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [sosialMediaList, setSosialMediaList] = useState<SosialMedia[]>([]);
+  const [loadingSosialMedia, setLoadingSosialMedia] = useState(true);
+
+  // Fetch sosial media yang aktif
+  useEffect(() => {
+    const fetchSosialMedia = async () => {
+      try {
+        setLoadingSosialMedia(true);
+        const data = await getAktifSosialMedia();
+        // Sort by urutan
+        const sorted = data.sort((a, b) => a.urutan - b.urutan);
+        setSosialMediaList(sorted);
+      } catch (err) {
+        console.error("Error fetching sosial media:", err);
+        // Tidak perlu menampilkan error ke user, hanya log
+      } finally {
+        setLoadingSosialMedia(false);
+      }
+    };
+
+    fetchSosialMedia();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -125,6 +149,48 @@ export default function Contact() {
                   {t.contact.phone}
                 </span>
               </div>
+              
+              {/* Sosial Media Links */}
+              {!loadingSosialMedia && sosialMediaList.length > 0 && (
+                <div className="mt-6">
+                  <h4 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">
+                    Ikuti Saya
+                  </h4>
+                  <div className="flex flex-wrap gap-3">
+                    {sosialMediaList.map((sosialMedia) => (
+                      <a
+                        key={sosialMedia.id}
+                        href={sosialMedia.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-primary hover:text-white dark:hover:bg-primary transition-colors text-gray-700 dark:text-gray-300"
+                        title={sosialMedia.nama}
+                      >
+                        {sosialMedia.icon ? (
+                          <span className="text-lg">{sosialMedia.icon}</span>
+                        ) : (
+                          <svg
+                            className="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+                            />
+                          </svg>
+                        )}
+                        <span className="text-sm font-medium">
+                          {sosialMedia.nama}
+                        </span>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
           <form onSubmit={handleSubmit} className="space-y-4">

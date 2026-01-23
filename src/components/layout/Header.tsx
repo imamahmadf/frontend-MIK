@@ -406,6 +406,17 @@ function HeaderContent() {
                         >
                           {t.auth.adminFaktaUnik}
                         </Link>
+                        <Link
+                          href={createHref("/admin/logo")}
+                          className={`block w-full text-left px-4 py-2 text-sm transition-colors ${
+                            isActive(createHref("/admin/logo"))
+                              ? "text-primary dark:text-primary-light bg-primary/10 dark:bg-primary/20 font-semibold"
+                              : "text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700"
+                          }`}
+                          onClick={() => setIsUserMenuOpen(false)}
+                        >
+                          {t.auth.adminLogo}
+                        </Link>
                         <button
                           onClick={handleLogout}
                           className="w-full text-left px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors"
