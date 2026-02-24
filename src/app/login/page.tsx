@@ -125,20 +125,6 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <div className="text-sm text-gray-600 dark:text-gray-400 bg-blue-50 dark:bg-blue-900/20 p-3 rounded-md">
-            <p className="font-medium mb-1">Akun Demo:</p>
-            <ul className="list-disc list-inside space-y-1">
-              <li>
-                Username: <strong>admin</strong> / Password:{" "}
-                <strong>admin123</strong>
-              </li>
-              <li>
-                Username: <strong>user</strong> / Password:{" "}
-                <strong>user123</strong>
-              </li>
-            </ul>
-          </div>
-
           <div>
             <button
               type="submit"

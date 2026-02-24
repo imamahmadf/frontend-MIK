@@ -65,7 +65,7 @@ function LoadingOverlay({ isLoading }: { isLoading: boolean }) {
 
   return (
     <div
-      className={`fixed inset-0 z-[9998] bg-white dark:bg-neutral-900 flex items-center justify-center transition-opacity duration-300 ${
+      className={`fixed inset-0 z-[9998] bg-background flex items-center justify-center transition-opacity duration-300 ${
         isLoading ? "opacity-100" : "opacity-0"
       }`}
     >

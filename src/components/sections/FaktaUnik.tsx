@@ -72,7 +72,7 @@ function FaktaUnikContent() {
     <section
       ref={sectionRef}
       id="fakta-unik"
-      className="py-20 px-4 bg-gray-50 dark:bg-gray-800"
+      className="py-20 px-4 bg-background"
     >
       <div className="container mx-auto max-w-6xl">
         <h2 className="text-4xl font-bold text-center mb-12 text-neutral-900 dark:text-white">
@@ -151,7 +151,7 @@ export default function FaktaUnik() {
       fallback={
         <section
           id="fakta-unik"
-          className="py-20 px-4 bg-gray-50 dark:bg-gray-800"
+          className="py-20 px-4 bg-background"
         >
           <div className="container mx-auto max-w-6xl">
             <h2 className="text-4xl font-bold text-center mb-12 text-neutral-900 dark:text-white">

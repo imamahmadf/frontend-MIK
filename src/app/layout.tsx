@@ -274,7 +274,7 @@ export default function RootLayout({
               <PageTransition>
                 <div className="relative z-10">
                   <Header />
-                  <main className="min-h-screen relative z-10">{children}</main>
+                  <main className="min-h-screen relative z-10 bg-background">{children}</main>
                   <Footer />
                 </div>
               </PageTransition>

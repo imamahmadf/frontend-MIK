@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function NotFound() {
   return (
-    <div className="pt-32 pb-20 px-4 min-h-screen bg-white dark:bg-gray-900">
+    <div className="pt-32 pb-20 px-4 min-h-screen bg-background">
       <div className="container mx-auto max-w-4xl text-center">
         <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
           Artikel Tidak Ditemukan

@@ -1,6 +1,6 @@
 export default function Loading() {
   return (
-    <div className="pt-32 pb-20 px-4 min-h-screen bg-white dark:bg-gray-900">
+    <div className="pt-32 pb-20 px-4 min-h-screen bg-background">
       <div className="container mx-auto max-w-6xl">
         <div className="animate-pulse">
           <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/4 mb-4"></div>

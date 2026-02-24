@@ -178,7 +178,7 @@ function HeaderContent() {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-md border-b border-neutral-200 dark:border-gray-800">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-background shadow-md border-b border-neutral-200 dark:border-gray-800">
       <nav className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
         <div className="flex items-center justify-between gap-4">
           <Link href="/" className="flex items-center flex-shrink-0">
@@ -867,7 +867,7 @@ export default function Header() {
   return (
     <Suspense
       fallback={
-        <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-md border-b border-neutral-200 dark:border-gray-800">
+        <header className="fixed top-0 left-0 right-0 z-50 bg-background shadow-md border-b border-neutral-200 dark:border-gray-800">
           <nav className="container mx-auto px-4 py-4">
             <div className="flex items-center justify-between">
               <div className="h-10 w-32 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>

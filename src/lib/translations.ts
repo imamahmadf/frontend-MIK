@@ -212,8 +212,8 @@ const translations: Record<LanguageCode, Translations> = {
       subtitle: "Mari Berkolaborasi",
       description:
         "Saya selalu terbuka untuk diskusi tentang proyek baru, peluang kerja, atau sekadar berkenalan. Jangan ragu untuk menghubungi saya!",
-      email: "email@example.com",
-      phone: "+62 812-3456-7890",
+      email: "email",
+      phone: "-",
       name: "Nama",
       nameRequired: "Nama *",
       emailRequired: "Email *",
@@ -350,8 +350,8 @@ const translations: Record<LanguageCode, Translations> = {
       subtitle: "Let's Collaborate",
       description:
         "I'm always open to discussing new projects, job opportunities, or just getting to know each other. Feel free to reach out!",
-      email: "email@example.com",
-      phone: "+62 812-3456-7890",
+      email: "email",
+      phone: "-",
       name: "Name",
       nameRequired: "Name *",
       emailRequired: "Email *",
@@ -488,8 +488,8 @@ const translations: Record<LanguageCode, Translations> = {
       subtitle: "Давайте Сотрудничать",
       description:
         "Я всегда открыт для обсуждения новых проектов, возможностей трудоустройства или просто знакомства. Не стесняйтесь связаться со мной!",
-      email: "email@example.com",
-      phone: "+62 812-3456-7890",
+      email: "email",
+      phone: "-",
       name: "Имя",
       nameRequired: "Имя *",
       emailRequired: "Электронная почта *",

@@ -99,7 +99,7 @@ function FooterContent() {
   };
 
   return (
-    <footer className="bg-neutral-900 text-white">
+    <footer className="bg-neutral-900 text-neutral-100">
       {/* Contact Section */}
       <div className="border-b border-neutral-800">
         <div className="container mx-auto px-4 py-12">
@@ -111,13 +111,11 @@ function FooterContent() {
               <h3 className="text-xl font-semibold mb-4 text-white">
                 {t.contact.subtitle}
               </h3>
-              <p className="text-neutral-300 mb-6">
-                {t.contact.description}
-              </p>
+              <p className="text-neutral-400 mb-6">{t.contact.description}</p>
               <div className="space-y-4">
                 <div className="flex items-center">
                   <svg
-                    className="w-5 h-5 mr-3 text-primary dark:text-primary-light"
+                    className="w-5 h-5 mr-3 text-primary-light"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -129,13 +127,11 @@ function FooterContent() {
                       d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                     />
                   </svg>
-                  <span className="text-neutral-300">
-                    {t.contact.email}
-                  </span>
+                  <span className="text-neutral-400">{t.contact.email}</span>
                 </div>
                 <div className="flex items-center">
                   <svg
-                    className="w-5 h-5 mr-3 text-primary dark:text-primary-light"
+                    className="w-5 h-5 mr-3 text-primary-light"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -147,18 +143,14 @@ function FooterContent() {
                       d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
                     />
                   </svg>
-                  <span className="text-neutral-300">
-                    {t.contact.phone}
-                  </span>
+                  <span className="text-neutral-400">{t.contact.phone}</span>
                 </div>
               </div>
             </div>
             <form onSubmit={handleSubmit} className="space-y-4">
               {error && (
                 <div className="p-4 bg-red-900/20 border border-red-800 rounded-lg">
-                  <p className="text-sm text-red-200">
-                    {error}
-                  </p>
+                  <p className="text-sm text-red-200">{error}</p>
                 </div>
               )}
               {success && (
@@ -171,7 +163,7 @@ function FooterContent() {
               <div>
                 <label
                   htmlFor="footer-nama"
-                  className="block text-sm font-medium text-neutral-300 mb-2"
+                  className="block text-sm font-medium text-neutral-400 mb-2"
                 >
                   {t.contact.nameRequired}
                 </label>
@@ -182,13 +174,13 @@ function FooterContent() {
                   value={formData.nama}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-2 border border-neutral-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-neutral-800 text-white placeholder-neutral-500"
+                  className="w-full px-4 py-2 border border-neutral-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-neutral-800 text-neutral-100 placeholder-neutral-400"
                 />
               </div>
               <div>
                 <label
                   htmlFor="footer-email"
-                  className="block text-sm font-medium text-neutral-300 mb-2"
+                  className="block text-sm font-medium text-neutral-400 mb-2"
                 >
                   {t.contact.emailRequired}
                 </label>
@@ -199,13 +191,13 @@ function FooterContent() {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-2 border border-neutral-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-neutral-800 text-white placeholder-neutral-500"
+                  className="w-full px-4 py-2 border border-neutral-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-neutral-800 text-neutral-100 placeholder-neutral-400"
                 />
               </div>
               <div>
                 <label
                   htmlFor="footer-kontak"
-                  className="block text-sm font-medium text-neutral-300 mb-2"
+                  className="block text-sm font-medium text-neutral-400 mb-2"
                 >
                   {t.contact.contactOptional}
                 </label>
@@ -216,13 +208,13 @@ function FooterContent() {
                   value={formData.kontak}
                   onChange={handleChange}
                   placeholder={t.contact.contactPlaceholder}
-                  className="w-full px-4 py-2 border border-neutral-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-neutral-800 text-white placeholder-neutral-500"
+                  className="w-full px-4 py-2 border border-neutral-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-neutral-800 text-neutral-100 placeholder-neutral-400"
                 />
               </div>
               <div>
                 <label
                   htmlFor="footer-judul"
-                  className="block text-sm font-medium text-neutral-300 mb-2"
+                  className="block text-sm font-medium text-neutral-400 mb-2"
                 >
                   {t.contact.subjectOptional}
                 </label>
@@ -233,13 +225,13 @@ function FooterContent() {
                   value={formData.judul}
                   onChange={handleChange}
                   placeholder={t.contact.subjectPlaceholder}
-                  className="w-full px-4 py-2 border border-neutral-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-neutral-800 text-white placeholder-neutral-500"
+                  className="w-full px-4 py-2 border border-neutral-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-neutral-800 text-neutral-100 placeholder-neutral-400"
                 />
               </div>
               <div>
                 <label
                   htmlFor="footer-pesan"
-                  className="block text-sm font-medium text-neutral-300 mb-2"
+                  className="block text-sm font-medium text-neutral-400 mb-2"
                 >
                   {t.contact.messageRequired}
                 </label>
@@ -250,7 +242,7 @@ function FooterContent() {
                   onChange={handleChange}
                   required
                   rows={4}
-                  className="w-full px-4 py-2 border border-neutral-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-neutral-800 text-white placeholder-neutral-500"
+                  className="w-full px-4 py-2 border border-neutral-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-neutral-800 text-neutral-100 placeholder-neutral-400"
                 />
               </div>
               <button
@@ -277,16 +269,16 @@ function FooterContent() {
                 href="https://github.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-neutral-400 hover:text-accent transition-colors font-medium"
+                className="text-neutral-400 hover:text-primary-light transition-colors font-medium"
                 aria-label="GitHub"
               >
-                GitHub
+                Instagam
               </Link>
               <Link
-                href="https://linkedin.com"
+                href="https://instagram.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-neutral-400 hover:text-accent transition-colors font-medium"
+                className="text-neutral-400 hover:text-primary-light transition-colors font-medium"
                 aria-label="LinkedIn"
               >
                 LinkedIn
@@ -295,7 +287,7 @@ function FooterContent() {
                 href="https://twitter.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-neutral-400 hover:text-accent transition-colors font-medium"
+                className="text-neutral-400 hover:text-primary-light transition-colors font-medium"
                 aria-label="Twitter"
               >
                 Twitter
@@ -312,7 +304,7 @@ export default function Footer() {
   return (
     <Suspense
       fallback={
-        <footer className="bg-neutral-900 text-white py-10">
+        <footer className="bg-neutral-900 text-neutral-100 py-10">
           <div className="container mx-auto px-4">
             <div className="flex flex-col md:flex-row justify-between items-center">
               <div className="h-4 w-64 bg-gray-700 rounded animate-pulse"></div>

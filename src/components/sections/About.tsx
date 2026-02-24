@@ -11,7 +11,7 @@ import { useTranslations } from "@/hooks/useTranslations";
 
 function AboutFallback() {
   return (
-    <section id="about" className="py-20 px-4 bg-white dark:bg-neutral-900">
+    <section id="about" className="py-20 px-4 bg-background">
       <div className="container mx-auto max-w-4xl">
         <h2 className="text-4xl font-bold text-center mb-12 text-neutral-900 dark:text-white">
           <span className="inline-block h-10 w-48 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
@@ -77,7 +77,7 @@ function AboutContent() {
     : [];
 
   return (
-    <section id="about" className="py-20 px-4 bg-white dark:bg-neutral-900">
+    <section id="about" className="py-20 px-4 bg-background">
       <div className="container mx-auto max-w-4xl">
         <h2 className="text-4xl font-bold text-center mb-12 text-neutral-900 dark:text-white">
           {loading ? (
@@ -133,8 +133,7 @@ function AboutContent() {
                   masyarakat.
                 </p>
               </div>
-              <div className="bg-neutral-100 dark:bg-neutral-800 rounded-xl p-8 shadow-md border border-neutral-200 dark:border-neutral-700">
-              </div>
+              <div className="bg-neutral-100 dark:bg-neutral-800 rounded-xl p-8 shadow-md border border-neutral-200 dark:border-neutral-700"></div>
             </div>
           </div>
         ) : tentangData ? (
@@ -159,12 +158,13 @@ function AboutContent() {
               <div className="">
                 {fotoUrl && (
                   <div className="mb-6">
-                    <div className="relative w-full h-64 rounded-lg overflow-hidden">
+                    <div className="relative w-full h-80 sm:h-96 rounded-lg overflow-hidden ">
                       <Image
                         src={fotoUrl}
                         alt={tentangData.judul || t.about.title}
                         fill
-                        className="object-cover"
+                        className="object-contain"
+                        sizes="(max-width: 768px) 100vw, 50vw"
                         unoptimized={fotoUrl.startsWith("http")}
                       />
                     </div>

@@ -171,7 +171,7 @@ function BeritaContent() {
       </section>
 
       {/* Main Content */}
-      <section className="relative min-h-screen bg-gradient-to-br from-gray-50 via-white to-primary-light/10 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      <section className="relative min-h-screen bg-background">
         {/* Decorative Background Elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary-light/10 rounded-full blur-3xl"></div>

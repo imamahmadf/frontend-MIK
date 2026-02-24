@@ -41,7 +41,7 @@ export default async function GaleriCarousel({
   return (
     <section
       id="galeri"
-      className="py-20 px-4 bg-gradient-to-br from-gray-50 via-white to-primary-light/10 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900"
+      className="py-20 px-4 bg-background"
     >
       <div className="container mx-auto max-w-7xl">
         {/* Header Section */}

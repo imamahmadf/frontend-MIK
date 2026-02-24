@@ -34,7 +34,7 @@ export default function Slideshow() {
   const activeSlide = slides[current];
 
   return (
-    <section className="py-16 px-4 bg-gradient-to-r from-primary/10 to-primary-light/10 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <section className="py-16 px-4 bg-background">
       <div className="container mx-auto max-w-4xl">
         <h2 className="text-3xl font-bold text-center mb-8 text-gray-900 dark:text-white">
           Sekilas Perjalanan

@@ -45,7 +45,7 @@ export default async function LatestNews({ searchParams }: LatestNewsProps) {
   return (
     <section
       id="berita"
-      className="py-20 px-4 bg-gradient-to-br from-gray-50 via-white to-blue-50/30 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900"
+      className="py-20 px-4 bg-background"
     >
       <div className="container mx-auto max-w-7xl">
         {/* Header Section */}

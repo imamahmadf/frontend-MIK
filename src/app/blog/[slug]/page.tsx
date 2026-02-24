@@ -147,7 +147,7 @@ export default async function BlogPostPage({ params }: PageProps) {
   }
 
   return (
-    <div className="pt-32 pb-20 px-4 min-h-screen bg-white dark:bg-gray-900">
+    <div className="pt-32 pb-20 px-4 min-h-screen bg-background">
       <div className="container mx-auto max-w-4xl">
         {/* Back Button */}
         <Link

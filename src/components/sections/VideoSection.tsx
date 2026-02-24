@@ -31,7 +31,7 @@ export default function VideoSection({
   // Jika ada multiple videoIds, tampilkan dalam grid
   if (videoIds && videoIds.length > 1 && !playlistId) {
     return (
-      <section className="py-16 md:py-24 px-4 bg-gradient-to-br from-neutral-50 via-white to-neutral-100 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-900">
+      <section className="py-16 md:py-24 px-4 bg-background">
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-neutral-900 dark:text-white mb-4">
@@ -68,7 +68,7 @@ export default function VideoSection({
 
   // Single video atau playlist
   return (
-    <section className="py-16 md:py-24 px-4 bg-gradient-to-br from-neutral-50 via-white to-neutral-100 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-900">
+    <section className="py-16 md:py-24 px-4 bg-background">
       <div className="container mx-auto max-w-6xl">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-neutral-900 dark:text-white mb-4">

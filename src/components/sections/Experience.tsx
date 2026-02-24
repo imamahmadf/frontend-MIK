@@ -14,7 +14,7 @@ import { useTranslations } from "@/hooks/useTranslations";
 function ExperienceFallback() {
   const t = useTranslations();
   return (
-    <section id="experience" className="py-20 px-4 bg-gray-50 dark:bg-gray-800">
+    <section id="experience" className="py-20 px-4 bg-background">
       <div className="container mx-auto max-w-4xl">
         <h2 className="text-4xl font-bold text-center mb-12 text-gray-900 dark:text-white">
           {t.experience.title}
@@ -72,7 +72,7 @@ function ExperienceContent() {
     return (
       <section
         id="experience"
-        className="py-20 px-4 bg-gray-50 dark:bg-gray-800"
+        className="py-20 px-4 bg-background"
       >
         <div className="container mx-auto max-w-4xl">
           <h2 className="text-4xl font-bold text-center mb-12 text-gray-900 dark:text-white">
@@ -89,7 +89,7 @@ function ExperienceContent() {
   }
 
   return (
-    <section id="experience" className="py-20 px-4 bg-gray-50 dark:bg-gray-800">
+    <section id="experience" className="py-20 px-4 bg-background">
       <div className="container mx-auto max-w-4xl">
         <h2 className="text-4xl font-bold text-center mb-12 text-gray-900 dark:text-white">
           {t.experience.title}
